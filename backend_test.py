@@ -4062,17 +4062,7 @@ def run_branding_upload_tests():
     
     return success
 
-if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        if sys.argv[1] == "branding":
-            success = run_branding_upload_tests()
-            sys.exit(0 if success else 1)
-        elif sys.argv[1] == "pdf-debug":
-            success = run_pdf_debug_tests()
-            sys.exit(0 if success else 1)
-    else:
-        # Default behavior - run STARTER user test
-        run_starter_user_auth_test()
+# Removed duplicate main function
 
     # ========== AI COACH PLAN ACCESS CONTROL TESTS ==========
     
