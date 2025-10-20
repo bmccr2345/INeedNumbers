@@ -45,6 +45,8 @@ const AdminConsolePage = () => {
   // Security modals
   const [showPasswordReset, setShowPasswordReset] = useState(false);
   const [show2FASetup, setShow2FASetup] = useState(false);
+  const [twoFactorRequired, setTwoFactorRequired] = useState(false);
+  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
   // Admin navigation sections
   const sections = [
