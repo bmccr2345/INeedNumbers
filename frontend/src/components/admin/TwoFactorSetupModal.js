@@ -24,21 +24,26 @@ const TwoFactorSetupModal = ({ isOpen, onClose, isRequired = false }) => {
 
   const generateTwoFactorSecret = async () => {
     setIsLoading(true);
+    setError('');
     try {
-      // Mock 2FA setup - in real implementation this would call the backend
-      const mockSecret = 'JBSWY3DPEHPK3PXP';
-      const mockQR = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
-      
-      setSecretKey(mockSecret);
-      setQrCode(mockQR);
-      
-      // Generate backup codes
-      const codes = Array.from({length: 10}, () => 
-        Math.random().toString(36).substr(2, 8).toUpperCase()
-      );
-      setBackupCodes(codes);
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/generate`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to generate 2FA secret');
+      }
+
+      const data = await response.json();
+      setSecretKey(data.secret);
+      setQrCode(data.qr_code);
       
     } catch (error) {
+      console.error('Error generating 2FA secret:', error);
       setError('Failed to generate 2FA secret. Please try again.');
     } finally {
       setIsLoading(false);
