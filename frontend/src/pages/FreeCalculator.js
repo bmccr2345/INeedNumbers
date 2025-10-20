@@ -1031,23 +1031,25 @@ const FreeCalculator = () => {
                   </CardContent>
                 </Card>
 
-                {/* Upgrade Prompt */}
-                <Card className="border-blue-200 bg-blue-50">
-                  <CardContent className="pt-6">
-                    <div className="text-center space-y-3">
-                      <h3 className="font-semibold text-blue-900">Want to save this deal?</h3>
-                      <p className="text-sm text-blue-700">
-                        Upgrade to save deals, add custom branding, and share with investors.
-                      </p>
-                      <Button 
-                        className="w-full bg-primary hover:bg-emerald-700"
-                        onClick={() => navigate('/#pricing')}
-                      >
-                        View Pricing Plans
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Upgrade Prompt - Only show for FREE users */}
+                {effectivePlan === 'FREE' && (
+                  <Card className="border-blue-200 bg-blue-50">
+                    <CardContent className="pt-6">
+                      <div className="text-center space-y-3">
+                        <h3 className="font-semibold text-blue-900">Want to save this deal?</h3>
+                        <p className="text-sm text-blue-700">
+                          Upgrade to save deals, add custom branding, and share with investors.
+                        </p>
+                        <Button 
+                          className="w-full bg-primary hover:bg-emerald-700"
+                          onClick={() => navigate('/#pricing')}
+                        >
+                          View Pricing Plans
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
               </>
             ): (
               <Card>
