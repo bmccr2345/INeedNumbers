@@ -5,7 +5,7 @@ import base64
 import io
 
 def test_brand_upload():
-    base_url = "https://secureapp-dev.preview.emergentagent.com"
+    base_url = "https://realestate-finance-1.preview.emergentagent.com"
     
     # Step 1: Login to get cookies
     print("🔑 Logging in...")

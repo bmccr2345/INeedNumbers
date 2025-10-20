@@ -6,7 +6,7 @@ import sys
 from datetime import datetime
 
 class AICoachTester:
-    def __init__(self, base_url="https://secureapp-dev.preview.emergentagent.com"):
+    def __init__(self, base_url="https://realestate-finance-1.preview.emergentagent.com"):
         self.base_url = base_url
         self.auth_token = None
         self.tests_run = 0
