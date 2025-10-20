@@ -368,8 +368,13 @@ const AdminConsolePage = () => {
         {show2FASetup && (
           <TwoFactorSetupModal
             isOpen={show2FASetup}
-            onClose={() => setShow2FASetup(false)}
-            isRequired={user?.requires2FA}
+            onClose={() => {
+              // Only allow closing if 2FA is not required or already enabled
+              if (!twoFactorRequired || twoFactorEnabled) {
+                setShow2FASetup(false);
+              }
+            }}
+            isRequired={twoFactorRequired && !twoFactorEnabled}
           />
         )}
 
