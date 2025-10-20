@@ -1168,7 +1168,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "2FA Endpoints Implementation - Phase 2 Critical Security Fixes"
+    - "Admin CRUD Operations - Phase 3 Core Features"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
