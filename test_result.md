@@ -1156,7 +1156,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "All critical backend tasks completed"
+    - "2FA Endpoints Implementation - Phase 2 Critical Security Fixes"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
