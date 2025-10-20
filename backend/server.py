@@ -4589,6 +4589,28 @@ async def get_tracker_daily(
             daily_doc.pop('_id', None)
             daily_entry = TrackerDaily(**daily_doc)
         
+        # INTEGRATION: Get completed activities from activity_logs for today
+        activity_logs = await db.activity_logs.find({
+            "userId": current_user.id,
+            "date": date
+        }).to_list(length=100)
+        
+        # Count activities by type
+        completed_activities = {}
+        for log in activity_logs:
+            activity_type = log.get('activityType', '')
+            # Map activity log types to tracker activity names
+            # e.g., "conversation" -> "conversations", "new_listing" -> "new_listings"
+            if activity_type:
+                # Pluralize if needed
+                tracker_key = activity_type + 's' if not activity_type.endswith('s') else activity_type
+                completed_activities[tracker_key] = completed_activities.get(tracker_key, 0) + 1
+        
+        # Merge with daily_entry.completed (in case there are manually entered values)
+        for activity, count in completed_activities.items():
+            if activity in settings.activities:
+                daily_entry.completed[activity] = daily_entry.completed.get(activity, 0) + count
+        
         # Get P&L data if Pro user
         pnl_data = None
         if current_user.plan in ['STARTER', 'PRO']:
