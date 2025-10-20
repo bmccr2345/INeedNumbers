@@ -4590,21 +4590,21 @@ async def get_tracker_daily(
             daily_entry = TrackerDaily(**daily_doc)
         
         # INTEGRATION: Get completed activities from activity_logs for today
+        # Activity logs store data as: {activities: {conversations: 4, appointments: 2, ...}, hours: {...}, reflection: '...'}
         activity_logs = await db.activity_logs.find({
-            "userId": current_user.id,
-            "date": date
+            "userId": current_user.id
         }).to_list(length=100)
         
-        # Count activities by type
+        # Sum up activities from all logs (filter by date if needed)
         completed_activities = {}
         for log in activity_logs:
-            activity_type = log.get('activityType', '')
-            # Map activity log types to tracker activity names
-            # e.g., "conversation" -> "conversations", "new_listing" -> "new_listings"
-            if activity_type:
-                # Pluralize if needed
-                tracker_key = activity_type + 's' if not activity_type.endswith('s') else activity_type
-                completed_activities[tracker_key] = completed_activities.get(tracker_key, 0) + 1
+            log_date = log.get('loggedAt', '')
+            # Check if log is from today (simple date comparison)
+            if date in log_date:  # If today's date is in the loggedAt timestamp
+                activities_dict = log.get('activities', {})
+                for activity_name, count in activities_dict.items():
+                    # Activity names are stored as: conversations, appointments, newListings, etc.
+                    completed_activities[activity_name] = completed_activities.get(activity_name, 0) + count
         
         # Merge with daily_entry.completed (in case there are manually entered values)
         for activity, count in completed_activities.items():
