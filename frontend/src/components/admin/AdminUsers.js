@@ -19,6 +19,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import axios from 'axios';
+import AdminResetUserPasswordModal from './AdminResetUserPasswordModal';
 
 const AdminUsers = ({ globalSearch = '' }) => {
   const [users, setUsers] = useState([]);
