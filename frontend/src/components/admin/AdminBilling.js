@@ -57,8 +57,13 @@ const AdminBilling = () => {
       const users = data.users || [];
       
       // Convert active PRO/STARTER users to subscription records
+      // Only include users with actual Stripe subscription data (real paying customers)
       const activeSubscriptions = users
-        .filter(user => user.plan !== 'FREE' && user.status === 'active')
+        .filter(user => 
+          user.plan !== 'FREE' && 
+          user.status === 'active' &&
+          (user.stripe_customer_id || user.stripe_subscription_id) // Must have Stripe data
+        )
         .map(user => {
           const planAmount = user.plan === 'PRO' ? 4900 : 1900; // $49 or $19
           const createdDate = user.created_at ? new Date(user.created_at) : new Date();
