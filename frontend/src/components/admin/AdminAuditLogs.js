@@ -39,8 +39,70 @@ const AdminAuditLogs = () => {
     try {
       setLoading(true);
       
-      // Mock audit logs data - will be replaced with actual API call
-      const mockLogs = [
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+      
+      // Build query parameters
+      const params = new URLSearchParams({
+        page: '1',
+        limit: '100'
+      });
+      
+      if (filterType !== 'all') {
+        params.append('action_filter', filterType);
+      }
+      
+      const response = await fetch(`${backendUrl}/api/admin/audit-logs?${params}`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch audit logs');
+      }
+      
+      const data = await response.json();
+      const auditLogs = data.logs || [];
+      
+      // Transform backend logs to frontend format
+      const transformedLogs = auditLogs.map((log, idx) => ({
+        id: log._id || `log-${idx}`,
+        timestamp: log.timestamp ? new Date(log.timestamp) : new Date(),
+        type: log.action || 'unknown',
+        severity: getSeverityFromAction(log.action),
+        user_email: log.user_email || 'System',
+        action: formatAction(log.action),
+        details: log.details || JSON.stringify(log.metadata || {}),
+        ip_address: log.ip_address || 'N/A',
+        user_agent: log.user_agent || 'N/A',
+        metadata: log.metadata || {}
+      }));
+      
+      setLogs(transformedLogs);
+      
+    } catch (error) {
+      console.error('Failed to load audit logs:', error);
+      setLogs([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const getSeverityFromAction = (action) => {
+    if (!action) return 'info';
+    const actionLower = action.toLowerCase();
+    if (actionLower.includes('delete') || actionLower.includes('error')) return 'error';
+    if (actionLower.includes('fail') || actionLower.includes('warning')) return 'warning';
+    if (actionLower.includes('create') || actionLower.includes('update')) return 'success';
+    return 'info';
+  };
+  
+  const formatAction = (action) => {
+    if (!action) return 'Unknown Action';
+    // Convert UPPERCASE_WITH_UNDERSCORE to Title Case
+    return action
+      .split('_')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
         {
           id: 'log-1',
           timestamp: new Date(Date.now() - 5 * 60 * 1000),
