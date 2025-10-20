@@ -3606,34 +3606,6 @@ if __name__ == "__main__":
     else:
         # Default behavior - run STARTER user test
         run_starter_user_auth_test()
-            
-            missing_file_response = session.post(
-                f"{self.base_url}/api/brand/upload",
-                data=data,
-                timeout=15
-            )
-            
-            if missing_file_response.status_code in [400, 422]:
-                print(f"   ✅ Missing file properly rejected ({missing_file_response.status_code})")
-                validation_results['missing_file'] = True
-            else:
-                print(f"   ❌ Missing file not rejected, got {missing_file_response.status_code}")
-                validation_results['missing_file'] = False
-            
-            # Calculate validation success
-            successful_validations = sum(validation_results.values())
-            total_validations = len(validation_results)
-            
-            if successful_validations >= 3:  # Allow one failure
-                print(f"   ✅ Validation working correctly ({successful_validations}/{total_validations} tests passed)")
-                return True, validation_results
-            else:
-                print(f"   ❌ Validation issues found ({successful_validations}/{total_validations} tests passed)")
-                return False, validation_results
-                
-        except Exception as e:
-            print(f"   ❌ Error in validation test: {e}")
-            return False, {"error": str(e)}
 
     # ========== AI COACH PLAN ACCESS CONTROL TESTS ==========
     
