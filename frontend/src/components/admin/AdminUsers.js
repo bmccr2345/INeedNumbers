@@ -550,6 +550,15 @@ const AdminUsers = ({ globalSearch = '' }) => {
                         >
                           <Edit2 className="w-4 h-4" />
                         </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleUserAction('reset-password', user.id)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Reset Password"
+                        >
+                          <Key className="w-4 h-4" />
+                        </Button>
                         {user.status === 'active' ? (
                           <Button
                             variant="ghost"
