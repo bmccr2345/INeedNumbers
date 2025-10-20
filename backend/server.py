@@ -7218,6 +7218,65 @@ async def admin_delete_user(
         
         logger.info(f"Admin {current_user.email} deleted user: {target_user['email']}")
         
+
+        return {"success": True, "message": "User deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error deleting user: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete user")
+
+
+@api_router.post("/admin/users/{user_id}/reset-password")
+async def admin_reset_user_password(
+    user_id: str,
+    reset_data: Dict[str, str],
+    current_user: User = Depends(require_master_admin)
+):
+    """Reset a user's password (admin only)"""
+    try:
+        # Find the user
+        target_user = await db.users.find_one({"id": user_id})
+        if not target_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get new password from request
+        new_password = reset_data.get("new_password")
+        if not new_password or len(new_password) < 8:
+            raise HTTPException(
+                status_code=400,
+                detail="Password must be at least 8 characters"
+            )
+        
+        # Hash the new password
+        password_hash = hash_password(new_password)
+        
+        # Update user password
+        await db.users.update_one(
+            {"id": user_id},
+            {
+                "$set": {
+                    "password_hash": password_hash,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        logger.info(f"Admin {current_user.email} reset password for user: {target_user['email']}")
+        
+        return {
+            "success": True,
+            "message": "Password reset successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error resetting password: {e}")
+        raise HTTPException(status_code=500, detail="Failed to reset password")
+
+
         return {"message": "User deleted successfully", "deleted_user_id": user_id}
         
     except HTTPException:
