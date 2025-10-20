@@ -7257,7 +7257,7 @@ async def admin_reset_user_password(
             {"id": user_id},
             {
                 "$set": {
-                    "password_hash": password_hash,
+                    "hashed_password": password_hash,
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }
             }
