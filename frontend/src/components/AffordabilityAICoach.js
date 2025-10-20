@@ -66,15 +66,40 @@ const AffordabilityAICoach = ({ isOpen, onClose, inputs, results }) => {
 
       const aiResponse = await response.json();
       
-      // Extract analysis from AI response
+      // Parse and format AI response
+      let formattedAnalysis = '';
+      
       if (aiResponse.summary) {
-        setAnalysis(aiResponse.summary);
+        // If summary is a string, use it directly
+        if (typeof aiResponse.summary === 'string') {
+          formattedAnalysis = aiResponse.summary;
+        }
+        // If summary is an object (JSON), parse and format it
+        else if (typeof aiResponse.summary === 'object') {
+          formattedAnalysis = formatJsonAnalysis(aiResponse.summary);
+        }
       } else if (aiResponse.coaching_text) {
         // Fallback for legacy format
-        setAnalysis(aiResponse.coaching_text);
+        formattedAnalysis = aiResponse.coaching_text;
+      } else if (typeof aiResponse === 'string') {
+        // Sometimes the response itself is the analysis string
+        // Try to parse if it looks like JSON
+        try {
+          const parsed = JSON.parse(aiResponse);
+          formattedAnalysis = formatJsonAnalysis(parsed);
+        } catch {
+          formattedAnalysis = aiResponse;
+        }
       } else {
+        // If response is already an object, format it
+        formattedAnalysis = formatJsonAnalysis(aiResponse);
+      }
+      
+      if (!formattedAnalysis) {
         throw new Error('Invalid AI response format');
       }
+      
+      setAnalysis(formattedAnalysis);
       
     } catch (error) {
       console.error('Error calling AI Coach API:', error);
