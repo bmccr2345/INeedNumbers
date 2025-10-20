@@ -24432,6 +24432,37 @@ def main_2fa_endpoints_test():
     
     return success
 
+def main_audit_logs_tests():
+    """Main function for audit logs endpoint tests"""
+    tester = DealPackAPITester()
+    
+    print("🚀 Starting Audit Logs Endpoint Testing - Phase 4 Data & Reporting Features...")
+    print(f"   Base URL: {tester.base_url}")
+    print("   Focus: Testing audit logs endpoint and data reporting features")
+    print("   Requirements: Login, Basic Endpoint, Pagination, Action Filter, Email Filter, Data Verification")
+    
+    # Run the audit logs endpoint test
+    print("\n" + "="*80)
+    success, results = tester.test_audit_logs_endpoint()
+    
+    # Print detailed results
+    print(f"\n📊 AUDIT LOGS ENDPOINT RESULTS:")
+    print(f"   Overall Success: {'✅ PASS' if success else '❌ FAIL'}")
+    
+    for test_name, test_result in results.items():
+        status = "✅ PASS" if test_result['success'] else "❌ FAIL"
+        print(f"   {test_name}: {status}")
+    
+    print(f"\n📈 Test Statistics:")
+    print(f"   Tests Run: {tester.tests_run}")
+    print(f"   Tests Passed: {tester.tests_passed}")
+    if tester.tests_run > 0:
+        print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    else:
+        print(f"   Success Rate: N/A (no individual API tests run)")
+    
+    return success
+
 def main_admin_crud_tests():
     """Main function for admin CRUD operations tests"""
     tester = DealPackAPITester()
