@@ -23429,8 +23429,10 @@ if __name__ == "__main__":
             main_ai_coach_v2_tests()
         elif test_type == "starter":
             main_starter_user_auth_test()
+        elif test_type == "2fa":
+            main_2fa_endpoints_test()
         else:
-            print("Available tests: pdf, affordability, ai-coach, starter")
+            print("Available tests: pdf, affordability, ai-coach, starter, 2fa")
             sys.exit(1)
     else:
         # Default: run PDF generation tests
