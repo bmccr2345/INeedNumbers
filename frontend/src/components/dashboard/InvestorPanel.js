@@ -160,7 +160,8 @@ const InvestorPanel = () => {
                   onClick={() => navigate('/calculator')}
                   className="bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800"
                 >
-                  Create New Investor PDF
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  Go to Full Investor Tool
                 </Button>
               </div>
             ) : (
