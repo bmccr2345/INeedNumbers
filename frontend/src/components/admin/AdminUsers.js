@@ -170,6 +170,9 @@ const AdminUsers = ({ globalSearch = '' }) => {
       case 'edit':
         setShowEditUserModal(true);
         break;
+      case 'reset-password':
+        setShowResetPasswordModal(true);
+        break;
       case 'delete':
         setShowDeleteConfirm(true);
         break;
