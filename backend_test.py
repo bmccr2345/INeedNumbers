@@ -23706,16 +23706,7 @@ def main_pnl_calculation_test():
             return False, {"error": str(e)}
 
 
-if __name__ == "__main__":
-    tester = DealPackAPITester()
-    
-    print("🚀 URGENT: bmccr23@gmail.com Authentication Investigation")
-    print("=" * 80)
-    print(f"   Base URL: {tester.base_url}")
-    print(f"   Target User: bmccr23@gmail.com")
-    print(f"   Password: Goosey23!!23")
-    print("   Issue: User reports cannot access admin console despite all previous fixes")
-    print("=" * 80)
+# Removed duplicate main function
     
     # Run comprehensive authentication testing for bmccr23@gmail.com
     overall_success, results = tester.test_comprehensive_bmccr23_authentication()
