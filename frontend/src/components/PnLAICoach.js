@@ -129,15 +129,46 @@ const PnLAICoach = ({ isOpen, onClose, currentMonthData, pastSixMonthsData }) =>
       
       console.log('AI Response received:', aiResponse); // Debug log
       
-      // Handle the new formatted response from backend
-      let analysisText = '';
+      // Parse and format AI response
+      let formattedAnalysis = '';
       
-      if (aiResponse && typeof aiResponse === 'object') {
-        // Check for the new formatted_analysis field first
+      if (aiResponse) {
+        // Check for formatted_analysis first (if backend already formatted it)
         if (aiResponse.formatted_analysis) {
-          analysisText = aiResponse.formatted_analysis;
-        } else if (aiResponse.summary) {
-          analysisText = aiResponse.summary;
+          formattedAnalysis = aiResponse.formatted_analysis;
+        }
+        // If summary is a string, use it directly
+        else if (typeof aiResponse.summary === 'string') {
+          formattedAnalysis = aiResponse.summary;
+        }
+        // If summary is an object (JSON), parse and format it
+        else if (typeof aiResponse.summary === 'object') {
+          formattedAnalysis = formatJsonAnalysis(aiResponse.summary);
+        }
+        // Check coaching_text for legacy format
+        else if (aiResponse.coaching_text) {
+          formattedAnalysis = aiResponse.coaching_text;
+        }
+        // If the response itself is a string
+        else if (typeof aiResponse === 'string') {
+          try {
+            const parsed = JSON.parse(aiResponse);
+            formattedAnalysis = formatJsonAnalysis(parsed);
+          } catch {
+            formattedAnalysis = aiResponse;
+          }
+        }
+        // If response is an object, format it
+        else if (typeof aiResponse === 'object') {
+          formattedAnalysis = formatJsonAnalysis(aiResponse);
+        }
+      }
+      
+      if (!formattedAnalysis) {
+        throw new Error('Invalid AI response format');
+      }
+      
+      setAnalysis(formattedAnalysis);
         } else if (aiResponse.coaching_text) {
           analysisText = aiResponse.coaching_text;
         } else {
