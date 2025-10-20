@@ -3453,6 +3453,8 @@ async def login(request: Request, response: Response, login_data: LoginRequest):
     
     return {
         "success": True,
+        "user": UserResponse(**user.dict())
+    }
 
 # ============================================
 # 2FA (Two-Factor Authentication) Endpoints
