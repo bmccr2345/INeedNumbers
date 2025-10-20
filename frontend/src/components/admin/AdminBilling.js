@@ -43,61 +43,43 @@ const AdminBilling = () => {
     try {
       setLoading(true);
       
-      // Mock billing data - will be replaced with actual API call
-      const mockSubscriptions = [
-        {
-          id: 'sub_1',
-          customer_id: 'cus_123456',
-          user_email: 'john.doe@example.com',
-          user_name: 'John Doe',
-          plan: 'PRO',
-          status: 'active',
-          amount: 4900, // cents
-          currency: 'usd',
-          billing_cycle: 'monthly',
-          current_period_start: new Date('2024-01-01'),
-          current_period_end: new Date('2024-02-01'),
-          next_billing_date: new Date('2024-02-01'),
-          created_at: new Date('2024-01-01'),
-          payment_method: 'card',
-          last_payment_status: 'succeeded',
-          stripe_subscription_id: 'sub_stripe_123'
-        },
-        {
-          id: 'sub_2',
-          customer_id: 'cus_789012',
-          user_email: 'sarah.smith@example.com',
-          user_name: 'Sarah Smith',
-          plan: 'STARTER',
-          status: 'active',
-          amount: 1900,
-          currency: 'usd',
-          billing_cycle: 'monthly',
-          current_period_start: new Date('2024-01-15'),
-          current_period_end: new Date('2024-02-15'),
-          next_billing_date: new Date('2024-02-15'),
-          created_at: new Date('2024-01-15'),
-          payment_method: 'card',
-          last_payment_status: 'succeeded',
-          stripe_subscription_id: 'sub_stripe_456'
-        },
-        {
-          id: 'sub_3',
-          customer_id: 'cus_345678',
-          user_email: 'mike.wilson@example.com',
-          user_name: 'Mike Wilson',
-          plan: 'PRO',
-          status: 'past_due',
-          amount: 4900,
-          currency: 'usd',
-          billing_cycle: 'monthly',
-          current_period_start: new Date('2024-01-10'),
-          current_period_end: new Date('2024-02-10'),
-          next_billing_date: new Date('2024-02-10'),
-          created_at: new Date('2024-01-10'),
-          payment_method: 'card',
-          last_payment_status: 'failed',
-          stripe_subscription_id: 'sub_stripe_789'
+      // Fetch real user data and convert to subscription format
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+      const response = await fetch(`${backendUrl}/api/admin/users?page=1&limit=100`, {
+        credentials: 'include'
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      
+      const data = await response.json();
+      const users = data.users || [];
+      
+      // Convert active PRO/STARTER users to subscription records
+      const activeSubscriptions = users
+        .filter(user => user.plan !== 'FREE' && user.status === 'active')
+        .map(user => {
+          const planAmount = user.plan === 'PRO' ? 4900 : 1900; // $49 or $19
+          const createdDate = user.created_at ? new Date(user.created_at) : new Date();
+          
+          return {
+            id: `sub_${user.id}`,
+            customer_id: user.stripe_customer_id || `cus_${user.id.substring(0, 8)}`,
+            user_email: user.email,
+            user_name: user.full_name || user.email,
+            plan: user.plan,
+            status: user.status === 'active' ? 'active' : 'inactive',
+            amount: planAmount,
+            currency: 'usd',
+            billing_cycle: 'monthly',
+            current_period_start: createdDate,
+            current_period_end: new Date(createdDate.getTime() + 30 * 24 * 60 * 60 * 1000),
+            next_billing_date: new Date(createdDate.getTime() + 30 * 24 * 60 * 60 * 1000),
+            created_at: createdDate,
+            payment_method: 'card',
+            last_payment_status: 'succeeded',
+            stripe_subscription_id: user.stripe_customer_id ? `sub_${user.stripe_customer_id}` : null
         },
         {
           id: 'sub_4',
