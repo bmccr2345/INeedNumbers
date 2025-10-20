@@ -23416,6 +23416,51 @@ if __name__ == "__main__":
         print("   ❌ Overall Status: FAILURE - Authentication issue confirmed")
         sys.exit(1)
 
+def main_2fa_endpoints_test():
+    """Main function for 2FA endpoints testing"""
+    print("🚀 STARTING 2FA ENDPOINTS TESTING - PHASE 2 CRITICAL SECURITY FIXES")
+    print("=" * 80)
+    print("   Objective: Test newly implemented 2FA endpoints")
+    print("   User: bmccr23@gmail.com with password 'Goosey23!!23'")
+    print("   Expected: 2FA status, generate, verify, and backup codes working")
+    print("=" * 80)
+    
+    # Initialize tester
+    tester = DealPackAPITester()
+    
+    # Run 2FA endpoints test
+    print("\n🔐 RUNNING 2FA ENDPOINTS COMPREHENSIVE TEST...")
+    success, results = tester.test_2fa_endpoints()
+    
+    # Print summary
+    print("\n" + "="*80)
+    print("🔐 2FA ENDPOINTS TESTING COMPLETE")
+    print("=" * 80)
+    
+    if success:
+        print("   🎉 Overall Status: SUCCESS - All 2FA endpoints working correctly")
+        print("   ✅ 2FA status endpoint returns correct data for master_admin")
+        print("   ✅ 2FA generate endpoint returns valid secret and QR code")
+        print("   ✅ QR code is properly formatted base64 PNG image")
+        print("   ✅ TOTP secret is valid and can generate codes")
+        print("   ✅ 2FA verification works with valid TOTP codes")
+        print("   ✅ Backup codes are generated correctly (10 codes)")
+    else:
+        print("   ❌ Overall Status: FAILURE - Critical 2FA issues found")
+        print("   🚨 2FA implementation has problems that need to be fixed")
+        
+        # Print specific failures
+        for test_name, test_result in results.items():
+            if not test_result['success']:
+                print(f"   ❌ Failed: {test_name}")
+    
+    print(f"\n📊 Test Statistics:")
+    print(f"   Tests Run: {tester.tests_run}")
+    print(f"   Tests Passed: {tester.tests_passed}")
+    print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    
+    return success
+
 if __name__ == "__main__":
     # Check if specific test is requested
     if len(sys.argv) > 1:
