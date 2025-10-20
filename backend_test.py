@@ -23759,13 +23759,7 @@ def main_pnl_calculation_test():
         
         return ai_coach_success
 
-if __name__ == "__main__":
-    tester = DealPackAPITester()
-    
-    print("🚀 Starting STARTER User Authentication Testing...")
-    print(f"   Base URL: {tester.base_url}")
-    print("   Focus: Testing startertest@demo.com /api/auth/me endpoint")
-    print("   Issue: Frontend shows PRO features when database shows STARTER plan")
+# Removed duplicate main function
     
     # Run the specific STARTER user test
     print("\n" + "="*80)
