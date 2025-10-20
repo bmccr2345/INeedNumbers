@@ -80,23 +80,6 @@ const AdminBilling = () => {
             payment_method: 'card',
             last_payment_status: 'succeeded',
             stripe_subscription_id: user.stripe_customer_id ? `sub_${user.stripe_customer_id}` : null
-        },
-        {
-          id: 'sub_4',
-          customer_id: 'cus_901234',
-          user_email: 'lisa.brown@example.com',
-          user_name: 'Lisa Brown',
-          plan: 'STARTER',
-          status: 'canceled',
-          amount: 1900,
-          currency: 'usd',
-          billing_cycle: 'monthly',
-          current_period_start: new Date('2024-01-05'),
-          current_period_end: new Date('2024-02-05'),
-          next_billing_date: null,
-          created_at: new Date('2024-01-05'),
-          payment_method: 'card',
-          last_payment_status: 'succeeded',
           };
         });
       
