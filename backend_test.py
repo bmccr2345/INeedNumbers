@@ -23889,6 +23889,34 @@ def main_2fa_endpoints_test():
     
     return success
 
+def main_admin_crud_tests():
+    """Main function for admin CRUD operations tests"""
+    tester = DealPackAPITester()
+    
+    print("🚀 Starting Admin CRUD Operations Testing - Phase 3 Core Features...")
+    print(f"   Base URL: {tester.base_url}")
+    print("   Focus: Testing all admin user management CRUD operations")
+    print("   Requirements: Login, List Users, Update User, Reset Password, Delete User")
+    
+    # Run the admin CRUD operations test
+    print("\n" + "="*80)
+    success, results = tester.test_admin_crud_operations()
+    
+    # Print detailed results
+    print(f"\n👑 ADMIN CRUD OPERATIONS RESULTS:")
+    print(f"   Overall Success: {'✅ PASS' if success else '❌ FAIL'}")
+    
+    for test_name, test_result in results.items():
+        status = "✅ PASS" if test_result['success'] else "❌ FAIL"
+        print(f"   {test_name}: {status}")
+    
+    print(f"\n📊 Test Statistics:")
+    print(f"   Tests Run: {tester.tests_run}")
+    print(f"   Tests Passed: {tester.tests_passed}")
+    print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    
+    return success
+
 if __name__ == "__main__":
     # Check if specific test is requested
     if len(sys.argv) > 1:
@@ -23904,9 +23932,11 @@ if __name__ == "__main__":
             main_starter_user_auth_test()
         elif test_type == "2fa":
             main_2fa_endpoints_test()
+        elif test_type == "admin_crud":
+            main_admin_crud_tests()
         else:
-            print("Available tests: pdf, affordability, ai-coach, starter, 2fa")
+            print("Available tests: pdf, affordability, ai-coach, starter, 2fa, admin_crud")
             sys.exit(1)
     else:
-        # Default: run PDF generation tests
-        main_pdf_generation_tests()
+        # Default: run admin CRUD tests as requested in review
+        main_admin_crud_tests()
