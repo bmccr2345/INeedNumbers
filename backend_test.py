@@ -23879,7 +23879,10 @@ def main_admin_crud_tests():
     print(f"\n📊 Test Statistics:")
     print(f"   Tests Run: {tester.tests_run}")
     print(f"   Tests Passed: {tester.tests_passed}")
-    print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    if tester.tests_run > 0:
+        print(f"   Success Rate: {(tester.tests_passed/tester.tests_run)*100:.1f}%")
+    else:
+        print(f"   Success Rate: N/A (no individual API tests run)")
     
     return success
 
