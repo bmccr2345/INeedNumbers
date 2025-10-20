@@ -72,18 +72,35 @@ const TwoFactorSetupModal = ({ isOpen, onClose, isRequired = false }) => {
     setError('');
 
     try {
-      // Mock verification - in real implementation this would call the backend
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simulate successful verification
-      if (verificationCode === '123456' || verificationCode.length === 6) {
-        setStep(3); // Success step
-      } else {
-        setError('Invalid verification code. Please try again.');
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/verify`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          secret: secretKey,
+          code: verificationCode
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.detail || 'Verification failed');
       }
+
+      // Store backup codes
+      if (data.backup_codes) {
+        setBackupCodes(data.backup_codes);
+      }
+
+      // Move to success step
+      setStep(3);
       
     } catch (error) {
-      setError('Verification failed. Please try again.');
+      console.error('Error verifying 2FA:', error);
+      setError(error.message || 'Invalid verification code. Please try again.');
     } finally {
       setIsLoading(false);
     }
