@@ -142,3 +142,5 @@ python-magic==0.4.27
 bandit==1.7.5
 pip-audit==2.6.2
 pytest-asyncio==1.2.0
+pyotp==2.9.0
+qrcode==8.2
