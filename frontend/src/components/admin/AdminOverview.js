@@ -30,50 +30,74 @@ const AdminOverview = () => {
 
   const loadOverviewData = async () => {
     try {
-      // Mock data for now - will be replaced with actual API calls
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
+      
+      // Fetch real user data
+      const usersResponse = await fetch(`${backendUrl}/api/admin/users?page=1&limit=100`, {
+        credentials: 'include'
+      });
+      
+      if (!usersResponse.ok) {
+        throw new Error('Failed to fetch users');
+      }
+      
+      const usersData = await usersResponse.json();
+      const users = usersData.users || [];
+      
+      // Calculate real stats
+      const totalUsers = usersData.total || users.length;
+      const activeSubscriptions = users.filter(u => 
+        u.plan !== 'FREE' && 
+        u.status === 'active' &&
+        (u.stripe_customer_id || u.stripe_subscription_id)
+      ).length;
+      
+      const totalRevenue = activeSubscriptions * 49; // $49 per PRO subscription
+      
+      // Fetch recent audit logs
+      const auditResponse = await fetch(`${backendUrl}/api/admin/audit-logs?limit=10`, {
+        credentials: 'include'
+      }).catch(() => null);
+      
+      let recentActivityCount = 0;
+      let recentActionsList = [];
+      
+      if (auditResponse && auditResponse.ok) {
+        const auditData = await auditResponse.json();
+        const logs = auditData.logs || [];
+        recentActivityCount = logs.length;
+        
+        // Convert audit logs to recent actions format
+        recentActionsList = logs.slice(0, 5).map((log, idx) => ({
+          id: idx + 1,
+          type: log.action || 'activity',
+          description: `${log.action}: ${log.user_email || 'System'}`,
+          timestamp: log.timestamp ? new Date(log.timestamp) : new Date(),
+          severity: log.action?.includes('error') ? 'warning' : 'info'
+        }));
+      }
+      
       setStats({
-        totalUsers: 127,
-        activeSubscriptions: 89,
-        totalRevenue: 4350,
-        recentActivity: 23,
+        totalUsers,
+        activeSubscriptions,
+        totalRevenue,
+        recentActivity: recentActivityCount,
         loading: false
       });
 
-      setRecentActions([
-        {
-          id: 1,
-          type: 'user_signup',
-          description: 'New user registered: john.doe@example.com',
-          timestamp: new Date(Date.now() - 5 * 60 * 1000),
-          severity: 'info'
-        },
-        {
-          id: 2,
-          type: 'subscription_upgraded',
-          description: 'User upgraded to Pro: sarah.smith@example.com',
-          timestamp: new Date(Date.now() - 15 * 60 * 1000),
-          severity: 'success'
-        },
-        {
-          id: 3,
-          type: 'payment_failed',
-          description: 'Payment failed for user: mike.wilson@example.com',
-          timestamp: new Date(Date.now() - 30 * 60 * 1000),
-          severity: 'warning'
-        },
-        {
-          id: 4,
-          type: 'admin_login',
-          description: 'Admin console accessed from new IP: 192.168.1.100',
-          timestamp: new Date(Date.now() - 45 * 60 * 1000),
-          severity: 'security'
-        }
-      ]);
-
+      setRecentActions(recentActionsList.length > 0 ? recentActionsList : []);
       setSystemHealth('healthy');
+      
     } catch (error) {
       console.error('Failed to load overview data:', error);
-      setStats(prev => ({ ...prev, loading: false }));
+      setStats({
+        totalUsers: 0,
+        activeSubscriptions: 0,
+        totalRevenue: 0,
+        recentActivity: 0,
+        loading: false
+      });
+      setRecentActions([]);
     }
   };
 
