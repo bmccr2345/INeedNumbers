@@ -1,0 +1,269 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
+import Cookies from 'js-cookie';
+
+const AuthContext = createContext();
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
+  // Configure axios for cookie-based authentication
+  useEffect(() => {
+    // Use cookies for authentication, not Authorization headers
+    axios.defaults.withCredentials = true;
+    // Remove any Authorization header as we use HttpOnly cookies
+    delete axios.defaults.headers.common['Authorization'];
+  }, []);
+
+  // Check if user is authenticated on app load
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    try {
+      // Use cookie-based authentication - no token needed in JS
+      const response = await axios.get(`${backendUrl}/api/auth/me`);
+      const user = response.data;
+      
+      // For master admin, check security setup status (keep in localStorage for UI state only)
+      if (user.role === 'master_admin') {
+        // Check if password was changed in the last 365 days
+        const passwordChangedTimestamp = localStorage.getItem('admin_password_changed_time') || Date.now().toString();
+        const oneYear = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
+        const now = Date.now();
+        
+        // Set default timestamp if none exists, then check if still valid
+        if (!localStorage.getItem('admin_password_changed_time')) {
+          localStorage.setItem('admin_password_changed_time', passwordChangedTimestamp);
+        }
+        
+        const hasChangedPassword = (now - parseInt(passwordChangedTimestamp)) < oneYear;
+          
+        const hasSetup2FA = localStorage.getItem('admin_2fa_setup') === 'true';
+        
+        // Only require password reset if it's been more than 365 days
+        user.requiresPasswordReset = !hasChangedPassword;
+        user.requires2FA = !hasSetup2FA;
+        user.firstLogin = !hasChangedPassword || !hasSetup2FA;
+      }
+      
+      setUser(user);
+    } catch (error) {
+      console.error('Auth check failed:', error);
+      // User is not authenticated
+      setUser(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email, password, rememberMe = false) => {
+    try {
+      // Use real backend API for all authentication (including demo)
+      const response = await axios.post(`${backendUrl}/api/auth/login`, {
+        email,
+        password,
+        remember_me: rememberMe
+      });
+      
+      if (response.data && response.data.user) {
+        const { user } = response.data;
+        // Authentication cookies are set by the server as HttpOnly
+        
+        // For master admin, check security setup status
+        if (user.role === 'master_admin') {
+          // Check if password was changed in the last 365 days
+          const passwordChangedTimestamp = localStorage.getItem('admin_password_changed_time') || Date.now().toString();
+          const oneYear = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
+          const now = Date.now();
+          
+          // Set default timestamp if none exists, then check if still valid
+          if (!localStorage.getItem('admin_password_changed_time')) {
+            localStorage.setItem('admin_password_changed_time', passwordChangedTimestamp);
+          }
+          
+          const hasChangedPassword = (now - parseInt(passwordChangedTimestamp)) < oneYear;
+            
+          const hasSetup2FA = localStorage.getItem('admin_2fa_setup') === 'true';
+          
+          // Only require password reset if it's been more than 365 days
+          user.requiresPasswordReset = !hasChangedPassword;
+          user.requires2FA = !hasSetup2FA;
+          user.firstLogin = !hasChangedPassword || !hasSetup2FA;
+        }
+        
+        setUser(user);
+        return { success: true };
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Login failed. Please try again.' 
+      };
+    }
+  };
+
+  const register = async (email, password, fullName = '') => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/auth/register`, {
+        email,
+        password,
+        full_name: fullName
+      });
+
+      // Auto-login after registration
+      const loginResult = await login(email, password, false);
+      return loginResult;
+    } catch (error) {
+      console.error('Registration failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Registration failed. Please try again.' 
+      };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      // Call server logout to clear HttpOnly cookies
+      await axios.post(`${backendUrl}/api/auth/logout`);
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+    }
+    // Clear local state
+    setUser(null);
+  };
+
+  const deleteAccount = async (confirmation) => {
+    try {
+      await axios.delete(`${backendUrl}/api/auth/delete-account`, {
+        data: { confirmation }
+      });
+      
+      logout();
+      return { success: true };
+    } catch (error) {
+      console.error('Account deletion failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Account deletion failed. Please try again.' 
+      };
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/auth/me`);
+      setUser(response.data);
+    } catch (error) {
+      console.error('Failed to refresh user:', error);
+    }
+  };
+
+  const createCheckoutSession = async (plan) => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/stripe/checkout`, {
+        plan,
+        origin_url: window.location.origin
+      });
+      
+      return { success: true, url: response.data.url };
+    } catch (error) {
+      console.error('Checkout session creation failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Failed to create checkout session.' 
+      };
+    }
+  };
+
+  const createCustomerPortal = async () => {
+    try {
+      const response = await axios.post(`${backendUrl}/api/stripe/portal`);
+      return { success: true, url: response.data.url };
+    } catch (error) {
+      console.error('Customer portal creation failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Failed to access billing portal.' 
+      };
+    }
+  };
+
+  const exportUserData = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/user/export`);
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('Data export failed:', error);
+      return { 
+        success: false, 
+        error: error.response?.data?.detail || 'Data export failed.' 
+      };
+    }
+  };
+
+  // Get plan limits
+  const getPlanLimits = (plan) => {
+    switch (plan) {
+      case 'STARTER':
+        return { deals: 10, portfolios: 1, branding: true };
+      case 'PRO':
+        return { deals: -1, portfolios: -1, branding: true }; // -1 = unlimited
+      default:
+        return { deals: 0, portfolios: 0, branding: false };
+    }
+  };
+
+  // Check if user can perform action
+  const canPerformAction = (action, plan = user?.plan) => {
+    const limits = getPlanLimits(plan);
+    
+    switch (action) {
+      case 'save_deal':
+        return limits.deals !== 0 && (limits.deals === -1 || (user?.deals_count || 0) < limits.deals);
+      case 'branded_pdf':
+        return limits.branding;
+      case 'share_deal':
+        return limits.deals !== 0;
+      case 'create_portfolio':
+        return limits.portfolios !== 0;
+      default:
+        return true;
+    }
+  };
+
+  const value = {
+    user,
+    loading,
+    login,
+    register,
+    logout,
+    deleteAccount,
+    refreshUser,
+    createCheckoutSession,
+    createCustomerPortal,
+    exportUserData,
+    isAuthenticated: !!user,
+    getPlanLimits,
+    canPerformAction
+  };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

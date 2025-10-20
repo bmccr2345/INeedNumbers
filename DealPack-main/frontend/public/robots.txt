@@ -1,0 +1,29 @@
+User-agent: *
+Allow: /
+
+# Allow crawling of important pages
+Allow: /calculator
+Allow: /tools
+Allow: /pricing
+Allow: /support
+Allow: /sample-pdf
+Allow: /glossary
+
+# Disallow admin and private areas
+Disallow: /dashboard
+Disallow: /account
+Disallow: /auth/
+Disallow: /app/admin
+Disallow: /app/branding
+
+# Allow legal pages
+Allow: /legal/terms
+Allow: /legal/privacy
+Allow: /legal/cookies
+Allow: /legal/accessibility
+
+# Sitemap location
+Sitemap: https://ineednumbers.com/sitemap.xml
+
+# Crawl delay for politeness
+Crawl-delay: 1

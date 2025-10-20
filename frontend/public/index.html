@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#2FA163" />
+        <meta name="description" content="Run Cap Rate, CoC, DSCR, IRR. Commission split, seller net sheet, and affordability calculators. Branded investor PDFs for agents." />
+        
+        <!-- Preconnect to external domains -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="preconnect" href="https://customer-assets.emergentagent.com">
+        
+        <!-- DNS prefetch for performance -->
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+        <link rel="dns-prefetch" href="https://customer-assets.emergentagent.com">
+        
+        <!-- Critical CSS - Google Fonts with optimizations -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        
+        <!-- Favicon and icons -->
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+        <link rel="apple-touch-icon" href="/android-chrome-192x192.png" />
+        
+        <!-- PWA Manifest -->
+        <link rel="manifest" href="/manifest.json" />
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://ineednumbers.com/" />
+        <meta property="og:title" content="I Need Numbers — Agent calculators & investor packets in minutes" />
+        <meta property="og:description" content="Run Cap Rate, CoC, DSCR, IRR. Commission split, seller net sheet, and affordability calculators. Branded investor PDFs for agents." />
+        <meta property="og:image" content="https://customer-assets.emergentagent.com/job_agent-portal-27/artifacts/azdcmpew_Logo_with_brown_background-removebg-preview.png" />
+
+        <!-- Twitter -->
+        <meta property="twitter:card" content="summary_large_image" />
+        <meta property="twitter:url" content="https://ineednumbers.com/" />
+        <meta property="twitter:title" content="I Need Numbers — Agent calculators & investor packets in minutes" />
+        <meta property="twitter:description" content="Run Cap Rate, CoC, DSCR, IRR. Commission split, seller net sheet, and affordability calculators. Branded investor PDFs for agents." />
+        <meta property="twitter:image" content="https://customer-assets.emergentagent.com/job_agent-portal-27/artifacts/azdcmpew_Logo_with_brown_background-removebg-preview.png" />
+
+        <!-- Additional SEO meta tags -->
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta name="author" content="I Need Numbers" />
+        <meta name="coverage" content="Worldwide" />
+        <meta name="distribution" content="Global" />
+        <meta name="rating" content="General" />
+        <meta name="revisit-after" content="7 days" />
+        
+        <title>I Need Numbers — Agent calculators & investor packets in minutes</title>
+        
+        <!-- Structured data for organization -->
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "I Need Numbers",
+          "url": "https://ineednumbers.com",
+          "logo": "https://customer-assets.emergentagent.com/job_agent-portal-27/artifacts/azdcmpew_Logo_with_brown_background-removebg-preview.png",
+          "description": "Professional real estate calculators and tools for agents",
+          "sameAs": ["https://ineednumbers.com"],
+          "contactPoint": {
+            "@type": "ContactPoint", 
+            "contactType": "Customer Service",
+            "url": "https://ineednumbers.com/support"
+          }
+        }
+        </script>
+    </head>
+    <body>
+        <noscript>You need to enable JavaScript to run this app.</noscript>
+        <div id="root"></div>
+        
+        <!-- Plan Preview Ribbon Root for Portal -->
+        <div id="plan-preview-portal"></div>
+        
+        <!-- Service Worker Registration -->
+        <script>
+          if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+              navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                  console.log('SW registered: ', registration);
+                })
+                .catch(registrationError => {
+                  console.log('SW registration failed: ', registrationError);
+                });
+            });
+          }
+        </script>
+        
+        <!-- Performance monitoring -->
+        <script>
+          // Monitor page load performance
+          window.addEventListener('load', () => {
+            if ('performance' in window) {
+              const perfData = performance.timing;
+              const pageLoadTime = perfData.loadEventEnd - perfData.navigationStart;
+              console.log('Page load time:', pageLoadTime + 'ms');
+              
+              // Log any slow resources
+              const resources = performance.getEntriesByType('resource');
+              resources.forEach(resource => {
+                if (resource.duration > 1000) { // > 1 second
+                  console.warn('Slow resource:', resource.name, resource.duration + 'ms');
+                }
+              });
+            }
+          });
+        </script>
+        <div id="plan-preview-portal"></div>
+        
+        <a
+            id="emergent-badge"
+            target="_blank"
+            href="https://app.emergent.sh/?utm_source=emergent-badge"
+            style="
+                display: flex !important;
+                align-items: center !important;
+                position: fixed !important;
+                bottom: 20px;
+                right: 20px;
+                text-decoration: none;
+                padding: 6px 10px;
+                font-family: -apple-system, BlinkMacSystemFont,
+                    &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu, Cantarell,
+                    &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;,
+                    sans-serif !important;
+                font-size: 12px !important;
+                z-index: 9999 !important;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+                border-radius: 8px !important;
+                background-color: #ffffff !important;
+                border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            "
+        >
+            <div
+                style="display: flex; flex-direction: row; align-items: center"
+            >
+                <img
+                    style="width: 20px; height: 20px; margin-right: 8px"
+                    src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4"
+                />
+                <p
+                    style="
+                        color: #000000;
+                        font-family: -apple-system, BlinkMacSystemFont,
+                            &quot;Segoe UI&quot;, Roboto, Oxygen, Ubuntu,
+                            Cantarell, &quot;Open Sans&quot;,
+                            &quot;Helvetica Neue&quot;, sans-serif !important;
+                        font-size: 12px !important;
+                        align-items: center;
+                        margin-bottom: 0;
+                    "
+                >
+                    Made with Emergent
+                </p>
+            </div>
+        </a>
+    </body>
+</html>

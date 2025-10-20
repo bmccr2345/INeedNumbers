@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Property Analysis — {{property.addressLine}}</title>
+
+<style>
+/* Embedded Inter fonts as base64 WOFF2 */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(data:font/woff2;base64,d09GMgABAAAAAAoUABEAAAAAE4gAAAm8AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIBwqBmAAgTIBNgIkAzgEIAWDBAcgDIE8G4oOUZRdyH4y2Y/HuG02NjY2NjY2NjY2NmJjY2NjY9Zm7dq2bdu2bdu2bdu2bVu3bdu2bdvqr8/nnM/znM/nnPf93rn3vvsOIeRJACFPAhDyJADwJADBkwBCngQg5EkAQp4EIOJJAEKeBCD4IaEKngQg5EkAQp4EIOJJAEKeBCD4EaEKngQg+CGhCn7w/9+3u7e3v7+/f3Bw8AIDCAFAPD8PAAAAEgARABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRABEAEQARABEAkQCRABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEA4QCRAOEAkQDhAJEA4QCRAOEAkQDhAJEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARAB) format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(data:font/woff2;base64,d09GMgABAAAAAAp8ABEAAAAAFJQAAAofAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIBwqBmAAgWIBNgIkAzgEIAWDBAcgDIFOG7MPUZRdyH4y2Y/H2G0bGxsbGxsbGxsbGxsbGxsbG1nbtm3btm3btm3btm3bto1t27Zt61f9fc75nPN5nvPe737vu98JIeRJACFPAhDyJADwJADBkwBCngQg5EkAQp4EIOJJAEKeBCD4IaEKngQg5EkAQp4EIOJJAEKeBCD4EaEKngQg+CGhCn7w/9+3u7e3v7+/f3Bw8AIDCAFAPD8PAAAAEgARABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRABEAEQARABEAkQCRABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEA4QCRAOEAkQDhAJEA4QCRAOEAkQDhAJEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARAB) format('woff2');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(data:font/woff2;base64,d09GMgABAAAAAAqkABEAAAAAE6QAAAo+AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbIBwqBmAAgUIBNgIkAzgEIAWDBAcgDIFGG6EOUZRdyH4y2Y/H2G0bGxsbGxsbGxsbGxsbGxsbG1nbtm3btm3btm3btm3bto1t27Zt61f9fc75nPN5nvPe737vu98JIeRJACFPAhDyJADwJADBkwBCngQg5EkAQp4EIOJJAEKeBCD4IaEKngQg5EkAQp4EIOJJAEKeBCD4EaEKngQg+CGhCn7w/9+3u7e3v7+/f3Bw8AIDCAFAPD8PAAAAEgARABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRABEAEQARABEAkQCRABEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJEA4QCRAOEAkQDhAJEA4QCRAOEAkQDhAJEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARABEA4QCRAOEAEQARAB) format('woff2');
+}
+
+/* Print rules */
+@page { size: Letter; margin: 0.5in; }
+* { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+/* Root container */
+.page { 
+  width: 816px; 
+  margin: 0 auto; 
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; 
+  color: #111827;
+  background: #ffffff;
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* Page break controls */
+.section, .card, .table, .metric { 
+  break-inside: avoid; 
+  page-break-inside: avoid; 
+}
+
+/* Header bar - matching golden mockup exactly */
+.header-bar { 
+  background: linear-gradient(135deg, #2FA163 0%, #1e7e34 100%);
+  color: white; 
+  padding: 24px 32px; 
+  border-radius: 12px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px -5px rgba(47, 161, 99, 0.25);
+}
+
+.header-title { 
+  font-weight: 700; 
+  font-size: 32px; 
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.logo-placeholder {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-right { 
+  font-size: 16px; 
+  opacity: 0.95;
+  text-align: right;
+  line-height: 1.4;
+}
+
+/* Sections */
+.section { 
+  margin: 24px 0; 
+}
+
+.section-title { 
+  font-weight: 700; 
+  font-size: 20px; 
+  margin: 0 0 16px 0; 
+  color: #111827;
+}
+
+/* Property address card */
+.property-card { 
+  background: white; 
+  border: 2px solid #e5e7eb; 
+  border-radius: 16px; 
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.property-address {
+  font-weight: 700;
+  font-size: 28px;
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.property-details {
+  color: #6b7280;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* Badge row */
+.badges { 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  align-items: center;
+}
+
+.badge { 
+  padding: 12px 20px; 
+  border-radius: 24px; 
+  font-size: 14px; 
+  font-weight: 600;
+  border: 2px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+.badge-snapshot {
+  background: #111827;
+  color: white;
+  border-color: #111827;
+}
+
+.badge-blue { 
+  background: #eff6ff; 
+  border-color: #dbeafe; 
+  color: #1d4ed8; 
+}
+
+.badge-green { 
+  background: #f0fdf4; 
+  border-color: #bbf7d0; 
+  color: #166534; 
+}
+
+.badge-purple { 
+  background: #faf5ff; 
+  border-color: #e9d5ff; 
+  color: #7c3aed; 
+}
+
+.badge-orange { 
+  background: #fff7ed; 
+  border-color: #fed7aa; 
+  color: #c2410c; 
+}
+
+/* Metrics grid - 5 column layout */
+.metrics-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 16px; 
+}
+
+.metric { 
+  background: white; 
+  border: 2px solid #e5e7eb; 
+  border-radius: 16px; 
+  padding: 24px 16px; 
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.metric-value { 
+  font-weight: 700; 
+  font-size: 32px; 
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.metric-value.green { color: #16a34a; }
+.metric-value.blue { color: #2563eb; }
+.metric-value.purple { color: #9333ea; }
+.metric-value.orange { color: #ea580c; }
+.metric-value.indigo { color: #4f46e5; }
+
+.metric-label { 
+  color: #6b7280; 
+  font-size: 13px; 
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  line-height: 1.3;
+}
+
+.metric-desc {
+  color: #9ca3af;
+  font-size: 11px;
+  font-weight: 400;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* Cards for sections */
+.card { 
+  background: white; 
+  border: 2px solid #e5e7eb; 
+  border-radius: 16px; 
+  padding: 32px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Tables */
+.table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 15px; 
+}
+
+.table th, .table td { 
+  border-bottom: 1px solid #e5e7eb; 
+  padding: 16px 20px; 
+  text-align: left;
+}
+
+.table th { 
+  color: #6b7280; 
+  font-weight: 600; 
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+}
+
+.table td {
+  color: #111827;
+  font-weight: 500;
+}
+
+.table-right { text-align: right; }
+.table-center { text-align: center; }
+
+.income-positive { color: #16a34a; }
+.income-negative { color: #dc2626; }
+.income-total { 
+  font-weight: 700; 
+  background: #f9fafb;
+  border-top: 2px solid #e5e7eb;
+}
+
+/* Two column layout for summary */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+/* Disclaimer */
+.disclaimer { 
+  background: #fef3c7; 
+  border: 2px solid #f59e0b; 
+  border-radius: 12px; 
+  padding: 24px; 
+  font-size: 14px; 
+  color: #92400e;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.warning-icon {
+  color: #f59e0b;
+  flex-shrink: 0;
+  margin-top: 2px;
+  font-size: 20px;
+}
+
+/* Definitions grid */
+.definitions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.definition-card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+}
+
+.definition-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.definition-body {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #6b7280;
+}
+
+/* Benchmarks */
+.benchmarks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.benchmark {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+}
+
+.benchmark-excellent { 
+  border-color: #16a34a; 
+  background: #f0fdf4; 
+}
+
+.benchmark-good { 
+  border-color: #f59e0b; 
+  background: #fffbeb; 
+}
+
+.benchmark-caution { 
+  border-color: #dc2626; 
+  background: #fef2f2; 
+}
+
+.benchmark-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.benchmark-excellent .benchmark-title { color: #16a34a; }
+.benchmark-good .benchmark-title { color: #f59e0b; }
+.benchmark-caution .benchmark-title { color: #dc2626; }
+
+.benchmark-desc {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* Footer */
+.footer { 
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: #d1d5db; 
+  border-radius: 12px; 
+  padding: 24px 32px; 
+  text-align: center; 
+  font-size: 14px;
+  margin-top: 40px;
+}
+
+.footer-brand {
+  font-weight: 700;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 850px) {
+  .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+  .definitions-grid { grid-template-columns: 1fr; }
+  .benchmarks { grid-template-columns: 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Header -->
+    <div class="header-bar">
+      <div class="header-title">
+        <div class="logo-placeholder">📊</div>
+        Property Analysis
+      </div>
+      <div class="header-right">
+        <div><strong>Generated {{generatedAt}}</strong></div>
+        {{#preparedBy}}<div style="margin-top: 4px; opacity: 0.9;">Prepared by {{preparedBy}}</div>{{/preparedBy}}
+      </div>
+    </div>
+
+    <!-- Property Info -->
+    <div class="section">
+      <div class="property-card">
+        <div class="property-address">{{property.addressLine}}</div>
+        <div class="property-details">{{property.cityStateZip}}</div>
+        <div class="badges">
+          <div class="badge badge-snapshot">Investment Snapshot</div>
+          <div class="badge badge-blue">Price {{snap.price}}</div>
+          <div class="badge badge-green">Down {{snap.down}}</div>
+          <div class="badge badge-purple">Rate {{snap.rate}}%</div>
+          <div class="badge badge-orange">Term {{snap.term}} yrs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="section">
+      <div class="section-title">Key Investment Metrics</div>
+      <div class="metrics-grid">
+        {{#metrics}}
+        <div class="metric">
+          <div class="metric-value {{color}}">{{value}}</div>
+          <div class="metric-label">{{label}}</div>
+          <div class="metric-desc">{{description}}</div>
+        </div>
+        {{/metrics}}
+      </div>
+    </div>
+
+    <!-- Income Analysis -->
+    <div class="section">
+      <div class="card">
+        <div class="section-title">Income Analysis</div>
+        {{{tables.incomeHtml}}}
+      </div>
+    </div>
+
+    <!-- Cash Flow Analysis -->
+    <div class="section">
+      <div class="card">
+        <div class="section-title">Cash Flow Analysis</div>
+        {{{tables.cashFlowHtml}}}
+      </div>
+    </div>
+
+    <!-- Investment Summary -->
+    <div class="section">
+      <div class="card">
+        <div class="section-title">Investment Summary</div>
+        {{{tables.summaryHtml}}}
+      </div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="section">
+      <div class="disclaimer">
+        <div class="warning-icon">⚠️</div>
+        <div>
+          <strong>Important Disclaimer:</strong> {{disclaimer}}
+        </div>
+      </div>
+    </div>
+
+    <!-- Terms & Definitions -->
+    <div class="section">
+      <div class="section-title">Investment Terms & Definitions</div>
+      <div class="definitions-grid">
+        {{#definitions}}
+          <div class="definition-card">
+            <div class="definition-title">{{title}}</div>
+            <div class="definition-body">{{body}}</div>
+          </div>
+        {{/definitions}}
+      </div>
+    </div>
+
+    <!-- Investment Benchmarks -->
+    <div class="section">
+      <div class="section-title">Investment Quality Benchmarks</div>
+      <div class="benchmarks">
+        <div class="benchmark benchmark-excellent">
+          <div class="benchmark-title">Excellent Investment</div>
+          <div class="benchmark-desc">Cap Rate: 8%+, Cash-on-Cash: 12%+, DSCR: 1.5+</div>
+        </div>
+        <div class="benchmark benchmark-good">
+          <div class="benchmark-title">Good Investment</div>
+          <div class="benchmark-desc">Cap Rate: 6-8%, Cash-on-Cash: 8-12%, DSCR: 1.2-1.5</div>
+        </div>
+        <div class="benchmark benchmark-caution">
+          <div class="benchmark-title">Proceed with Caution</div>
+          <div class="benchmark-desc">Cap Rate: &lt;6%, Cash-on-Cash: &lt;8%, DSCR: &lt;1.2</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 16px; font-size: 12px; color: #6b7280;">
+        *Benchmarks vary by market, property type, and risk tolerance. Higher returns may indicate higher risk.
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Generated by <span class="footer-brand">I Need Numbers</span> — Reliable Real Estate Investment Tools
+    </div>
+  </div>
+</body>
+</html>

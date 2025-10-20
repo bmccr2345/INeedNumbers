@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Seller Net Sheet Analysis — {{salePrice}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* Print rules */
+@page { 
+  size: Letter; 
+  margin: 0.5in;
+}
+
+* { 
+  -webkit-print-color-adjust: exact; 
+  print-color-adjust: exact; 
+  box-sizing: border-box;
+}
+
+/* Base styles */
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+  font-size: 12px;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.header .subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0 0 15px 0;
+}
+
+.header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 14px;
+}
+
+/* Agent info in header */
+.agent-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.agent-details {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.agent-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.agent-text {
+  color: white;
+}
+
+.agent-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.agent-contact {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.brokerage-info {
+  text-align: right;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Grid layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+/* Summary cards */
+.summary-card {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  background: white;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-green .summary-value { color: #16a34a; }
+.summary-blue .summary-value { color: #2563eb; }
+.summary-red .summary-value { color: #dc2626; }
+.summary-orange .summary-value { color: #ea580c; }
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+.table th {
+  background-color: #f9fafb;
+  font-weight: bold;
+  color: #374151;
+}
+
+.table .currency {
+  text-align: right;
+  font-weight: 500;
+}
+
+.table .positive {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.table .negative {
+  color: #dc2626;
+}
+
+/* Key-value pairs */
+.info-grid {
+  display: block;
+  font-size: 12px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 24px;
+  gap: 15px;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #6b7280;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: #1f2937;
+  font-weight: 500;
+  text-align: right;
+  word-break: keep-all;
+}
+
+/* Explanations section */
+.explanations {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.explanations h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+  color: #374151;
+}
+
+.explanation-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.explanation-term {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+.explanation-text {
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.font-bold { font-weight: bold; }
+.mb-0 { margin-bottom: 0; }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <!-- Branded Header Section -->
+  <div class="agent-info">
+    <div class="agent-details">
+      <div class="agent-avatar">{{branding.agent.initials}}</div>
+      <div class="agent-text">
+        <div class="agent-name">{{branding.agent.name}}</div>
+        <div class="agent-contact">{{branding.agent.email}}</div>
+        <div class="agent-contact">{{branding.agent.phone}}</div>
+      </div>
+    </div>
+    <div class="brokerage-info">
+      <div>{{branding.brokerage.name}}</div>
+      <div>{{branding.brokerage.address}}</div>
+    </div>
+  </div>
+  
+  <h1>Seller Net Sheet Analysis</h1>
+  <p class="subtitle">Expected Sale Price: {{salePrice}} • Commission Rate: {{commissionRate}}</p>
+  
+  <div class="header-meta">
+    <div><strong>Prepared by {{preparedBy}}</strong></div>
+    <div>{{generatedAt}}</div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid-3">
+  <div class="summary-card summary-green">
+    <div class="summary-value">{{estimatedNet}}</div>
+    <div class="summary-label">Estimated Net to Seller</div>
+  </div>
+  <div class="summary-card summary-blue">
+    <div class="summary-value">{{netPercentage}}</div>
+    <div class="summary-label">Net as % of Sale Price</div>
+  </div>
+  <div class="summary-card summary-red">
+    <div class="summary-value">{{totalDeductions}}</div>
+    <div class="summary-label">Total Deductions</div>
+  </div>
+</div>
+
+<!-- Property & Sale Details -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header">Property & Sale Information</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Expected Sale Price:</span>
+        <span class="info-value">{{salePrice}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Commission Rate:</span>
+        <span class="info-value">{{commissionRate}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Commission Amount:</span>
+        <span class="info-value">{{commissionAmount}}</span>
+      </div>
+      {{#hasConcessions}}
+      <div class="info-item">
+        <span class="info-label">Seller Concessions:</span>
+        <span class="info-value">{{concessionsAmount}}</span>
+      </div>
+      {{/hasConcessions}}
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">Loan Information</div>
+    <div class="info-grid">
+      {{#hasFirstPayoff}}
+      <div class="info-item">
+        <span class="info-label">First Mortgage Payoff:</span>
+        <span class="info-value">{{firstPayoff}}</span>
+      </div>
+      {{/hasFirstPayoff}}
+      {{#hasSecondPayoff}}
+      <div class="info-item">
+        <span class="info-label">Second Mortgage Payoff:</span>
+        <span class="info-value">{{secondPayoff}}</span>
+      </div>
+      {{/hasSecondPayoff}}
+      <div class="info-item">
+        <span class="info-label">Total Loan Payoffs:</span>
+        <span class="info-value">{{totalPayoffs}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detailed Breakdown -->
+<div class="card">
+  <div class="card-header">Complete Seller Net Sheet Breakdown</div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Description</th>
+        <th class="text-right">Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Gross Sale Proceeds</strong></td>
+        <td class="currency positive">{{salePrice}}</td>
+      </tr>
+      <tr>
+        <td style="padding-left: 20px;">Less: Real Estate Commission ({{commissionRate}})</td>
+        <td class="currency negative">-{{commissionAmount}}</td>
+      </tr>
+      {{#hasConcessions}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Seller Concessions</td>
+        <td class="currency negative">-{{concessionsAmount}}</td>
+      </tr>
+      {{/hasConcessions}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Title/Escrow Fee</td>
+        <td class="currency negative">-{{titleEscrowFee}}</td>
+      </tr>
+      <tr>
+        <td style="padding-left: 20px;">Less: Recording Fee</td>
+        <td class="currency negative">-{{recordingFee}}</td>
+      </tr>
+      <tr>
+        <td style="padding-left: 20px;">Less: Transfer Tax</td>
+        <td class="currency negative">-{{transferTax}}</td>
+      </tr>
+      {{#hasDocStamps}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Doc Stamps</td>
+        <td class="currency negative">-{{docStamps}}</td>
+      </tr>
+      {{/hasDocStamps}}
+      {{#hasHOAFees}}
+      <tr>
+        <td style="padding-left: 20px;">Less: HOA Fees</td>
+        <td class="currency negative">-{{hoaFees}}</td>
+      </tr>
+      {{/hasHOAFees}}
+      {{#hasStagingPhotography}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Staging/Photography</td>
+        <td class="currency negative">-{{stagingPhotography}}</td>
+      </tr>
+      {{/hasStagingPhotography}}
+      {{#hasOtherCosts}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Other Closing Costs</td>
+        <td class="currency negative">-{{otherCosts}}</td>
+      </tr>
+      {{/hasOtherCosts}}
+      {{#hasFirstPayoff}}
+      <tr>
+        <td style="padding-left: 20px;">Less: First Mortgage Payoff</td>
+        <td class="currency negative">-{{firstPayoff}}</td>
+      </tr>
+      {{/hasFirstPayoff}}
+      {{#hasSecondPayoff}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Second Mortgage Payoff</td>
+        <td class="currency negative">-{{secondPayoff}}</td>
+      </tr>
+      {{/hasSecondPayoff}}
+      {{#hasProratedTaxes}}
+      <tr>
+        <td style="padding-left: 20px;">Less: Prorated Taxes</td>
+        <td class="currency negative">-{{proratedTaxes}}</td>
+      </tr>
+      {{/hasProratedTaxes}}
+      <tr class="font-bold" style="border-top: 2px solid #374151;">
+        <td><strong>Net Proceeds to Seller</strong></td>
+        <td class="currency positive" style="font-size: 14px;">{{estimatedNet}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Explanations Section -->
+<div class="explanations">
+  <h3>Seller Net Sheet Terms - Explained Simply</h3>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Sale Price</div>
+    <div class="explanation-text">The agreed-upon purchase price for your home. This is the gross amount the buyer will pay before any deductions or adjustments.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Real Estate Commission</div>
+    <div class="explanation-text">The fee paid to real estate agents involved in the transaction, typically 5-6% of the sale price. This is usually split between the listing agent and buyer's agent.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Seller Concessions</div>
+    <div class="explanation-text">Credits or payments you agree to provide to the buyer to help with their closing costs, repairs, or other expenses. These reduce your net proceeds dollar-for-dollar.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Title/Escrow Fee</div>
+    <div class="explanation-text">Fees paid to the title company or escrow agent for handling the closing process, title search, title insurance, and ensuring a smooth transfer of ownership.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Transfer Tax & Recording Fees</div>
+    <div class="explanation-text">Government fees for transferring ownership of the property and recording the new deed. These vary by location but are typically a few hundred to a few thousand dollars.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Doc Stamps</div>
+    <div class="explanation-text">Documentary stamp taxes required in some states on real estate transactions. The rate varies by state and is usually based on the sale price or loan amount.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Mortgage Payoffs</div>
+    <div class="explanation-text">The remaining balance on your current mortgage(s) that must be paid in full at closing. This includes principal balance plus any accrued interest and fees.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Prorated Taxes</div>
+    <div class="explanation-text">Property taxes are typically paid in advance. If you've prepaid taxes beyond the closing date, you'll receive a credit. If taxes are owed, you'll pay your portion up to the closing date.</div>
+  </div>
+</div>
+
+<!-- Best Practices & Considerations -->
+<div class="card">
+  <div class="card-header">💡 Important Considerations for Sellers</div>
+  
+  <div class="grid-2">
+    <div>
+      <div class="explanation-item">
+        <div class="explanation-term">📋 Get Accurate Payoff Quotes</div>
+        <div class="explanation-text">Contact your lender 10-15 days before closing for precise payoff amounts. Payoffs change daily due to interest accrual and may include prepayment penalties.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🏠 Factor in Repairs & Improvements</div>
+        <div class="explanation-text">Budget for any agreed-upon repairs or improvements before closing. Home inspection findings often lead to additional costs not included in this estimate.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">💰 Plan for Moving Expenses</div>
+        <div class="explanation-text">Don't forget costs like moving companies, storage, utility transfers, and temporary housing. These can range from $2,000 to $10,000+ depending on your situation.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">📊 Understand Market Conditions</div>
+        <div class="explanation-text">In a buyer's market, you might pay more concessions or have higher marketing costs. In a seller's market, you might save on some expenses but pay higher agent fees due to competition.</div>
+      </div>
+    </div>
+    
+    <div>
+      <div class="explanation-item">
+        <div class="explanation-term">🎯 Shop Around for Services</div>
+        <div class="explanation-text">Title companies, attorneys, and other service providers may have different fee structures. Ask your agent for recommendations and compare costs when possible.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">📅 Timing Your Sale</div>
+        <div class="explanation-text">Closing date affects prorated taxes, utilities, and HOA fees. Strategic timing can save money, especially if you're moving to a more/less expensive area.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🏡 Capital Gains Considerations</div>
+        <div class="explanation-text">If this is your primary residence, you may qualify for capital gains tax exclusions ($250K single/$500K married). Consult a tax professional about your specific situation.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🔍 Review All Estimates</div>
+        <div class="explanation-text">This is an estimate only. Actual costs may vary based on final negotiations, inspection findings, appraisal results, and local market conditions.</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin-top: 20px;">
+    <div class="explanation-term" style="color: #92400e;">⚠️ Items That May Increase Your Costs</div>
+    <div class="explanation-text" style="color: #92400e;">• Buyer requests for repairs after inspection • HOA transfer fees or assessments • Outstanding liens or judgments • Property tax appeals or adjustments • Attorney fees for complex issues • Storage costs if closing is delayed</div>
+  </div>
+  
+  <div style="background: #dcfce7; border: 1px solid #16a34a; padding: 15px; border-radius: 8px; margin-top: 15px;">
+    <div class="explanation-term" style="color: #15803d;">✅ Ways to Maximize Your Net Proceeds</div>
+    <div class="explanation-text" style="color: #15803d;">• Price competitively for quick sale • Complete obvious repairs before listing • Negotiate commission rates and services • Shop for title/escrow services • Time closing to minimize prorated costs • Consider cash offers to avoid financing delays • Prepare all documents in advance</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 11px; color: #6b7280;">
+  <p><strong>This analysis is for informational purposes only and should not be considered as financial advice.</strong><br>
+  Actual costs may vary based on market conditions, negotiations, and local regulations. Always verify amounts with your title company, lender, and tax professional.</p>
+  <p style="margin-top: 15px;"><strong>Report prepared by {{preparedBy}}</strong><br>
+  Generated on {{generatedAt}}</p>
+</div>
+
+</div>
+</body>
+</html>

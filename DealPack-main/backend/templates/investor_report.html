@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Property Analysis — {{property.addressLine}}</title>
+
+<style>
+/* 1) Fonts — Inter from Google Fonts as base64 WOFF2 */
+@font-face {
+  font-family: 'Inter';
+  src: url(data:font/woff2;base64,d09GMgABAAAAABWkABEAAAAALWgAABVJAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP0ZGVE0cGh4GYACCehEICpU8jgYLg0AAATYCJAOBNAQgBYIkByAMgWgbxR8VbOxqsRnILjvwCDbGOI9dSAqRoTIhKyp9kJ3/JEHEhbE+OOgR8X+SkG3bWFLDumFb1trGJkzISjZxKklJJiQt7WUpycSyNrFTZCl3vff5n+/b+zLbZGZnZvk3VZhfZhYAQNx6qs8mQnzD4fD/ABAI8hMJgvwEgSC/t8G9cP3hgEAgEAjyE9+EgPzk94sEgcCRnxAI8hMC8vsaCP8t/1/+/x8CCW2btm3b9je5KO0rtm3btn36tm0r7/H7HdtOy7ZlZ6+3z05/3+fOe+5zBoAw/p/+//+/s3mflYnDmJfhU5+wDOGchgGQ4wdY57dt4xtYjKgYYzHWYpzFeIvxFgM5w7ft0wFcwM/8rI4/n+kv/Q8/FoYdDDsYdlg++fP/v/yKV17+Gp/C/5f/TIg==) format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url(data:font/woff2;base64,d09GMgABAAAAABWkABEAAAAALWgAABVJAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP0ZGVE0cGh4GYACCehEICpU8jgYLg0AAATYCJAOBNAQgBYIkByAMgWgbxR8VbOxqsRnILjvwCDbGOI9dSAqRoTIhKyp9kJ3/JEHEhbE+OOgR8X+SkG3bWFLDumFb1trGJkzISjZxKklJJiQt7WUpycSyNrFTZCl3vff5n+/b+zLbZGZnZvk3VZhfZhYAQNx6qs8mQnzD4fD/ABAI8hMJgvwEgSC/t8G9cP3hgEAgEAjyE9+EgPzk94sEgcCRnxAI8hMC8vsaCP8t/1/+/x8CCW2btm3b9je5KO0rtm3btn36tm0r7/H7HdtOy7ZlZ6+3z05/3+fOe+5zBoAw/p/+//+/s3mflYnDmJfhU5+wDOGchgGQ4wdY57dt4xtYjKgYYzHWYpzFeIvxFgM5w7ft0wFcwM/8rI4/n+kv/Q8/FoYdDDsYdlg++fP/v/yKV17+Gp/C/5f/TIg==) format('woff2');
+  font-weight: 600; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Inter';
+  src: url(data:font/woff2;base64,d09GMgABAAAAABWkABEAAAAALWgAABVJAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP0ZGVE0cGh4GYACCehEICpU8jgYLg0AAATYCJAOBNAQgBYIkByAMgWgbxR8VbOxqsRnILjvwCDbGOI9dSAqRoTIhKyp9kJ3/JEHEhbE+OOgR8X+SkG3bWFLDumFb1trGJkzISjZxKklJJiQt7WUpycSyNrFTZCl3vff5n+/b+zLbZGZnZvk3VZhfZhYAQNx6qs8mQnzD4fD/ABAI8hMJgvwEgSC/t8G9cP3hgEAgEAjyE9+EgPzk94sEgcCRnxAI8hMC8vsaCP8t/1/+/x8CCW2btm3b9je5KO0rtm3btn36tm0r7/H7HdtOy7ZlZ6+3z05/3+fOe+5zBoAw/p/+//+/s3mflYnDmJfhU5+wDOGchgGQ4wdY57dt4xtYjKgYYzHWYpzFeIvxFgM5w7ft0wFcwM/8rI4/n+kv/Q8/FoYdDDsYdlg++fP/v/yKV17+Gp/C/5f/TIg==) format('woff2');
+  font-weight: 700; font-style: normal; font-display: swap;
+}
+
+/* 2) Theme - Exact colors sampled from golden PNG */
+:root{
+  --brand: #2FA163;           /* header green bar */
+  --ink: #111827;             /* main text */
+  --subtle: #6B7280;          /* secondary text */
+  --bg: #FFFFFF;              /* page bg */
+  --card: #F9FAFB;            /* light card bg */
+  --line: #E5E7EB;            /* dividers */
+  --pill-blue: #EFF6FF;       /* metric pill backgrounds */
+  --pill-green: #F0FDF4;
+  --pill-purple: #FAF5FF;
+  --pill-orange: #FFF7ED;
+  --pill-yellow: #FFFBEB;
+  --accent-blue: #3B82F6;
+  --accent-green: #16A34A;
+  --accent-purple: #9333EA;
+  --accent-orange: #EA580C;
+  --accent-yellow: #F59E0B;
+}
+
+/* 3) Print rules */
+@page { size: Letter; margin: 0.5in; }
+* { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.page { 
+  width: 816px; 
+  margin: 0 auto; 
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; 
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+  font-size: 14px;
+}
+
+/* 4) Layout blocks to match sections in the PNG */
+.header-bar { 
+  background: linear-gradient(135deg, var(--brand) 0%, #2563EB 100%);
+  color: #fff; 
+  padding: 20px 24px; 
+  border-radius: 12px; 
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center;
+  margin-bottom: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+.header-title { 
+  font-weight: 700; 
+  font-size: 28px; 
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-right { 
+  font-size: 14px; 
+  opacity: 0.9;
+  text-align: right;
+}
+
+.section { 
+  margin: 24px 0; 
+  break-inside: avoid; 
+  page-break-inside: avoid; 
+}
+
+.h2 { 
+  font-weight: 700; 
+  font-size: 18px; 
+  margin: 0 0 16px 0; 
+  color: var(--ink);
+}
+
+.address-card { 
+  background: #fff; 
+  border: 2px solid var(--line); 
+  border-radius: 12px; 
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.property-title {
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.property-details {
+  color: var(--subtle);
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+
+.badges { 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  margin-top: 16px;
+}
+
+.badge { 
+  padding: 8px 16px; 
+  border-radius: 20px; 
+  font-size: 14px; 
+  font-weight: 600;
+  border: 2px solid var(--line);
+  background: var(--bg);
+}
+
+.badge.pill-blue { background: var(--pill-blue); border-color: transparent; color: var(--accent-blue); }
+.badge.pill-green { background: var(--pill-green); border-color: transparent; color: var(--accent-green); }
+.badge.pill-purple { background: var(--pill-purple); border-color: transparent; color: var(--accent-purple); }
+.badge.pill-orange { background: var(--pill-orange); border-color: transparent; color: var(--accent-orange); }
+.badge.pill-yellow { background: var(--pill-yellow); border-color: transparent; color: var(--accent-yellow); }
+
+.metrics-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, 1fr); 
+  gap: 16px; 
+}
+
+.metric { 
+  background: #fff; 
+  border: 2px solid var(--line); 
+  border-radius: 12px; 
+  padding: 20px; 
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.metric .value { 
+  font-weight: 700; 
+  font-size: 28px; 
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.metric .label { 
+  color: var(--subtle); 
+  font-size: 12px; 
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.card { 
+  background: #fff; 
+  border: 2px solid var(--line); 
+  border-radius: 12px; 
+  padding: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 14px; 
+}
+
+.table th, .table td { 
+  border-bottom: 1px solid var(--line); 
+  padding: 12px 16px; 
+  text-align: left;
+}
+
+.table th { 
+  color: var(--subtle); 
+  font-weight: 600; 
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.table td {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.right { text-align: right; }
+.center { text-align: center; }
+
+.disclaimer { 
+  background: #FEF3C7; 
+  border: 2px solid #F59E0B; 
+  border-radius: 12px; 
+  padding: 20px; 
+  font-size: 13px; 
+  color: #92400E;
+  line-height: 1.6;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.warning-icon {
+  color: #F59E0B;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.definitions-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.definition-card {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.definition-title {
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.definition-body {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--subtle);
+}
+
+.benchmarks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.benchmark {
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+.benchmark.excellent { border-color: var(--accent-green); background: var(--pill-green); }
+.benchmark.good { border-color: var(--accent-yellow); background: var(--pill-yellow); }
+.benchmark.caution { border-color: #EF4444; background: #FEF2F2; }
+
+.benchmark-title {
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.benchmark.excellent .benchmark-title { color: var(--accent-green); }
+.benchmark.good .benchmark-title { color: var(--accent-yellow); }
+.benchmark.caution .benchmark-title { color: #EF4444; }
+
+.benchmark-desc {
+  font-size: 11px;
+  color: var(--subtle);
+  line-height: 1.4;
+}
+
+.footer { 
+  background: linear-gradient(135deg, #1F2937 0%, #111827 100%);
+  color: #D1D5DB; 
+  border-radius: 12px; 
+  padding: 20px 24px; 
+  text-align: center; 
+  font-size: 13px;
+  margin-top: 32px;
+}
+
+.footer-brand {
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Income/Cash Flow table styling */
+.income-row.positive { color: var(--accent-green); }
+.income-row.negative { color: #EF4444; }
+.income-row.total { font-weight: 700; background: var(--card); }
+
+/* Pro-only block visibility */
+.pro-only { display: {{#isPro}}block{{/isPro}}{{^isPro}}none{{/isPro}}; }
+
+/* Responsive adjustments for smaller content */
+@media (max-width: 850px) {
+  .metrics-grid { grid-template-columns: repeat(3, 1fr); }
+  .definitions-grid { grid-template-columns: 1fr; }
+  .benchmarks { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- Top green bar title, right-side small text -->
+    <div class="header-bar">
+      <div class="header-title">
+        <div class="logo">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7V10C2 16 5.64 21.36 12 23C18.36 21.36 22 16 22 10V7L12 2Z" fill="white" opacity="0.9"/>
+          </svg>
+        </div>
+        Property Analysis
+      </div>
+      <div class="header-right">
+        <div>Generated {{generatedAt}}</div>
+        {{#preparedBy}}<div style="margin-top: 4px;">Prepared by {{preparedBy}}</div>{{/preparedBy}}
+      </div>
+    </div>
+
+    <!-- Address and badges row -->
+    <div class="section">
+      <div class="address-card">
+        <div class="property-title">{{property.addressLine}}</div>
+        <div class="property-details">{{property.cityStateZip}}</div>
+        <div class="badges">
+          <div class="badge">Investment Snapshot</div>
+          <div class="badge pill-blue">Price {{snap.price}}</div>
+          <div class="badge pill-green">Down {{snap.down}}</div>
+          <div class="badge pill-purple">Rate {{snap.rate}}%</div>
+          <div class="badge pill-orange">Term {{snap.term}} yrs</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Investment Metrics (5-up grid) -->
+    <div class="section">
+      <div class="h2">Key Investment Metrics</div>
+      <div class="metrics-grid">
+        {{#metrics}}
+        <div class="metric">
+          <div class="value">{{value}}</div>
+          <div class="label">{{label}}</div>
+        </div>
+        {{/metrics}}
+      </div>
+    </div>
+
+    <!-- Income Analysis -->
+    <div class="section card">
+      <div class="h2">Income Analysis</div>
+      {{{tables.incomeHtml}}}
+    </div>
+
+    <!-- Cash Flow Analysis -->
+    <div class="section card">
+      <div class="h2">Cash Flow Analysis</div>
+      {{{tables.cashFlowHtml}}}
+    </div>
+
+    <!-- Investment Summary -->
+    <div class="section card">
+      <div class="h2">Investment Summary</div>
+      {{{tables.summaryHtml}}}
+    </div>
+
+    <!-- Disclaimer (yellow bar) -->
+    <div class="section disclaimer">
+      <div class="warning-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <strong>Important Disclaimer:</strong> {{disclaimer}}
+      </div>
+    </div>
+
+    <!-- Terms & Definitions (2x2 grid of cards) -->
+    <div class="section">
+      <div class="h2">Investment Terms & Definitions</div>
+      <div class="definitions-grid">
+        {{#definitions}}
+          <div class="definition-card">
+            <div class="definition-title">{{title}}</div>
+            <div class="definition-body">{{body}}</div>
+          </div>
+        {{/definitions}}
+      </div>
+    </div>
+
+    <!-- Investment Quality Benchmarks -->
+    <div class="section">
+      <div class="h2">Investment Quality Benchmarks</div>
+      <div class="benchmarks">
+        <div class="benchmark excellent">
+          <div class="benchmark-title">Excellent Investment</div>
+          <div class="benchmark-desc">Cap Rate: 8%+, Cash-on-Cash: 12%+, DSCR: 1.5+</div>
+        </div>
+        <div class="benchmark good">
+          <div class="benchmark-title">Good Investment</div>
+          <div class="benchmark-desc">Cap Rate: 6-8%, Cash-on-Cash: 8-12%, DSCR: 1.2-1.5</div>
+        </div>
+        <div class="benchmark caution">
+          <div class="benchmark-title">Proceed with Caution</div>
+          <div class="benchmark-desc">Cap Rate: <6%, Cash-on-Cash: <8%, DSCR: <1.2</div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 12px; font-size: 11px; color: var(--subtle);">
+        *Benchmarks vary by market, property type, and risk tolerance. Higher returns may indicate higher risk.
+      </div>
+    </div>
+
+    <!-- Footer dark bar -->
+    <div class="footer">
+      Generated by <span class="footer-brand">I Need Numbers</span> — Reliable Real Estate Investment Tools
+    </div>
+  </div>
+</body>
+</html>

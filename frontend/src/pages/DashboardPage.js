@@ -1,0 +1,454 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { 
+  Calculator, 
+  DollarSign, 
+  FileText, 
+  BarChart3,
+  Home,
+  User,
+  Settings,
+  LogOut,
+  Sparkles,
+  ChevronDown,
+  LayoutDashboard,
+  Shield,
+  Calendar,
+  Target,
+  Badge,
+  TrendingUp
+} from 'lucide-react';
+import { Button } from '../components/ui/button';
+import { Card, CardContent } from '../components/ui/card';
+import Footer from '../components/Footer';
+
+// Tab panels
+import HomepagePanel from '../components/dashboard/HomepagePanel';
+import ActionTrackerPanel from '../components/dashboard/ActionTrackerPanel';
+import MortgagePanel from '../components/dashboard/MortgagePanel';
+import CommissionPanel from '../components/dashboard/CommissionPanel'; 
+import SellerNetPanel from '../components/dashboard/SellerNetPanel';
+import InvestorPanel from '../components/dashboard/InvestorPanel';
+import ClosingDatePanel from '../components/dashboard/ClosingDatePanel';
+import PnLPanel from '../components/dashboard/PnLPanel';
+import CapTrackerPanel from '../components/dashboard/CapTrackerPanel';
+import BrandingPanel from '../components/dashboard/BrandingPanel';
+import GoalSettingsPanel from '../components/dashboard/GoalSettingsPanel';
+import UpgradeModal from '../components/dashboard/UpgradeModal';
+
+const DashboardPage = () => {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user, logout, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState('homepage'); // Default to homepage
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+
+  // Tab configuration - Homepage is now first
+  const tabs = [
+    {
+      id: 'homepage',
+      name: 'Dashboard Overview',
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'actiontracker',
+      name: 'Action Tracker',
+      icon: <Target className="w-5 h-5" />, 
+      available: ['PRO'],
+      proOnly: true
+    },
+    {
+      id: 'mortgage',
+      name: 'Mortgage & Affordability',
+      icon: <Home className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'commission', 
+      name: 'Commission Split',
+      icon: <DollarSign className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'sellernet',
+      name: 'Seller Net Sheet', 
+      icon: <Calculator className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'investor',
+      name: 'Investor Deal PDFs',
+      icon: <FileText className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'closingdate',
+      name: 'Closing Date Calculator',
+      icon: <Calendar className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'pnl',
+      name: 'Agent P&L Tracker',
+      icon: <BarChart3 className="w-5 h-5" />,
+      available: ['PRO'], 
+      proOnly: true
+    },
+    {
+      id: 'captracker',
+      name: 'Cap Tracker',
+      icon: <TrendingUp className="w-5 h-5" />,
+      available: ['PRO'],
+      proOnly: true
+    },
+    {
+      id: 'branding',
+      name: 'Branding & Profile',
+      icon: <Badge className="w-5 h-5" />,
+      available: ['STARTER', 'PRO']
+    },
+    {
+      id: 'goalsettings',
+      name: 'Goal Settings',
+      icon: <Settings className="w-5 h-5" />,
+      available: ['STARTER', 'PRO']
+    }
+  ];
+
+  // Get user's available tabs based on plan
+  const availableTabs = tabs.filter(tab => 
+    tab.available.includes(user?.plan || 'FREE')
+  );
+
+  // Load last selected tab from localStorage or URL params
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab');
+    const savedTab = localStorage.getItem('INN:lastTab');
+    
+    if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    } else if (savedTab && availableTabs.find(tab => tab.id === savedTab)) {
+      setActiveTab(savedTab);
+    } else if (availableTabs.length > 0) {
+      setActiveTab('homepage'); // Always default to homepage
+    }
+  }, [user?.plan, searchParams]);
+
+  // Save active tab to localStorage
+  useEffect(() => {
+    if (activeTab) {
+      localStorage.setItem('INN:lastTab', activeTab);
+      
+      // Analytics event
+      if (window.gtag) {
+        window.gtag('event', 'dashboard_tab_viewed', {
+          tab: activeTab,
+          plan: user?.plan || 'FREE'
+        });
+      }
+    }
+  }, [activeTab, user?.plan]);
+
+  const handleTabClick = (tabId) => {
+    const tab = tabs.find(t => t.id === tabId);
+    
+    // Check if user has access to this tab
+    if (tab && !tab.available.includes(user?.plan || 'FREE')) {
+      // For PRO-only tabs, just silently ignore click (no popup)
+      // Analytics event for tracking
+      if (window.gtag) {
+        window.gtag('event', 'pro_feature_clicked', {
+          source: `tab_${tabId}`,
+          user_plan: user?.plan || 'FREE'
+        });
+      }
+      return;
+    }
+    
+    setActiveTab(tabId);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const renderActivePanel = () => {
+    switch (activeTab) {
+      case 'homepage':
+        return <HomepagePanel />;
+      case 'actiontracker':
+        return <ActionTrackerPanel />;
+      case 'mortgage':
+        return <MortgagePanel />;
+      case 'commission':
+        return <CommissionPanel />;
+      case 'sellernet':
+        return <SellerNetPanel />;
+      case 'investor':
+        return <InvestorPanel />;
+      case 'closingdate':
+        return <ClosingDatePanel />;
+      case 'pnl':
+        return <PnLPanel />;
+      case 'captracker':
+        return <CapTrackerPanel />;
+      case 'branding':
+        return <BrandingPanel />;
+      case 'goalsettings':
+        return <GoalSettingsPanel />;
+      default:
+        return <HomepagePanel />; // Default to homepage
+    }
+  };
+
+  // Show loading state while user data is being fetched
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            {/* Logo */}
+            <div className="flex items-center">
+              <img 
+                src={`${process.env.REACT_APP_ASSETS_URL}/job_agent-portal-27/artifacts/azdcmpew_Logo_with_brown_background-removebg-preview.png`} 
+                alt="I Need Numbers" 
+                className="h-8 w-auto"
+              />
+              <span className="ml-3 text-xl font-bold text-primary tracking-wide font-poppins">
+                I NEED NUMBERS
+              </span>
+            </div>
+
+            {/* Account Menu */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                onClick={() => setShowAccountMenu(!showAccountMenu)}
+                className="flex items-center space-x-2 text-gray-700 hover:text-primary"
+              >
+                <User className="w-5 h-5" />
+                <span className="hidden sm:inline">Account</span>
+                <ChevronDown className="w-4 h-4" />
+              </Button>
+
+              {showAccountMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+                  <div className="px-4 py-2 text-sm text-gray-500 border-b">
+                    {user?.email}
+                    <div className="text-xs text-primary font-medium mt-1">
+                      {user?.plan || 'FREE'} Plan
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={() => navigate('/account')}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Settings className="w-4 h-4 mr-3" />
+                    Profile & Billing
+                  </button>
+                  
+                  <button
+                    onClick={() => navigate('/')}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Home className="w-4 h-4 mr-3" />
+                    Home
+                  </button>
+                  
+                  <button
+                    onClick={() => navigate('/tools')}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <Calculator className="w-4 h-4 mr-3" />
+                    Tools
+                  </button>
+                  
+                  <button
+                    onClick={() => navigate('/pricing')}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <BarChart3 className="w-4 h-4 mr-3" />
+                    Pricing
+                  </button>
+                  
+                  <button
+                    onClick={() => navigate('/support')}
+                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <FileText className="w-4 h-4 mr-3" />
+                    Support
+                  </button>
+                  
+                  {/* Admin Console Link - Only for master_admin users */}
+                  {user?.role === 'master_admin' && (
+                    <button
+                      onClick={() => navigate('/app/admin')}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-700 hover:bg-red-50 border-t"
+                    >
+                      <Shield className="w-4 h-4 mr-3" />
+                      Admin Console
+                    </button>
+                  )}
+                  
+                  <div className="border-t">
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex-1 flex">
+        {/* Sidebar Tabs (Desktop) */}
+        <nav className="hidden lg:block w-64 bg-white border-r border-gray-200 sticky top-16 h-screen overflow-y-auto">
+          <div className="p-6">
+            {/* Fairy logo watermark */}
+            <div className="absolute top-6 right-6 opacity-10">
+              <Sparkles className="w-8 h-8 text-primary" />
+            </div>
+            
+            <h2 className="text-lg font-semibold text-gray-900 mb-6">
+              Dashboard
+            </h2>
+            
+            <div 
+              role="tablist" 
+              aria-orientation="vertical"
+              className="space-y-2"
+            >
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                const isAvailable = tab.available.includes(user?.plan || 'FREE');
+                
+                return (
+                  <button
+                    key={tab.id}
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-controls={`panel-${tab.id}`}
+                    onClick={() => handleTabClick(tab.id)}
+                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                      isActive
+                        ? 'bg-primary text-white'
+                        : isAvailable
+                        ? 'text-gray-700 hover:text-primary hover:bg-gray-100 cursor-pointer'
+                        : 'text-gray-400 cursor-not-allowed opacity-60'
+                    }`}
+                  >
+                    {tab.icon}
+                    <span className="ml-3 truncate">{tab.name}</span>
+                    {tab.proOnly && !isAvailable && (
+                      <span className="ml-auto text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">
+                        Pro
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </nav>
+
+        {/* Mobile Tabs */}
+        <div className="lg:hidden bg-white border-b border-gray-200 sticky top-16 z-30">
+          <div className="flex overflow-x-auto">
+            <div 
+              role="tablist" 
+              aria-orientation="horizontal"
+              className="flex space-x-1 p-4 min-w-max"
+            >
+              {tabs.map((tab) => {
+                const isActive = activeTab === tab.id;
+                const isAvailable = tab.available.includes(user?.plan || 'FREE');
+                
+                return (
+                  <button
+                    key={tab.id}
+                    role="tab"
+                    aria-selected={isActive}
+                    aria-controls={`panel-${tab.id}`}
+                    onClick={() => handleTabClick(tab.id)}
+                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors min-h-[44px] ${
+                      isActive
+                        ? 'bg-primary text-white'
+                        : isAvailable
+                        ? 'text-gray-700 hover:text-primary hover:bg-gray-100 cursor-pointer'
+                        : 'text-gray-400 cursor-not-allowed opacity-60'
+                    }`}
+                  >
+                    {tab.icon}
+                    <span className="ml-2">{tab.name}</span>
+                    {tab.proOnly && !isAvailable && (
+                      <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">
+                        Pro
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Tab Content */}
+        <main className="flex-1 overflow-hidden">
+          <div 
+            id={`panel-${activeTab}`}
+            role="tabpanel"
+            aria-labelledby={`tab-${activeTab}`}
+            className="h-full"
+          >
+            {renderActivePanel()}
+          </div>
+        </main>
+      </div>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Upgrade Modal */}
+      {showUpgradeModal && (
+        <UpgradeModal 
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+        />
+      )}
+
+      {/* Click away handler for account menu */}
+      {showAccountMenu && (
+        <div 
+          className="fixed inset-0 z-30" 
+          onClick={() => setShowAccountMenu(false)}
+        />
+      )}
+    </div>
+  );
+};
+
+export default DashboardPage;

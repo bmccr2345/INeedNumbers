@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Commission Split Analysis — {{salePrice}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* Print rules */
+@page { 
+  size: Letter; 
+  margin: 0.5in;
+}
+
+* { 
+  -webkit-print-color-adjust: exact; 
+  print-color-adjust: exact; 
+  box-sizing: border-box;
+}
+
+/* Base styles */
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+  font-size: 12px;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.header .subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0 0 15px 0;
+}
+
+.header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 14px;
+}
+
+/* Agent info in header */
+.agent-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.agent-details {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.agent-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.agent-text {
+  color: white;
+}
+
+.agent-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 2px;
+}
+
+.agent-contact {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.brokerage-info {
+  text-align: right;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+/* Grid layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+/* Summary cards */
+.summary-card {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  background: white;
+}
+
+.summary-value {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.summary-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-green .summary-value { color: #16a34a; }
+.summary-blue .summary-value { color: #2563eb; }
+.summary-purple .summary-value { color: #7c3aed; }
+.summary-orange .summary-value { color: #ea580c; }
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+.table th {
+  background-color: #f9fafb;
+  font-weight: bold;
+  color: #374151;
+}
+
+.table .currency {
+  text-align: right;
+  font-weight: 500;
+}
+
+.table .positive {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.table .negative {
+  color: #dc2626;
+}
+
+/* Key-value pairs */
+.info-grid {
+  display: block;
+  font-size: 12px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #f3f4f6;
+  min-height: 24px;
+  gap: 15px;
+}
+
+.info-label {
+  font-weight: bold;
+  color: #6b7280;
+  min-width: 140px;
+  flex-shrink: 0;
+}
+
+.info-value {
+  color: #1f2937;
+  font-weight: 500;
+  text-align: right;
+  word-break: keep-all;
+}
+
+/* Explanations section */
+.explanations {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.explanations h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+  color: #374151;
+}
+
+.explanation-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.explanation-term {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+.explanation-text {
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.font-bold { font-weight: bold; }
+.mb-0 { margin-bottom: 0; }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <!-- Branded Header Section -->
+  <div class="agent-info">
+    <div class="agent-details">
+      <div class="agent-avatar">{{branding.agent.initials}}</div>
+      <div class="agent-text">
+        <div class="agent-name">{{branding.agent.name}}</div>
+        <div class="agent-contact">{{branding.agent.email}}</div>
+        <div class="agent-contact">{{branding.agent.phone}}</div>
+      </div>
+    </div>
+    <div class="brokerage-info">
+      <div>{{branding.brokerage.name}}</div>
+      <div>{{branding.brokerage.address}}</div>
+    </div>
+  </div>
+  
+  <h1>Commission Split Analysis</h1>
+  <p class="subtitle">Sale Price: {{salePrice}} • Commission Rate: {{commissionRate}}</p>
+  
+  <div class="header-meta">
+    <div><strong>Prepared by {{preparedBy}}</strong></div>
+    <div>{{generatedAt}}</div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="grid-3">
+  <div class="summary-card summary-green">
+    <div class="summary-value">{{finalTakeHome}}</div>
+    <div class="summary-label">Your Take-Home</div>
+  </div>
+  <div class="summary-card summary-blue">
+    <div class="summary-value">{{totalCommission}}</div>
+    <div class="summary-label">Total Commission (GCI)</div>
+  </div>
+  <div class="summary-card summary-purple">
+    <div class="summary-value">{{effectiveRate}}</div>
+    <div class="summary-label">Effective Commission Rate</div>
+  </div>
+</div>
+
+<!-- Transaction & Commission Details -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header">Transaction Details</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <span class="info-label">Sale Price:</span>
+        <span class="info-value">{{salePrice}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Total Commission Rate:</span>
+        <span class="info-value">{{commissionRate}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Total Commission (GCI):</span>
+        <span class="info-value">{{totalCommission}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Your Side:</span>
+        <span class="info-value">{{yourSide}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Your Side GCI:</span>
+        <span class="info-value">{{sideGCI}}</span>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">Commission Breakdown</div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Description</th>
+          <th>Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Your Side GCI</td>
+          <td class="currency positive">{{sideGCI}}</td>
+        </tr>
+        <tr>
+          <td>Broker Split ({{brokeragePercent}})</td>
+          <td class="currency negative">-{{brokerFee}}</td>
+        </tr>
+        <tr>
+          <td>Agent Gross</td>
+          <td class="currency positive">{{agentGross}}</td>
+        </tr>
+        {{#hasReferral}}
+        <tr>
+          <td>Referral Fee ({{referralPercent}})</td>
+          <td class="currency negative">-{{referralAmount}}</td>
+        </tr>
+        {{/hasReferral}}
+        {{#hasTeam}}
+        <tr>
+          <td>Team Split ({{teamPercent}})</td>
+          <td class="currency negative">-{{teamAmount}}</td>
+        </tr>
+        {{/hasTeam}}
+        {{#hasTransactionFee}}
+        <tr>
+          <td>Transaction Fee</td>
+          <td class="currency negative">-{{transactionFee}}</td>
+        </tr>
+        {{/hasTransactionFee}}
+        {{#hasRoyaltyFee}}
+        <tr>
+          <td>Franchise/Royalty Fee</td>
+          <td class="currency negative">-{{royaltyFee}}</td>
+        </tr>
+        {{/hasRoyaltyFee}}
+        <tr class="font-bold">
+          <td><strong>Final Take-Home</strong></td>
+          <td class="currency positive">{{finalTakeHome}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Commission Split Analysis -->
+<div class="card">
+  <div class="card-header">Split Analysis & Performance Metrics</div>
+  
+  <div class="grid-2">
+    <div>
+      <div class="info-item">
+        <span class="info-label">Agent Share of Sale:</span>
+        <span class="info-value">{{effectiveRate}} ({{finalTakeHome}})</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Agent Split:</span>
+        <span class="info-value">{{agentPercent}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Total Deductions:</span>
+        <span class="info-value">{{totalDeductions}}</span>
+      </div>
+    </div>
+    
+    <div>
+      <div class="info-item">
+        <span class="info-label">Commission Efficiency:</span>
+        <span class="info-value">{{efficiency}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Dollars per 1% Commission:</span>
+        <span class="info-value">{{dollarsPerPercent}}</span>
+      </div>
+      <div class="info-item">
+        <span class="info-label">Side Type:</span>
+        <span class="info-value">{{yourSide}}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Explanations Section -->
+<div class="explanations">
+  <h3>Real Estate Commission Terms - Explained Simply</h3>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">GCI (Gross Commission Income)</div>
+    <div class="explanation-text">The total commission paid by the seller before any splits or deductions. This is divided between listing and selling sides, typically 50/50, though it can vary based on the agreement.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Commission Split</div>
+    <div class="explanation-text">The percentage of your gross commission that you keep vs. what goes to your broker. Common splits range from 50/50 for new agents to 90/10 or higher for experienced agents with high volume.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Transaction Fees</div>
+    <div class="explanation-text">Fixed fees charged by brokerages per transaction to cover administrative costs, marketing, technology, and support services. These are separate from commission splits.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Referral Fees</div>
+    <div class="explanation-text">Fees paid when you receive a client through a referral from another agent or service. Typically ranges from 20-35% of your gross commission on that transaction.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Team Splits</div>
+    <div class="explanation-text">If you're part of a real estate team, this is the percentage that goes to the team leader or shared team expenses in exchange for leads, support, and brand recognition.</div>
+  </div>
+  
+  <div class="explanation-item">
+    <div class="explanation-term">Franchise/Royalty Fees</div>
+    <div class="explanation-text">Fees paid to national franchise brands (like RE/MAX, Century 21, Coldwell Banker) for use of their brand, marketing materials, and support systems.</div>
+  </div>
+</div>
+
+<!-- Best Practices & Considerations -->
+<div class="card">
+  <div class="card-header">💡 Best Practices & Important Considerations for Real Estate Professionals</div>
+  
+  <div class="grid-2">
+    <div>
+      <div class="explanation-item">
+        <div class="explanation-term">💰 Understand Your True Take-Home</div>
+        <div class="explanation-text">Always calculate your net commission after all splits and fees. This is your actual income per transaction - use this for budgeting and goal setting, not the gross commission.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">📊 Track Commission Trends</div>
+        <div class="explanation-text">Monitor your effective commission rate over time. If it's declining due to increased fees or splits, consider negotiating better terms or changing brokerages.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🎯 Volume Negotiations</div>
+        <div class="explanation-text">Higher transaction volumes often qualify you for better splits. Track your annual GCI and negotiate improved terms based on your production level.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">💡 Value vs. Cost Analysis</div>
+        <div class="explanation-text">Evaluate what you receive for your broker fees and splits. Higher splits aren't always better if you lose valuable support, leads, or marketing resources.</div>
+      </div>
+    </div>
+    
+    <div>
+      <div class="explanation-item">
+        <div class="explanation-term">📝 Budget for Taxes</div>
+        <div class="explanation-text">Set aside 25-30% of your take-home for taxes since you're likely an independent contractor. Consider quarterly tax payments to avoid penalties.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🏢 Compare Brokerage Models</div>
+        <div class="explanation-text">Traditional brokerages offer more support but higher fees. Discount brokerages offer higher splits but fewer services. Choose based on your experience level and needs.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">📈 Plan for Growth</div>
+        <div class="explanation-text">As your business grows, renegotiate terms annually. Successful agents often move to higher split arrangements or even start their own brokerages.</div>
+      </div>
+      
+      <div class="explanation-item">
+        <div class="explanation-term">🔍 Read the Fine Print</div>
+        <div class="explanation-text">Understand all fee structures, including desk fees, monthly charges, marketing costs, and any caps on commission splits before signing with a brokerage.</div>
+      </div>
+    </div>
+  </div>
+  
+  <div style="background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; border-radius: 8px; margin-top: 20px;">
+    <div class="explanation-term" style="color: #92400e;">⚠️ Red Flags to Watch For</div>
+    <div class="explanation-text" style="color: #92400e;">• Brokerages requiring high upfront fees • Split structures that worsen with success • Hidden fees not disclosed upfront • No clear path to better terms with increased production • Contracts that are difficult to terminate</div>
+  </div>
+  
+  <div style="background: #dcfce7; border: 1px solid #16a34a; padding: 15px; border-radius: 8px; margin-top: 15px;">
+    <div class="explanation-term" style="color: #15803d;">✅ Signs of a Good Brokerage Deal</div>
+    <div class="explanation-text" style="color: #15803d;">• Transparent fee structure • Opportunity to improve splits with performance • Quality training and support • Strong brand recognition • Fair and clear contract terms • Technology and marketing support included</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 11px; color: #6b7280;">
+  <p><strong>This analysis is for informational purposes only and should not be considered as financial advice.</strong><br>
+  Commission structures and fees vary by brokerage and market. Always verify terms with your broker and consult with qualified professionals for tax and business planning.</p>
+  <p style="margin-top: 15px;"><strong>Report prepared by {{preparedBy}}</strong><br>
+  Generated on {{generatedAt}}</p>
+</div>
+
+</div>
+</body>
+</html>

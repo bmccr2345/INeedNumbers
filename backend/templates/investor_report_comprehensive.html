@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Investment Property Analysis — {{property.addressLine}}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* Print rules */
+@page { 
+  size: Letter; 
+  margin: 0.5in;
+}
+
+* { 
+  -webkit-print-color-adjust: exact; 
+  print-color-adjust: exact; 
+  box-sizing: border-box;
+}
+
+/* Base styles */
+body { 
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.4;
+  margin: 0;
+  padding: 0;
+  color: #1f2937;
+  font-size: 12px;
+}
+
+.container {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: white;
+  padding: 25px;
+  margin-bottom: 25px;
+  border-radius: 8px;
+}
+
+.header h1 {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.header .subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin: 0 0 15px 0;
+}
+
+.header-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 14px;
+}
+
+/* Grid layouts */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* Card styles */
+.card {
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card-header {
+  font-size: 16px;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+/* Metrics cards */
+.metric-card {
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  background: white;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.metric-label {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.metric-green .metric-value { color: #16a34a; }
+.metric-blue .metric-value { color: #2563eb; }
+.metric-purple .metric-value { color: #7c3aed; }
+.metric-orange .metric-value { color: #ea580c; }
+
+/* Tables */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 12px;
+}
+
+.table th {
+  background-color: #f9fafb;
+  font-weight: bold;
+  color: #374151;
+}
+
+.table .currency {
+  text-align: right;
+  font-weight: 500;
+}
+
+.table .positive {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+.table .negative {
+  color: #dc2626;
+}
+
+/* Property details */
+.property-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  font-size: 12px;
+}
+
+.property-details .label {
+  font-weight: bold;
+  color: #6b7280;
+}
+
+.property-details .value {
+  color: #1f2937;
+}
+
+/* Analysis section */
+.analysis-summary {
+  background: #f0f9ff;
+  border-left: 4px solid #2563eb;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.analysis-positive {
+  background: #f0fdf4;
+  border-left-color: #16a34a;
+}
+
+.analysis-negative {
+  background: #fef2f2;
+  border-left-color: #dc2626;
+}
+
+/* Definitions section */
+.definitions {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 25px;
+}
+
+.definitions h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 15px 0;
+  color: #374151;
+}
+
+.definition-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: white;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}
+
+.definition-term {
+  font-weight: bold;
+  color: #1f2937;
+  margin-bottom: 5px;
+  font-size: 13px;
+}
+
+.definition-text {
+  color: #6b7280;
+  line-height: 1.5;
+  font-size: 12px;
+}
+
+/* Utility classes */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.font-bold { font-weight: bold; }
+.mb-0 { margin-bottom: 0; }
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <!-- Branded Header Section -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <!-- Agent Photo -->
+      <div style="width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">
+        {{branding.agent.initials}}
+      </div>
+      <div>
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 2px;">{{branding.agent.name}}</div>
+        <div style="font-size: 14px; opacity: 0.9;">{{branding.agent.email}}</div>
+        <div style="font-size: 14px; opacity: 0.9;">{{branding.agent.phone}}</div>
+      </div>
+    </div>
+    <div style="text-align: right;">
+      <div style="font-size: 14px; opacity: 0.9;">{{branding.brokerage.name}}</div>
+      <div style="font-size: 12px; opacity: 0.8;">License: {{branding.brokerage.license}}</div>
+    </div>
+  </div>
+  
+  <!-- Report Title -->
+  <h1>Investment Property Analysis</h1>
+  <p class="subtitle">{{property.addressLine}}</p>
+  
+  <div class="header-meta">
+    <div><strong>Prepared by {{branding.agent.name}}</strong></div>
+    <div>{{generatedAt}}</div>
+  </div>
+</div>
+
+<!-- Property Overview -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header">Property Information</div>
+    <div class="property-details">
+      <span class="label">Property Type:</span>
+      <span class="value">{{property.propertyType}}</span>
+      
+      <span class="label">Year Built:</span>
+      <span class="value">{{property.yearBuilt}}</span>
+      
+      <span class="label">Bedrooms:</span>
+      <span class="value">{{property.bedrooms}}</span>
+      
+      <span class="label">Bathrooms:</span>
+      <span class="value">{{property.bathrooms}}</span>
+      
+      <span class="label">Square Footage:</span>
+      <span class="value">{{property.squareFootage}}</span>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">Purchase Summary</div>
+    <div class="property-details">
+      <span class="label">Purchase Price:</span>
+      <span class="value font-bold">{{purchase.purchasePrice}}</span>
+      
+      <span class="label">Down Payment:</span>
+      <span class="value">{{purchase.downPayment}} ({{purchase.downPaymentPercent}})</span>
+      
+      <span class="label">Loan Amount:</span>
+      <span class="value">{{purchase.loanAmount}}</span>
+      
+      <span class="label">Interest Rate:</span>
+      <span class="value">{{purchase.interestRate}}</span>
+      
+      <span class="label">Loan Term:</span>
+      <span class="value">{{purchase.loanTerm}}</span>
+      
+      <span class="label">Monthly Payment:</span>
+      <span class="value font-bold">{{purchase.monthlyPayment}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- Key Performance Metrics -->
+<div class="card">
+  <div class="card-header">Key Performance Metrics</div>
+  <div class="grid-4">
+    <div class="metric-card metric-green">
+      <div class="metric-value">{{metrics.capRate}}</div>
+      <div class="metric-label">Cap Rate</div>
+    </div>
+    <div class="metric-card metric-blue">
+      <div class="metric-value">{{metrics.cashOnCash}}</div>
+      <div class="metric-label">Cash-on-Cash Return</div>
+    </div>
+    <div class="metric-card metric-purple">
+      <div class="metric-value">{{metrics.dscr}}</div>
+      <div class="metric-label">DSCR</div>
+    </div>
+    <div class="metric-card metric-orange">
+      <div class="metric-value">{{metrics.onePercentRule}}</div>
+      <div class="metric-label">1% Rule Test</div>
+    </div>
+  </div>
+  
+  <!-- Quick Explanations -->
+  <div style="margin-top: 15px; padding: 15px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #16a34a;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; font-size: 11px; line-height: 1.4;">
+      <div>
+        <strong style="color: #16a34a;">Cap Rate:</strong> Annual return if bought with all cash. Higher = better returns, typically 4-12% range.
+      </div>
+      <div>
+        <strong style="color: #2563eb;">Cash-on-Cash:</strong> Return on your actual cash invested. Accounts for leverage benefits, often higher than cap rate.
+      </div>
+      <div>
+        <strong style="color: #7c3aed;">DSCR:</strong> Can the property cover its mortgage? Above 1.2 is safe, below 1.0 means negative cash flow.
+      </div>
+      <div>
+        <strong style="color: #ea580c;">1% Rule:</strong> Quick screening tool. Monthly rent should be ≥1% of purchase price for good cash flow potential.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Income & Expense Analysis -->
+<div class="grid-2">
+  <div class="card">
+    <div class="card-header">Income Analysis</div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Source</th>
+          <th>Monthly</th>
+          <th>Annual</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Monthly Rent</td>
+          <td class="currency">{{income.monthlyRent}}</td>
+          <td class="currency">{{income.annualIncome}}</td>
+        </tr>
+        <tr>
+          <td>Other Income</td>
+          <td class="currency">{{income.otherIncome}}</td>
+          <td class="currency">-</td>
+        </tr>
+        <tr class="font-bold">
+          <td>Total Income</td>
+          <td class="currency positive">{{income.totalMonthlyIncome}}</td>
+          <td class="currency positive">{{income.annualIncome}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="card">
+    <div class="card-header">Operating Expenses</div>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Expense Type</th>
+          <th>Annual Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Property Taxes</td>
+          <td class="currency negative">{{expenses.propertyTaxes}}</td>
+        </tr>
+        <tr>
+          <td>Insurance</td>
+          <td class="currency negative">{{expenses.insurance}}</td>
+        </tr>
+        <tr>
+          <td>Maintenance</td>
+          <td class="currency negative">{{expenses.maintenance}}</td>
+        </tr>
+        <tr>
+          <td>Vacancy Allowance</td>
+          <td class="currency negative">{{expenses.vacancyAllowance}}</td>
+        </tr>
+        <tr>
+          <td>Property Management</td>
+          <td class="currency negative">{{expenses.propertyManagement}}</td>
+        </tr>
+        <tr class="font-bold">
+          <td>Total Expenses</td>
+          <td class="currency negative">{{expenses.totalAnnualExpenses}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Cash Flow Analysis -->
+<div class="card">
+  <div class="card-header">Cash Flow Analysis</div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Monthly</th>
+        <th>Annual</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="font-bold">Net Operating Income (NOI)</td>
+        <td class="currency positive">{{cashFlow.monthlyNOI}}</td>
+        <td class="currency positive">{{cashFlow.annualNOI}}</td>
+        <td>Income minus operating expenses</td>
+      </tr>
+      <tr>
+        <td>Less: Mortgage Payment</td>
+        <td class="currency negative">{{purchase.monthlyPayment}}</td>
+        <td class="currency negative">-</td>
+        <td>Principal & interest payment</td>
+      </tr>
+      <tr class="font-bold">
+        <td>Net Cash Flow</td>
+        <td class="currency positive">{{cashFlow.monthlyCashFlow}}</td>
+        <td class="currency positive">{{cashFlow.annualCashFlow}}</td>
+        <td>Money in your pocket each month</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Investment Analysis Summary -->
+<div class="analysis-summary analysis-positive">
+  <h3 class="font-bold mb-0">Investment Analysis Summary</h3>
+  <p><strong>{{recommendation.summary}}</strong></p>
+  <p>This property analysis shows the key financial metrics and cash flow projections to help you make an informed investment decision.</p>
+</div>
+
+<!-- Definitions Section -->
+<div class="definitions">
+  <h3>Real Estate Investment Terms - Explained Simply</h3>
+  
+  <div class="definition-item">
+    <div class="definition-term">Cap Rate (Capitalization Rate)</div>
+    <div class="definition-text">The annual return on investment you'd get if you bought the property with all cash. Higher cap rates generally mean better returns, but also potentially higher risk. Calculated as Annual NOI ÷ Purchase Price.</div>
+  </div>
+  
+  <div class="definition-item">
+    <div class="definition-term">Cash-on-Cash Return</div>
+    <div class="definition-text">The annual return on the actual cash you invested (down payment + closing costs). This accounts for loan benefits and is often more relevant than cap rate for leveraged purchases. Calculated as Annual Cash Flow ÷ Total Cash Invested.</div>
+  </div>
+  
+  <div class="definition-item">
+    <div class="definition-term">NOI (Net Operating Income)</div>
+    <div class="definition-text">The property's annual income after operating expenses but before mortgage payments and taxes. This is the core income the property generates. Calculated as Annual Income - Operating Expenses.</div>
+  </div>
+  
+  <div class="definition-item">
+    <div class="definition-term">DSCR (Debt Service Coverage Ratio)</div>
+    <div class="definition-text">Measures whether the property generates enough income to comfortably cover its mortgage payments. Above 1.2 is generally considered safe. Calculated as Annual NOI ÷ Annual Debt Service.</div>
+  </div>
+  
+  <div class="definition-item">
+    <div class="definition-term">Cash Flow</div>
+    <div class="definition-text">The money left over each month after all expenses including mortgage payments. Positive cash flow means the property pays for itself plus extra.</div>
+  </div>
+  
+  <div class="definition-item">
+    <div class="definition-term">1% Rule</div>
+    <div class="definition-text">A quick screening tool: monthly rent should be at least 1% of the purchase price. Properties that meet this often have better cash flow potential.</div>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 11px; color: #6b7280;">
+  <p><strong>This analysis is for informational purposes only and should not be considered as investment advice.</strong><br>
+  Please consult with qualified professionals before making investment decisions.</p>
+  <p style="margin-top: 15px;"><strong>Report prepared by {{preparedBy}}</strong><br>
+  Generated on {{generatedAt}}</p>
+</div>
+
+</div>
+</body>
+</html>

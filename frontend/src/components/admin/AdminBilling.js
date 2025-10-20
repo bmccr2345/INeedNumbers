@@ -1,0 +1,509 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  CreditCard, 
+  DollarSign, 
+  TrendingUp, 
+  Users,
+  Search,
+  Filter,
+  Download,
+  RefreshCw,
+  MoreHorizontal,
+  Eye,
+  Edit2,
+  AlertTriangle
+} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+
+const AdminBilling = () => {
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [filteredSubscriptions, setFilteredSubscriptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterPlan, setFilterPlan] = useState('all');
+  const [stats, setStats] = useState({
+    totalRevenue: 0,
+    activeSubscriptions: 0,
+    churnRate: 0,
+    avgRevenuePerUser: 0
+  });
+
+  useEffect(() => {
+    loadBillingData();
+  }, []);
+
+  useEffect(() => {
+    filterSubscriptions();
+  }, [subscriptions, searchTerm, filterStatus, filterPlan]);
+
+  const loadBillingData = async () => {
+    try {
+      setLoading(true);
+      
+      // Mock billing data - will be replaced with actual API call
+      const mockSubscriptions = [
+        {
+          id: 'sub_1',
+          customer_id: 'cus_123456',
+          user_email: 'john.doe@example.com',
+          user_name: 'John Doe',
+          plan: 'PRO',
+          status: 'active',
+          amount: 4900, // cents
+          currency: 'usd',
+          billing_cycle: 'monthly',
+          current_period_start: new Date('2024-01-01'),
+          current_period_end: new Date('2024-02-01'),
+          next_billing_date: new Date('2024-02-01'),
+          created_at: new Date('2024-01-01'),
+          payment_method: 'card',
+          last_payment_status: 'succeeded',
+          stripe_subscription_id: 'sub_stripe_123'
+        },
+        {
+          id: 'sub_2',
+          customer_id: 'cus_789012',
+          user_email: 'sarah.smith@example.com',
+          user_name: 'Sarah Smith',
+          plan: 'STARTER',
+          status: 'active',
+          amount: 1900,
+          currency: 'usd',
+          billing_cycle: 'monthly',
+          current_period_start: new Date('2024-01-15'),
+          current_period_end: new Date('2024-02-15'),
+          next_billing_date: new Date('2024-02-15'),
+          created_at: new Date('2024-01-15'),
+          payment_method: 'card',
+          last_payment_status: 'succeeded',
+          stripe_subscription_id: 'sub_stripe_456'
+        },
+        {
+          id: 'sub_3',
+          customer_id: 'cus_345678',
+          user_email: 'mike.wilson@example.com',
+          user_name: 'Mike Wilson',
+          plan: 'PRO',
+          status: 'past_due',
+          amount: 4900,
+          currency: 'usd',
+          billing_cycle: 'monthly',
+          current_period_start: new Date('2024-01-10'),
+          current_period_end: new Date('2024-02-10'),
+          next_billing_date: new Date('2024-02-10'),
+          created_at: new Date('2024-01-10'),
+          payment_method: 'card',
+          last_payment_status: 'failed',
+          stripe_subscription_id: 'sub_stripe_789'
+        },
+        {
+          id: 'sub_4',
+          customer_id: 'cus_901234',
+          user_email: 'lisa.brown@example.com',
+          user_name: 'Lisa Brown',
+          plan: 'STARTER',
+          status: 'canceled',
+          amount: 1900,
+          currency: 'usd',
+          billing_cycle: 'monthly',
+          current_period_start: new Date('2024-01-05'),
+          current_period_end: new Date('2024-02-05'),
+          next_billing_date: null,
+          created_at: new Date('2024-01-05'),
+          payment_method: 'card',
+          last_payment_status: 'succeeded',
+          stripe_subscription_id: 'sub_stripe_012'
+        }
+      ];
+
+      setSubscriptions(mockSubscriptions);
+
+      // Calculate stats
+      const activeSubscriptions = mockSubscriptions.filter(s => s.status === 'active');
+      const totalRevenue = activeSubscriptions.reduce((sum, sub) => sum + sub.amount, 0);
+      const canceledCount = mockSubscriptions.filter(s => s.status === 'canceled').length;
+      const churnRate = (canceledCount / mockSubscriptions.length) * 100;
+      const avgRevenuePerUser = activeSubscriptions.length > 0 ? totalRevenue / activeSubscriptions.length : 0;
+
+      setStats({
+        totalRevenue: totalRevenue / 100, // Convert from cents
+        activeSubscriptions: activeSubscriptions.length,
+        churnRate: churnRate,
+        avgRevenuePerUser: avgRevenuePerUser / 100
+      });
+
+    } catch (error) {
+      console.error('Failed to load billing data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filterSubscriptions = () => {
+    let filtered = [...subscriptions];
+
+    // Search filter
+    if (searchTerm) {
+      filtered = filtered.filter(sub => 
+        sub.user_email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sub.user_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        sub.customer_id.includes(searchTerm) ||
+        sub.stripe_subscription_id.includes(searchTerm)
+      );
+    }
+
+    // Status filter
+    if (filterStatus !== 'all') {
+      filtered = filtered.filter(sub => sub.status === filterStatus);
+    }
+
+    // Plan filter
+    if (filterPlan !== 'all') {
+      filtered = filtered.filter(sub => sub.plan === filterPlan);
+    }
+
+    setFilteredSubscriptions(filtered);
+  };
+
+  const getStatusBadgeColor = (status) => {
+    switch (status) {
+      case 'active': return 'bg-green-100 text-green-800';
+      case 'past_due': return 'bg-red-100 text-red-800';
+      case 'canceled': return 'bg-gray-100 text-gray-800';
+      case 'trialing': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getPlanBadgeColor = (plan) => {
+    switch (plan) {
+      case 'PRO': return 'bg-emerald-100 text-emerald-800';
+      case 'STARTER': return 'bg-blue-100 text-blue-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const formatCurrency = (amount, currency = 'USD') => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency.toUpperCase()
+    }).format(amount);
+  };
+
+  const formatDate = (date) => {
+    if (!date) return 'N/A';
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    });
+  };
+
+  const handleSubscriptionAction = (action, subscriptionId) => {
+    console.log(`Action: ${action} for subscription: ${subscriptionId}`);
+    // Handle subscription actions (pause, cancel, refund, etc.)
+  };
+
+  const exportBillingData = () => {
+    const csvContent = [
+      ['User Email', 'Plan', 'Status', 'Amount', 'Next Billing', 'Created', 'Stripe ID'].join(','),
+      ...filteredSubscriptions.map(sub => [
+        sub.user_email,
+        sub.plan,
+        sub.status,
+        formatCurrency(sub.amount / 100),
+        formatDate(sub.next_billing_date),
+        formatDate(sub.created_at),
+        sub.stripe_subscription_id
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `billing-data-${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  };
+
+  if (loading) {
+    return (
+      <div className="p-6">
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 rounded w-1/4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="bg-gray-200 h-24 rounded"></div>
+            ))}
+          </div>
+          <div className="h-12 bg-gray-200 rounded"></div>
+          <div className="space-y-3">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-20 bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 space-y-6">
+      
+      {/* Page Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Billing & Subscriptions</h1>
+          <p className="text-gray-600">Manage subscriptions and billing information</p>
+        </div>
+        
+        <div className="flex items-center space-x-3">
+          <Button onClick={exportBillingData} variant="outline" className="flex items-center space-x-2">
+            <Download className="w-4 h-4" />
+            <span>Export CSV</span>
+          </Button>
+          <Button onClick={loadBillingData} variant="outline" className="flex items-center space-x-2">
+            <RefreshCw className="w-4 h-4" />
+            <span>Refresh</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Monthly Revenue</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(stats.totalRevenue)}
+                </p>
+              </div>
+              <DollarSign className="w-8 h-8 text-green-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Active Subscriptions</p>
+                <p className="text-2xl font-bold text-blue-900">
+                  {stats.activeSubscriptions}
+                </p>
+              </div>
+              <Users className="w-8 h-8 text-blue-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">Churn Rate</p>
+                <p className="text-2xl font-bold text-red-900">
+                  {stats.churnRate.toFixed(1)}%
+                </p>
+              </div>
+              <TrendingUp className="w-8 h-8 text-red-600" />
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600">ARPU</p>
+                <p className="text-2xl font-bold text-emerald-900">
+                  {formatCurrency(stats.avgRevenuePerUser)}
+                </p>
+              </div>
+              <CreditCard className="w-8 h-8 text-emerald-600" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            
+            {/* Search */}
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Input
+                  placeholder="Search by email, name, or subscription ID..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+            </div>
+
+            {/* Status Filter */}
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="all">All Status</option>
+              <option value="active">Active</option>
+              <option value="past_due">Past Due</option>
+              <option value="canceled">Canceled</option>
+              <option value="trialing">Trialing</option>
+            </select>
+
+            {/* Plan Filter */}
+            <select
+              value={filterPlan}
+              onChange={(e) => setFilterPlan(e.target.value)}
+              className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            >
+              <option value="all">All Plans</option>
+              <option value="STARTER">Starter</option>
+              <option value="PRO">Pro</option>
+            </select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Subscriptions Table */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Subscriptions ({filteredSubscriptions.length})</CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left p-4 font-medium text-gray-900">Customer</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Plan</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Status</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Amount</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Next Billing</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Payment Status</th>
+                  <th className="text-left p-4 font-medium text-gray-900">Created</th>
+                  <th className="text-right p-4 font-medium text-gray-900">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredSubscriptions.map((subscription) => (
+                  <tr key={subscription.id} className="hover:bg-gray-50">
+                    <td className="p-4">
+                      <div>
+                        <div className="font-medium text-gray-900">{subscription.user_name}</div>
+                        <div className="text-sm text-gray-500">{subscription.user_email}</div>
+                        <div className="text-xs text-gray-400">ID: {subscription.customer_id}</div>
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPlanBadgeColor(subscription.plan)}`}>
+                        {subscription.plan}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusBadgeColor(subscription.status)}`}>
+                        {subscription.status}
+                      </span>
+                    </td>
+                    <td className="p-4 text-sm text-gray-900">
+                      <div>
+                        <div className="font-medium">
+                          {formatCurrency(subscription.amount / 100)}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {subscription.billing_cycle}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-gray-900">
+                      {formatDate(subscription.next_billing_date)}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center space-x-1">
+                        {subscription.last_payment_status === 'succeeded' && (
+                          <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                        )}
+                        {subscription.last_payment_status === 'failed' && (
+                          <div className="w-2 h-2 bg-red-400 rounded-full"></div>
+                        )}
+                        <span className="text-xs text-gray-600">
+                          {subscription.last_payment_status}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-sm text-gray-900">
+                      {formatDate(subscription.created_at)}
+                    </td>
+                    <td className="p-4 text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSubscriptionAction('view', subscription.id)}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSubscriptionAction('edit', subscription.id)}
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-600 hover:text-gray-900"
+                        >
+                          <MoreHorizontal className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            
+            {filteredSubscriptions.length === 0 && (
+              <div className="p-8 text-center text-gray-500">
+                <CreditCard className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                <p>No subscriptions found matching your criteria.</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Revenue Chart Placeholder */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Revenue Trends</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-64 bg-gray-50 rounded-lg flex items-center justify-center">
+            <div className="text-center text-gray-500">
+              <TrendingUp className="w-8 h-8 mx-auto mb-2" />
+              <p>Revenue chart will be displayed here</p>
+              <p className="text-sm">Integration with charting library needed</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export default AdminBilling;
