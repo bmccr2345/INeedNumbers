@@ -137,9 +137,19 @@ const PnLAICoach = ({ isOpen, onClose, currentMonthData, pastSixMonthsData }) =>
         if (aiResponse.formatted_analysis) {
           formattedAnalysis = aiResponse.formatted_analysis;
         }
-        // If summary is a string, use it directly
+        // If summary is a string, check if it's JSON that needs parsing
         else if (typeof aiResponse.summary === 'string') {
-          formattedAnalysis = aiResponse.summary;
+          const trimmed = aiResponse.summary.trim();
+          if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+            try {
+              const parsed = JSON.parse(aiResponse.summary);
+              formattedAnalysis = formatJsonAnalysis(parsed);
+            } catch {
+              formattedAnalysis = aiResponse.summary;
+            }
+          } else {
+            formattedAnalysis = aiResponse.summary;
+          }
         }
         // If summary is an object (JSON), parse and format it
         else if (typeof aiResponse.summary === 'object') {
