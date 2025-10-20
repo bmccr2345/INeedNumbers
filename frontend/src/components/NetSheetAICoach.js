@@ -113,9 +113,21 @@ const NetSheetAICoach = ({ isOpen, onClose, inputs, results, dealState }) => {
       let formattedAnalysis = '';
       
       if (aiResponse.summary) {
-        // If summary is a string, use it directly
+        // If summary is a string, check if it's JSON that needs parsing
         if (typeof aiResponse.summary === 'string') {
-          formattedAnalysis = aiResponse.summary;
+          // Try to parse if it looks like JSON (starts with { or [)
+          const trimmed = aiResponse.summary.trim();
+          if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
+            try {
+              const parsed = JSON.parse(aiResponse.summary);
+              formattedAnalysis = formatJsonAnalysis(parsed);
+            } catch {
+              // Not valid JSON, use as-is
+              formattedAnalysis = aiResponse.summary;
+            }
+          } else {
+            formattedAnalysis = aiResponse.summary;
+          }
         }
         // If summary is an object (JSON), parse and format it
         else if (typeof aiResponse.summary === 'object') {
