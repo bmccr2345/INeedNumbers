@@ -169,20 +169,6 @@ const PnLAICoach = ({ isOpen, onClose, currentMonthData, pastSixMonthsData }) =>
       }
       
       setAnalysis(formattedAnalysis);
-        } else if (aiResponse.coaching_text) {
-          analysisText = aiResponse.coaching_text;
-        } else {
-          // Fallback: show user-friendly message instead of raw JSON
-          analysisText = 'Analysis completed successfully. The AI Coach has processed your P&L data and generated recommendations.';
-        }
-      } else if (typeof aiResponse === 'string') {
-        // Handle string responses
-        analysisText = aiResponse;
-      } else {
-        throw new Error('Unable to process AI response format');
-      }
-      
-      setAnalysis(analysisText);
       
     } catch (error) {
       console.error('Error calling AI Coach API:', error);
