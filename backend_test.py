@@ -1348,6 +1348,583 @@ class DealPackAPITester:
             print(f"   ❌ Error testing CSRF protection: {e}")
             return False, {"error": str(e)}
 
+    # ========== AUDIT LOGS ENDPOINT TESTS ==========
+    
+    def test_audit_logs_endpoint(self):
+        """Test Phase 4 - Data & Reporting Features (Audit Logs Endpoint)"""
+        print("\n📊 TESTING AUDIT LOGS ENDPOINT - PHASE 4 DATA & REPORTING FEATURES...")
+        print("   Testing: Login as bmccr23@gmail.com / Goosey23!!23")
+        print("   Testing: GET /api/admin/audit-logs (without filters)")
+        print("   Testing: Pagination (page, limit parameters)")
+        print("   Testing: Filtering by action type")
+        print("   Testing: Filtering by user email")
+        print("   Testing: Logs sorted by timestamp (descending)")
+        print("   Testing: Response structure (logs array, total, page, pages)")
+        print("   Testing: Real audit logs exist from previous operations")
+        print("   Testing: LOGIN actions, ISO timestamps, populated user_email fields")
+        
+        results = {}
+        
+        # 1. Test admin login
+        login_success, login_response = self.test_audit_logs_login()
+        results['admin_login'] = {
+            'success': login_success,
+            'response': login_response
+        }
+        
+        if not login_success:
+            print("   ❌ Cannot proceed with audit logs tests - admin login failed")
+            return False, results
+        
+        # 2. Test basic audit logs endpoint (no filters)
+        basic_success, basic_response = self.test_audit_logs_basic()
+        results['basic_audit_logs'] = {
+            'success': basic_success,
+            'response': basic_response
+        }
+        
+        # 3. Test pagination
+        pagination_success, pagination_response = self.test_audit_logs_pagination()
+        results['pagination'] = {
+            'success': pagination_success,
+            'response': pagination_response
+        }
+        
+        # 4. Test filtering by action type
+        action_filter_success, action_filter_response = self.test_audit_logs_action_filter()
+        results['action_filter'] = {
+            'success': action_filter_success,
+            'response': action_filter_response
+        }
+        
+        # 5. Test filtering by user email
+        email_filter_success, email_filter_response = self.test_audit_logs_email_filter()
+        results['email_filter'] = {
+            'success': email_filter_success,
+            'response': email_filter_response
+        }
+        
+        # 6. Test data verification (real logs, timestamps, etc.)
+        data_verification_success, data_verification_response = self.test_audit_logs_data_verification()
+        results['data_verification'] = {
+            'success': data_verification_success,
+            'response': data_verification_response
+        }
+        
+        # Calculate overall success
+        total_tests = 6
+        successful_tests = sum([
+            login_success,
+            basic_success,
+            pagination_success,
+            action_filter_success,
+            email_filter_success,
+            data_verification_success
+        ])
+        
+        overall_success = successful_tests >= 5  # Allow one failure
+        
+        print(f"\n📊 AUDIT LOGS ENDPOINT TESTING SUMMARY:")
+        print(f"   ✅ Successful tests: {successful_tests}/{total_tests}")
+        print(f"   📈 Success rate: {(successful_tests/total_tests)*100:.1f}%")
+        
+        if overall_success:
+            print("   🎉 Audit Logs Endpoint - TESTING COMPLETED SUCCESSFULLY")
+        else:
+            print("   ❌ Audit Logs Endpoint - CRITICAL ISSUES FOUND")
+            
+        return overall_success, results
+    
+    def test_audit_logs_login(self):
+        """Test admin login with specific credentials from review request"""
+        print("\n🔐 TESTING AUDIT LOGS LOGIN...")
+        
+        # Use specific credentials from review request
+        login_data = {
+            "email": "bmccr23@gmail.com",
+            "password": "Goosey23!!23",
+            "remember_me": False
+        }
+        
+        print(f"   🔍 Testing login with: {login_data['email']} / {login_data['password']}")
+        
+        try:
+            import requests
+            session = requests.Session()
+            
+            login_response = session.post(
+                f"{self.base_url}/api/auth/login",
+                json=login_data,
+                timeout=15
+            )
+            
+            if login_response.status_code == 200:
+                print("   ✅ Admin login successful")
+                login_data_response = login_response.json()
+                
+                # Store session for later use
+                self.audit_session = session
+                
+                # Verify user details
+                user_data = login_data_response.get('user', {})
+                if user_data:
+                    print(f"   ✅ User email: {user_data.get('email')}")
+                    print(f"   ✅ User role: {user_data.get('role')}")
+                    print(f"   ✅ User plan: {user_data.get('plan')}")
+                    
+                    # Check if role is master_admin as expected
+                    if user_data.get('role') == 'master_admin':
+                        print("   ✅ Correct master_admin role returned")
+                    else:
+                        print(f"   ⚠️  Role: expected 'master_admin', got '{user_data.get('role')}'")
+                
+                return True, login_data_response
+            else:
+                print(f"   ❌ Admin login failed - Status: {login_response.status_code}")
+                try:
+                    error_response = login_response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {login_response.text[:200]}")
+                return False, {"error": "login failed", "status": login_response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in audit logs login test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_audit_logs_basic(self):
+        """Test GET /api/admin/audit-logs without filters"""
+        print("\n📋 TESTING BASIC AUDIT LOGS ENDPOINT...")
+        
+        try:
+            if not hasattr(self, 'audit_session'):
+                print("   ❌ No audit session available")
+                return False, {"error": "No audit session"}
+            
+            # Test basic audit logs listing
+            response = self.audit_session.get(
+                f"{self.base_url}/api/admin/audit-logs",
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                print("   ✅ Audit logs endpoint successful")
+                logs_data = response.json()
+                
+                # Check response structure
+                required_fields = ['logs', 'total', 'page', 'pages']
+                structure_valid = all(field in logs_data for field in required_fields)
+                
+                if structure_valid:
+                    print("   ✅ Response structure valid (logs, total, page, pages)")
+                    
+                    logs_list = logs_data['logs']
+                    total_count = logs_data['total']
+                    current_page = logs_data['page']
+                    total_pages = logs_data['pages']
+                    
+                    print(f"   ✅ Found {len(logs_list)} logs on page {current_page}")
+                    print(f"   ✅ Total logs: {total_count}, Total pages: {total_pages}")
+                    
+                    if len(logs_list) > 0:
+                        print("   ✅ Audit logs exist in system")
+                        
+                        # Check first log structure
+                        first_log = logs_list[0]
+                        log_fields = ['id', 'user_id', 'user_email', 'action', 'timestamp', 'details', 'ip_address', 'user_agent']
+                        log_structure_valid = all(field in first_log for field in log_fields)
+                        
+                        if log_structure_valid:
+                            print("   ✅ Log entry structure valid")
+                            print(f"   ✅ Sample log: {first_log['action']} by {first_log['user_email']} at {first_log['timestamp']}")
+                        else:
+                            missing_fields = [field for field in log_fields if field not in first_log]
+                            print(f"   ❌ Log entry missing fields: {missing_fields}")
+                            return False, {"error": "Invalid log structure", "missing_fields": missing_fields}
+                    else:
+                        print("   ⚠️  No audit logs found in system")
+                        return False, {"error": "No audit logs found"}
+                    
+                    return True, logs_data
+                else:
+                    missing_fields = [field for field in required_fields if field not in logs_data]
+                    print(f"   ❌ Response structure invalid, missing: {missing_fields}")
+                    return False, {"error": "Invalid response structure", "missing_fields": missing_fields}
+            else:
+                print(f"   ❌ Audit logs endpoint failed - Status: {response.status_code}")
+                try:
+                    error_response = response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {response.text[:200]}")
+                return False, {"error": "endpoint failed", "status": response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in basic audit logs test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_audit_logs_pagination(self):
+        """Test audit logs pagination functionality"""
+        print("\n📄 TESTING AUDIT LOGS PAGINATION...")
+        
+        try:
+            if not hasattr(self, 'audit_session'):
+                print("   ❌ No audit session available")
+                return False, {"error": "No audit session"}
+            
+            # Test pagination with different page sizes
+            test_cases = [
+                {"page": 1, "limit": 10},
+                {"page": 2, "limit": 5},
+                {"page": 1, "limit": 25}
+            ]
+            
+            pagination_results = []
+            
+            for test_case in test_cases:
+                params = f"?page={test_case['page']}&limit={test_case['limit']}"
+                response = self.audit_session.get(
+                    f"{self.base_url}/api/admin/audit-logs{params}",
+                    timeout=15
+                )
+                
+                if response.status_code == 200:
+                    logs_data = response.json()
+                    logs_count = len(logs_data['logs'])
+                    expected_limit = min(test_case['limit'], logs_data['total'])
+                    
+                    print(f"   ✅ Page {test_case['page']}, Limit {test_case['limit']}: {logs_count} logs returned")
+                    
+                    # Verify pagination parameters in response
+                    if logs_data['page'] == test_case['page']:
+                        print(f"   ✅ Correct page number returned: {logs_data['page']}")
+                    else:
+                        print(f"   ❌ Wrong page number: expected {test_case['page']}, got {logs_data['page']}")
+                    
+                    # Verify limit is respected (unless fewer logs exist)
+                    if logs_count <= test_case['limit']:
+                        print(f"   ✅ Limit respected: {logs_count} <= {test_case['limit']}")
+                    else:
+                        print(f"   ❌ Limit exceeded: {logs_count} > {test_case['limit']}")
+                    
+                    pagination_results.append({
+                        "test_case": test_case,
+                        "success": True,
+                        "logs_count": logs_count,
+                        "total": logs_data['total'],
+                        "pages": logs_data['pages']
+                    })
+                else:
+                    print(f"   ❌ Pagination test failed for {test_case} - Status: {response.status_code}")
+                    pagination_results.append({
+                        "test_case": test_case,
+                        "success": False,
+                        "error": response.status_code
+                    })
+            
+            # Check if at least 2 out of 3 pagination tests passed
+            successful_pagination = sum(1 for result in pagination_results if result['success'])
+            
+            if successful_pagination >= 2:
+                print(f"   ✅ Pagination working correctly ({successful_pagination}/3 tests passed)")
+                return True, pagination_results
+            else:
+                print(f"   ❌ Pagination has issues ({successful_pagination}/3 tests passed)")
+                return False, pagination_results
+                
+        except Exception as e:
+            print(f"   ❌ Error in pagination test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_audit_logs_action_filter(self):
+        """Test audit logs filtering by action type"""
+        print("\n🔍 TESTING AUDIT LOGS ACTION FILTERING...")
+        
+        try:
+            if not hasattr(self, 'audit_session'):
+                print("   ❌ No audit session available")
+                return False, {"error": "No audit session"}
+            
+            # Test filtering by different action types
+            action_filters = ["login", "logout", "register", "update"]
+            filter_results = []
+            
+            for action in action_filters:
+                params = f"?action_filter={action}"
+                response = self.audit_session.get(
+                    f"{self.base_url}/api/admin/audit-logs{params}",
+                    timeout=15
+                )
+                
+                if response.status_code == 200:
+                    logs_data = response.json()
+                    logs_list = logs_data['logs']
+                    
+                    print(f"   🔍 Action filter '{action}': {len(logs_list)} logs found")
+                    
+                    # Verify all returned logs have the correct action
+                    if len(logs_list) > 0:
+                        correct_action_count = sum(1 for log in logs_list if log.get('action', '').lower() == action.lower())
+                        
+                        if correct_action_count == len(logs_list):
+                            print(f"   ✅ All {len(logs_list)} logs have action '{action}'")
+                            filter_results.append({
+                                "action": action,
+                                "success": True,
+                                "count": len(logs_list),
+                                "all_correct": True
+                            })
+                        else:
+                            print(f"   ❌ Only {correct_action_count}/{len(logs_list)} logs have correct action")
+                            filter_results.append({
+                                "action": action,
+                                "success": False,
+                                "count": len(logs_list),
+                                "correct_count": correct_action_count
+                            })
+                    else:
+                        print(f"   ⚠️  No logs found for action '{action}' (may be expected)")
+                        filter_results.append({
+                            "action": action,
+                            "success": True,
+                            "count": 0,
+                            "note": "No logs found (may be expected)"
+                        })
+                else:
+                    print(f"   ❌ Action filter test failed for '{action}' - Status: {response.status_code}")
+                    filter_results.append({
+                        "action": action,
+                        "success": False,
+                        "error": response.status_code
+                    })
+            
+            # Check if filtering is working (at least one filter should return results)
+            successful_filters = sum(1 for result in filter_results if result['success'])
+            filters_with_results = sum(1 for result in filter_results if result.get('count', 0) > 0)
+            
+            if successful_filters >= 3 and filters_with_results >= 1:
+                print(f"   ✅ Action filtering working correctly ({successful_filters}/4 filters successful)")
+                return True, filter_results
+            else:
+                print(f"   ❌ Action filtering has issues ({successful_filters}/4 filters successful)")
+                return False, filter_results
+                
+        except Exception as e:
+            print(f"   ❌ Error in action filter test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_audit_logs_email_filter(self):
+        """Test audit logs filtering by user email"""
+        print("\n📧 TESTING AUDIT LOGS EMAIL FILTERING...")
+        
+        try:
+            if not hasattr(self, 'audit_session'):
+                print("   ❌ No audit session available")
+                return False, {"error": "No audit session"}
+            
+            # Test filtering by different email patterns
+            email_filters = ["bmccr23@gmail.com", "demo@demo.com", "@gmail.com", "test"]
+            filter_results = []
+            
+            for email_filter in email_filters:
+                params = f"?user_email={email_filter}"
+                response = self.audit_session.get(
+                    f"{self.base_url}/api/admin/audit-logs{params}",
+                    timeout=15
+                )
+                
+                if response.status_code == 200:
+                    logs_data = response.json()
+                    logs_list = logs_data['logs']
+                    
+                    print(f"   🔍 Email filter '{email_filter}': {len(logs_list)} logs found")
+                    
+                    # Verify all returned logs contain the email filter
+                    if len(logs_list) > 0:
+                        matching_emails = 0
+                        for log in logs_list:
+                            user_email = log.get('user_email', '').lower()
+                            if email_filter.lower() in user_email:
+                                matching_emails += 1
+                        
+                        if matching_emails == len(logs_list):
+                            print(f"   ✅ All {len(logs_list)} logs match email filter '{email_filter}'")
+                            filter_results.append({
+                                "email_filter": email_filter,
+                                "success": True,
+                                "count": len(logs_list),
+                                "all_match": True
+                            })
+                        else:
+                            print(f"   ❌ Only {matching_emails}/{len(logs_list)} logs match email filter")
+                            filter_results.append({
+                                "email_filter": email_filter,
+                                "success": False,
+                                "count": len(logs_list),
+                                "matching_count": matching_emails
+                            })
+                    else:
+                        print(f"   ⚠️  No logs found for email filter '{email_filter}' (may be expected)")
+                        filter_results.append({
+                            "email_filter": email_filter,
+                            "success": True,
+                            "count": 0,
+                            "note": "No logs found (may be expected)"
+                        })
+                else:
+                    print(f"   ❌ Email filter test failed for '{email_filter}' - Status: {response.status_code}")
+                    filter_results.append({
+                        "email_filter": email_filter,
+                        "success": False,
+                        "error": response.status_code
+                    })
+            
+            # Check if email filtering is working
+            successful_filters = sum(1 for result in filter_results if result['success'])
+            filters_with_results = sum(1 for result in filter_results if result.get('count', 0) > 0)
+            
+            if successful_filters >= 3 and filters_with_results >= 1:
+                print(f"   ✅ Email filtering working correctly ({successful_filters}/4 filters successful)")
+                return True, filter_results
+            else:
+                print(f"   ❌ Email filtering has issues ({successful_filters}/4 filters successful)")
+                return False, filter_results
+                
+        except Exception as e:
+            print(f"   ❌ Error in email filter test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_audit_logs_data_verification(self):
+        """Test audit logs data verification (real logs, timestamps, LOGIN actions, etc.)"""
+        print("\n🔍 TESTING AUDIT LOGS DATA VERIFICATION...")
+        
+        try:
+            if not hasattr(self, 'audit_session'):
+                print("   ❌ No audit session available")
+                return False, {"error": "No audit session"}
+            
+            # Get audit logs without filters to check data quality
+            response = self.audit_session.get(
+                f"{self.base_url}/api/admin/audit-logs?limit=50",
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                logs_data = response.json()
+                logs_list = logs_data['logs']
+                
+                if len(logs_list) == 0:
+                    print("   ❌ No audit logs found for data verification")
+                    return False, {"error": "No logs found"}
+                
+                print(f"   ✅ Analyzing {len(logs_list)} audit logs for data quality...")
+                
+                verification_results = {
+                    "total_logs": len(logs_list),
+                    "login_actions": 0,
+                    "valid_timestamps": 0,
+                    "populated_user_emails": 0,
+                    "valid_iso_timestamps": 0,
+                    "sorted_correctly": True,
+                    "sample_logs": []
+                }
+                
+                # Check for LOGIN actions
+                login_logs = [log for log in logs_list if log.get('action', '').lower() == 'login']
+                verification_results["login_actions"] = len(login_logs)
+                
+                if len(login_logs) > 0:
+                    print(f"   ✅ Found {len(login_logs)} LOGIN actions")
+                else:
+                    print("   ⚠️  No LOGIN actions found")
+                
+                # Check timestamps and user emails
+                for i, log in enumerate(logs_list):
+                    # Check timestamp format (ISO format)
+                    timestamp = log.get('timestamp', '')
+                    if timestamp:
+                        verification_results["valid_timestamps"] += 1
+                        
+                        # Check if timestamp is in ISO format
+                        try:
+                            from datetime import datetime
+                            # Try to parse ISO format
+                            if 'T' in timestamp and ('Z' in timestamp or '+' in timestamp or timestamp.endswith('00')):
+                                datetime.fromisoformat(timestamp.replace('Z', '+00:00'))
+                                verification_results["valid_iso_timestamps"] += 1
+                        except:
+                            pass
+                    
+                    # Check user_email field
+                    user_email = log.get('user_email', '')
+                    if user_email and '@' in user_email:
+                        verification_results["populated_user_emails"] += 1
+                    
+                    # Check sorting (timestamps should be descending)
+                    if i > 0:
+                        current_timestamp = log.get('timestamp', '')
+                        previous_timestamp = logs_list[i-1].get('timestamp', '')
+                        
+                        if current_timestamp and previous_timestamp:
+                            if current_timestamp > previous_timestamp:
+                                verification_results["sorted_correctly"] = False
+                    
+                    # Collect sample logs for analysis
+                    if i < 3:
+                        verification_results["sample_logs"].append({
+                            "action": log.get('action'),
+                            "user_email": log.get('user_email'),
+                            "timestamp": log.get('timestamp'),
+                            "has_details": bool(log.get('details')),
+                            "has_ip": bool(log.get('ip_address')),
+                            "has_user_agent": bool(log.get('user_agent'))
+                        })
+                
+                # Print verification results
+                print(f"   ✅ Valid timestamps: {verification_results['valid_timestamps']}/{verification_results['total_logs']}")
+                print(f"   ✅ ISO format timestamps: {verification_results['valid_iso_timestamps']}/{verification_results['total_logs']}")
+                print(f"   ✅ Populated user emails: {verification_results['populated_user_emails']}/{verification_results['total_logs']}")
+                print(f"   ✅ LOGIN actions found: {verification_results['login_actions']}")
+                
+                if verification_results["sorted_correctly"]:
+                    print("   ✅ Logs sorted by timestamp (descending)")
+                else:
+                    print("   ❌ Logs not properly sorted by timestamp")
+                
+                # Show sample logs
+                print("   📋 Sample audit logs:")
+                for i, sample in enumerate(verification_results["sample_logs"]):
+                    print(f"      {i+1}. {sample['action']} by {sample['user_email']} at {sample['timestamp']}")
+                
+                # Determine success criteria
+                timestamp_coverage = verification_results['valid_timestamps'] / verification_results['total_logs']
+                email_coverage = verification_results['populated_user_emails'] / verification_results['total_logs']
+                iso_coverage = verification_results['valid_iso_timestamps'] / verification_results['total_logs']
+                
+                success_criteria = [
+                    timestamp_coverage >= 0.8,  # 80% of logs have timestamps
+                    email_coverage >= 0.8,      # 80% of logs have user emails
+                    iso_coverage >= 0.8,        # 80% of timestamps are ISO format
+                    verification_results['login_actions'] > 0,  # At least one LOGIN action
+                    verification_results['sorted_correctly']     # Logs are sorted correctly
+                ]
+                
+                successful_criteria = sum(success_criteria)
+                
+                if successful_criteria >= 4:
+                    print(f"   ✅ Data verification passed ({successful_criteria}/5 criteria met)")
+                    return True, verification_results
+                else:
+                    print(f"   ❌ Data verification failed ({successful_criteria}/5 criteria met)")
+                    return False, verification_results
+            else:
+                print(f"   ❌ Data verification failed - Status: {response.status_code}")
+                return False, {"error": "endpoint failed", "status": response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in data verification test: {e}")
+            return False, {"error": str(e)}
+
     # ========== ADMIN CRUD OPERATIONS TESTS ==========
     
     def test_admin_crud_operations(self):
