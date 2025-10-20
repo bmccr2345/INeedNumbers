@@ -8389,16 +8389,7 @@ def run_branding_upload_tests():
         else:
             return False, {"error": "No auth token"}
 
-if __name__ == "__main__":
-    print("🚀 STARTING BACKEND API TESTING - SPECIFIC USER PLAN DATA ISSUE")
-    print("=" * 80)
-    
-    # Initialize tester
-    tester = DealPackAPITester()
-    
-    # Run the specific user plan data issue test
-    print("\n🎯 RUNNING SPECIFIC USER PLAN DATA ISSUE TEST...")
-    success, results = tester.test_specific_user_plan_data_issue()
+# Removed duplicate main function
     
     print("\n" + "=" * 80)
     print("🏁 TESTING COMPLETE")
