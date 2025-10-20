@@ -97,28 +97,32 @@ const AdminBilling = () => {
           created_at: new Date('2024-01-05'),
           payment_method: 'card',
           last_payment_status: 'succeeded',
-          stripe_subscription_id: 'sub_stripe_012'
-        }
-      ];
-
-      setSubscriptions(mockSubscriptions);
+          };
+        });
+      
+      setSubscriptions(activeSubscriptions);
 
       // Calculate stats
-      const activeSubscriptions = mockSubscriptions.filter(s => s.status === 'active');
       const totalRevenue = activeSubscriptions.reduce((sum, sub) => sum + sub.amount, 0);
-      const canceledCount = mockSubscriptions.filter(s => s.status === 'canceled').length;
-      const churnRate = (canceledCount / mockSubscriptions.length) * 100;
       const avgRevenuePerUser = activeSubscriptions.length > 0 ? totalRevenue / activeSubscriptions.length : 0;
 
       setStats({
-        totalRevenue: totalRevenue / 100, // Convert from cents
+        totalRevenue: totalRevenue / 100, // Convert from cents to dollars
         activeSubscriptions: activeSubscriptions.length,
-        churnRate: churnRate,
+        churnRate: 0, // Will need historical data to calculate churn
         avgRevenuePerUser: avgRevenuePerUser / 100
       });
 
     } catch (error) {
       console.error('Failed to load billing data:', error);
+      // Set empty state on error
+      setSubscriptions([]);
+      setStats({
+        totalRevenue: 0,
+        activeSubscriptions: 0,
+        churnRate: 0,
+        avgRevenuePerUser: 0
+      });
     } finally {
       setLoading(false);
     }
