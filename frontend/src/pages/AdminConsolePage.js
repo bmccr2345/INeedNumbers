@@ -82,6 +82,34 @@ const AdminConsolePage = () => {
     }
   ];
 
+  // Check 2FA status on load
+  useEffect(() => {
+    const check2FAStatus = async () => {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/2fa/status`, {
+          credentials: 'include'
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setTwoFactorEnabled(data.enabled);
+          setTwoFactorRequired(data.required);
+          
+          // Show 2FA setup modal if required but not enabled
+          if (data.required && !data.enabled) {
+            setShow2FASetup(true);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking 2FA status:', error);
+      }
+    };
+    
+    if (user?.role === 'master_admin') {
+      check2FAStatus();
+    }
+  }, [user]);
+
   // Handle first login security setup
   useEffect(() => {
     if (user?.firstLogin && user?.role === 'master_admin') {
