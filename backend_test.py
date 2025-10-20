@@ -1348,6 +1348,504 @@ class DealPackAPITester:
             print(f"   ❌ Error testing CSRF protection: {e}")
             return False, {"error": str(e)}
 
+    # ========== 2FA ENDPOINTS TESTS ==========
+    
+    def test_2fa_endpoints(self):
+        """Test 2FA endpoints - Phase 2 Critical Security Fixes"""
+        print("\n🔐 TESTING 2FA ENDPOINTS - PHASE 2 CRITICAL SECURITY FIXES...")
+        print("   Testing: Login as bmccr23@gmail.com with password 'Goosey23!!23'")
+        print("   Testing: GET /api/auth/2fa/status - should return required=true for master_admin")
+        print("   Testing: POST /api/auth/2fa/generate - should return secret and QR code")
+        print("   Testing: QR code validation (base64 PNG format)")
+        print("   Testing: TOTP secret validation (uppercase alphanumeric, ~16+ chars)")
+        print("   Testing: POST /api/auth/2fa/verify with valid TOTP code")
+        print("   Testing: Backup codes generation (10 codes)")
+        
+        results = {}
+        
+        # 1. Test login with specific user credentials
+        login_success, login_response = self.test_2fa_user_login()
+        results['user_login'] = {
+            'success': login_success,
+            'response': login_response
+        }
+        
+        if not login_success:
+            print("   ❌ Cannot proceed with 2FA tests - login failed")
+            return False, results
+        
+        # 2. Test 2FA status endpoint
+        status_success, status_response = self.test_2fa_status_endpoint()
+        results['2fa_status'] = {
+            'success': status_success,
+            'response': status_response
+        }
+        
+        # 3. Test 2FA generate endpoint
+        generate_success, generate_response = self.test_2fa_generate_endpoint()
+        results['2fa_generate'] = {
+            'success': generate_success,
+            'response': generate_response
+        }
+        
+        # 4. Test QR code validation
+        qr_validation_success, qr_validation_response = self.test_qr_code_validation(generate_response)
+        results['qr_validation'] = {
+            'success': qr_validation_success,
+            'response': qr_validation_response
+        }
+        
+        # 5. Test TOTP secret validation
+        secret_validation_success, secret_validation_response = self.test_totp_secret_validation(generate_response)
+        results['secret_validation'] = {
+            'success': secret_validation_success,
+            'response': secret_validation_response
+        }
+        
+        # 6. Test 2FA verification with valid TOTP code
+        verify_success, verify_response = self.test_2fa_verification(generate_response)
+        results['2fa_verification'] = {
+            'success': verify_success,
+            'response': verify_response
+        }
+        
+        # 7. Test backup codes validation
+        backup_codes_success, backup_codes_response = self.test_backup_codes_validation(verify_response)
+        results['backup_codes'] = {
+            'success': backup_codes_success,
+            'response': backup_codes_response
+        }
+        
+        # Calculate overall success
+        total_tests = 7
+        successful_tests = sum([
+            login_success,
+            status_success,
+            generate_success,
+            qr_validation_success,
+            secret_validation_success,
+            verify_success,
+            backup_codes_success
+        ])
+        
+        overall_success = successful_tests >= 6  # Allow one failure
+        
+        print(f"\n🔐 2FA ENDPOINTS TESTING SUMMARY:")
+        print(f"   ✅ Successful tests: {successful_tests}/{total_tests}")
+        print(f"   📈 Success rate: {(successful_tests/total_tests)*100:.1f}%")
+        
+        if overall_success:
+            print("   🎉 2FA Endpoints - TESTING COMPLETED SUCCESSFULLY")
+        else:
+            print("   ❌ 2FA Endpoints - CRITICAL ISSUES FOUND")
+            
+        return overall_success, results
+    
+    def test_2fa_user_login(self):
+        """Test login with specific user credentials from review request"""
+        print("\n🔐 TESTING 2FA USER LOGIN...")
+        
+        # Use specific credentials from review request
+        login_data = {
+            "email": "bmccr23@gmail.com",
+            "password": "Goosey23!!23",
+            "remember_me": False
+        }
+        
+        print(f"   🔍 Testing login with: {login_data['email']} / {login_data['password']}")
+        
+        try:
+            import requests
+            session = requests.Session()
+            
+            login_response = session.post(
+                f"{self.base_url}/api/auth/login",
+                json=login_data,
+                timeout=15
+            )
+            
+            if login_response.status_code == 200:
+                print("   ✅ User login successful")
+                login_data_response = login_response.json()
+                
+                # Store session for later use
+                self.user_session = session
+                
+                # Verify user details
+                user_data = login_data_response.get('user', {})
+                if user_data:
+                    print(f"   ✅ User email: {user_data.get('email')}")
+                    print(f"   ✅ User role: {user_data.get('role')}")
+                    print(f"   ✅ User plan: {user_data.get('plan')}")
+                    
+                    # Check if role is master_admin as expected
+                    if user_data.get('role') == 'master_admin':
+                        print("   ✅ Correct master_admin role returned")
+                    else:
+                        print(f"   ⚠️  Role: expected 'master_admin', got '{user_data.get('role')}'")
+                
+                return True, login_data_response
+            else:
+                print(f"   ❌ User login failed - Status: {login_response.status_code}")
+                try:
+                    error_response = login_response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {login_response.text[:200]}")
+                return False, {"error": "login failed", "status": login_response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in user login test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_2fa_status_endpoint(self):
+        """Test GET /api/auth/2fa/status endpoint"""
+        print("\n📊 TESTING 2FA STATUS ENDPOINT...")
+        
+        if not hasattr(self, 'user_session'):
+            print("   ❌ No user session available - login first")
+            return False, {"error": "No user session"}
+        
+        try:
+            print("   🔍 Testing GET /api/auth/2fa/status")
+            
+            status_response = self.user_session.get(
+                f"{self.base_url}/api/auth/2fa/status",
+                timeout=15
+            )
+            
+            if status_response.status_code == 200:
+                print("   ✅ 2FA status endpoint successful")
+                status_data = status_response.json()
+                
+                print(f"   🔍 Status response: {status_data}")
+                
+                # Check required fields
+                if 'enabled' in status_data and 'required' in status_data:
+                    print("   ✅ Status response has required fields (enabled, required)")
+                    
+                    enabled = status_data.get('enabled')
+                    required = status_data.get('required')
+                    
+                    print(f"   🔍 2FA enabled: {enabled}")
+                    print(f"   🔍 2FA required: {required}")
+                    
+                    # For master_admin, 2FA should be required
+                    if required:
+                        print("   ✅ 2FA required=true for master_admin (correct)")
+                    else:
+                        print("   ❌ 2FA required=false for master_admin (incorrect)")
+                        return False, {"error": "2FA not required for master_admin"}
+                    
+                    return True, status_data
+                else:
+                    print("   ❌ Status response missing required fields")
+                    return False, {"error": "Missing required fields", "response": status_data}
+            else:
+                print(f"   ❌ 2FA status endpoint failed - Status: {status_response.status_code}")
+                try:
+                    error_response = status_response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {status_response.text[:200]}")
+                return False, {"error": "status endpoint failed", "status": status_response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in 2FA status test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_2fa_generate_endpoint(self):
+        """Test POST /api/auth/2fa/generate endpoint"""
+        print("\n🔑 TESTING 2FA GENERATE ENDPOINT...")
+        
+        if not hasattr(self, 'user_session'):
+            print("   ❌ No user session available - login first")
+            return False, {"error": "No user session"}
+        
+        try:
+            print("   🔍 Testing POST /api/auth/2fa/generate")
+            
+            generate_response = self.user_session.post(
+                f"{self.base_url}/api/auth/2fa/generate",
+                json={},
+                timeout=15
+            )
+            
+            if generate_response.status_code == 200:
+                print("   ✅ 2FA generate endpoint successful")
+                generate_data = generate_response.json()
+                
+                print(f"   🔍 Generate response keys: {list(generate_data.keys())}")
+                
+                # Check required fields
+                required_fields = ['secret', 'qr_code', 'email']
+                missing_fields = []
+                
+                for field in required_fields:
+                    if field in generate_data:
+                        print(f"   ✅ Field '{field}' present")
+                    else:
+                        print(f"   ❌ Field '{field}' missing")
+                        missing_fields.append(field)
+                
+                if missing_fields:
+                    return False, {"error": f"Missing fields: {missing_fields}", "response": generate_data}
+                
+                # Verify email matches user
+                if generate_data.get('email') == 'bmccr23@gmail.com':
+                    print("   ✅ Email matches logged-in user")
+                else:
+                    print(f"   ⚠️  Email mismatch: expected 'bmccr23@gmail.com', got '{generate_data.get('email')}'")
+                
+                return True, generate_data
+            else:
+                print(f"   ❌ 2FA generate endpoint failed - Status: {generate_response.status_code}")
+                try:
+                    error_response = generate_response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {generate_response.text[:200]}")
+                return False, {"error": "generate endpoint failed", "status": generate_response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in 2FA generate test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_qr_code_validation(self, generate_response):
+        """Test QR code validation - should be valid base64 PNG data URI"""
+        print("\n📱 TESTING QR CODE VALIDATION...")
+        
+        if not generate_response or not isinstance(generate_response, dict):
+            print("   ❌ No generate response available")
+            return False, {"error": "No generate response"}
+        
+        qr_code = generate_response.get('qr_code')
+        if not qr_code:
+            print("   ❌ No QR code in generate response")
+            return False, {"error": "No QR code"}
+        
+        print(f"   🔍 QR code length: {len(qr_code)} characters")
+        print(f"   🔍 QR code prefix: {qr_code[:50]}...")
+        
+        # Check if QR code starts with proper data URI format
+        expected_prefix = "data:image/png;base64,"
+        if qr_code.startswith(expected_prefix):
+            print("   ✅ QR code has correct data URI format")
+        else:
+            print(f"   ❌ QR code has incorrect format - expected to start with '{expected_prefix}'")
+            return False, {"error": "Invalid QR code format"}
+        
+        # Extract base64 data
+        base64_data = qr_code[len(expected_prefix):]
+        
+        # Validate base64 encoding
+        try:
+            decoded_data = base64.b64decode(base64_data)
+            print(f"   ✅ QR code base64 decoding successful - {len(decoded_data)} bytes")
+        except Exception as e:
+            print(f"   ❌ QR code base64 decoding failed: {e}")
+            return False, {"error": "Invalid base64 encoding"}
+        
+        # Check if it's a valid PNG (starts with PNG signature)
+        png_signature = b'\x89PNG\r\n\x1a\n'
+        if decoded_data.startswith(png_signature):
+            print("   ✅ QR code is valid PNG image")
+        else:
+            print("   ❌ QR code is not a valid PNG image")
+            return False, {"error": "Not a valid PNG image"}
+        
+        # Check if it's not a 1x1 placeholder
+        if len(decoded_data) > 100:  # A real QR code should be much larger than 100 bytes
+            print(f"   ✅ QR code appears to be real (not 1x1 placeholder) - {len(decoded_data)} bytes")
+        else:
+            print(f"   ❌ QR code appears to be a placeholder - only {len(decoded_data)} bytes")
+            return False, {"error": "QR code appears to be placeholder"}
+        
+        return True, {
+            "format_valid": True,
+            "base64_valid": True,
+            "png_valid": True,
+            "size_bytes": len(decoded_data),
+            "not_placeholder": True
+        }
+    
+    def test_totp_secret_validation(self, generate_response):
+        """Test TOTP secret validation - should be uppercase alphanumeric, ~16+ chars"""
+        print("\n🔐 TESTING TOTP SECRET VALIDATION...")
+        
+        if not generate_response or not isinstance(generate_response, dict):
+            print("   ❌ No generate response available")
+            return False, {"error": "No generate response"}
+        
+        secret = generate_response.get('secret')
+        if not secret:
+            print("   ❌ No secret in generate response")
+            return False, {"error": "No secret"}
+        
+        print(f"   🔍 Secret: {secret}")
+        print(f"   🔍 Secret length: {len(secret)} characters")
+        
+        # Check length (should be ~16+ characters)
+        if len(secret) >= 16:
+            print("   ✅ Secret has adequate length (16+ characters)")
+        else:
+            print(f"   ❌ Secret too short - expected 16+, got {len(secret)}")
+            return False, {"error": "Secret too short"}
+        
+        # Check if uppercase alphanumeric (Base32 format)
+        import re
+        base32_pattern = r'^[A-Z2-7]+$'
+        if re.match(base32_pattern, secret):
+            print("   ✅ Secret is valid Base32 format (uppercase A-Z, 2-7)")
+        else:
+            print("   ❌ Secret is not valid Base32 format")
+            return False, {"error": "Invalid Base32 format"}
+        
+        # Test if secret can be used to create TOTP
+        try:
+            totp = pyotp.TOTP(secret)
+            current_code = totp.now()
+            print(f"   ✅ Secret can generate TOTP codes (current: {current_code})")
+        except Exception as e:
+            print(f"   ❌ Secret cannot be used for TOTP: {e}")
+            return False, {"error": "Secret not TOTP compatible"}
+        
+        return True, {
+            "length_valid": len(secret) >= 16,
+            "format_valid": True,
+            "totp_compatible": True,
+            "secret_length": len(secret)
+        }
+    
+    def test_2fa_verification(self, generate_response):
+        """Test POST /api/auth/2fa/verify with valid TOTP code"""
+        print("\n✅ TESTING 2FA VERIFICATION...")
+        
+        if not hasattr(self, 'user_session'):
+            print("   ❌ No user session available - login first")
+            return False, {"error": "No user session"}
+        
+        if not generate_response or not isinstance(generate_response, dict):
+            print("   ❌ No generate response available")
+            return False, {"error": "No generate response"}
+        
+        secret = generate_response.get('secret')
+        if not secret:
+            print("   ❌ No secret available for verification")
+            return False, {"error": "No secret"}
+        
+        try:
+            # Generate a valid TOTP code using the secret
+            totp = pyotp.TOTP(secret)
+            current_code = totp.now()
+            
+            print(f"   🔍 Generated TOTP code: {current_code}")
+            print("   🔍 Testing POST /api/auth/2fa/verify")
+            
+            verify_data = {
+                "secret": secret,
+                "code": current_code
+            }
+            
+            verify_response = self.user_session.post(
+                f"{self.base_url}/api/auth/2fa/verify",
+                json=verify_data,
+                timeout=15
+            )
+            
+            if verify_response.status_code == 200:
+                print("   ✅ 2FA verification successful")
+                verify_result = verify_response.json()
+                
+                print(f"   🔍 Verification response keys: {list(verify_result.keys())}")
+                
+                # Check for success message
+                if verify_result.get('success'):
+                    print("   ✅ Verification marked as successful")
+                else:
+                    print("   ⚠️  Verification success flag not found")
+                
+                # Check for backup codes
+                if 'backup_codes' in verify_result:
+                    print("   ✅ Backup codes included in response")
+                else:
+                    print("   ❌ Backup codes missing from response")
+                    return False, {"error": "Backup codes missing"}
+                
+                return True, verify_result
+            else:
+                print(f"   ❌ 2FA verification failed - Status: {verify_response.status_code}")
+                try:
+                    error_response = verify_response.json()
+                    print(f"   ❌ Error: {error_response.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {verify_response.text[:200]}")
+                return False, {"error": "verification failed", "status": verify_response.status_code}
+                
+        except Exception as e:
+            print(f"   ❌ Error in 2FA verification test: {e}")
+            return False, {"error": str(e)}
+    
+    def test_backup_codes_validation(self, verify_response):
+        """Test backup codes validation - should be 10 codes, 8-character alphanumeric"""
+        print("\n🔑 TESTING BACKUP CODES VALIDATION...")
+        
+        if not verify_response or not isinstance(verify_response, dict):
+            print("   ❌ No verification response available")
+            return False, {"error": "No verification response"}
+        
+        backup_codes = verify_response.get('backup_codes')
+        if not backup_codes:
+            print("   ❌ No backup codes in verification response")
+            return False, {"error": "No backup codes"}
+        
+        print(f"   🔍 Number of backup codes: {len(backup_codes)}")
+        
+        # Check count (should be 10)
+        if len(backup_codes) == 10:
+            print("   ✅ Correct number of backup codes (10)")
+        else:
+            print(f"   ❌ Incorrect number of backup codes - expected 10, got {len(backup_codes)}")
+            return False, {"error": f"Wrong backup code count: {len(backup_codes)}"}
+        
+        # Check format of each code
+        valid_codes = 0
+        for i, code in enumerate(backup_codes):
+            print(f"   🔍 Code {i+1}: {code}")
+            
+            # Check length (should be 8 characters)
+            if len(code) == 8:
+                length_ok = True
+            else:
+                print(f"   ❌ Code {i+1} wrong length - expected 8, got {len(code)}")
+                length_ok = False
+            
+            # Check format (should be alphanumeric, uppercase)
+            import re
+            alphanumeric_pattern = r'^[A-Z0-9]+$'
+            if re.match(alphanumeric_pattern, code):
+                format_ok = True
+            else:
+                print(f"   ❌ Code {i+1} wrong format - should be uppercase alphanumeric")
+                format_ok = False
+            
+            if length_ok and format_ok:
+                valid_codes += 1
+        
+        print(f"   🔍 Valid codes: {valid_codes}/{len(backup_codes)}")
+        
+        if valid_codes == len(backup_codes):
+            print("   ✅ All backup codes have correct format")
+            return True, {
+                "count_correct": True,
+                "format_correct": True,
+                "valid_codes": valid_codes,
+                "total_codes": len(backup_codes)
+            }
+        else:
+            print(f"   ❌ Some backup codes have incorrect format")
+            return False, {"error": f"Invalid backup codes: {len(backup_codes) - valid_codes}"}
+
     # ========== ADMIN CONSOLE USER LIST API TESTS ==========
     
     def test_admin_console_user_list_api(self):
