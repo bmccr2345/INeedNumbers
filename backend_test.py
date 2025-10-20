@@ -3606,17 +3606,6 @@ if __name__ == "__main__":
     else:
         # Default behavior - run STARTER user test
         run_starter_user_auth_test()
-                validation_results['missing_asset'] = True
-            else:
-                print(f"   ❌ Missing asset parameter not rejected, got {missing_asset_response.status_code}")
-                validation_results['missing_asset'] = False
-            
-            # Test 4: Missing file
-            print("   🔍 Testing missing file...")
-            data = {
-                'asset': 'headshot'
-            }
-            # No files parameter
             
             missing_file_response = session.post(
                 f"{self.base_url}/api/brand/upload",
