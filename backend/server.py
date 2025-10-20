@@ -6815,36 +6815,50 @@ async def admin_get_users(
         
         users = []
         async for user_data in users_cursor:
-            # Convert datetime fields to strings for JSON serialization
-            user_dict = dict(user_data)
-            
-            # Handle datetime fields
-            for field in ["created_at", "updated_at", "last_login"]:
-                if field in user_dict and user_dict[field]:
-                    if isinstance(user_dict[field], datetime):
-                        user_dict[field] = user_dict[field].isoformat()
-                    elif isinstance(user_dict[field], str):
-                        # Already a string, keep as is
-                        pass
-                    else:
-                        user_dict[field] = str(user_dict[field])
-            
-            # Get deals count for this user
-            deals_count = await db.pnl_deals.count_documents({"user_id": user_dict["id"]})
-            
-            admin_user = AdminUserResponse(
-                id=user_dict["id"],
-                email=user_dict["email"],
-                full_name=user_dict.get("full_name"),
-                plan=user_dict["plan"],
-                status=user_dict.get("status", "active"),
-                role=user_dict.get("role"),
-                created_at=user_dict.get("created_at", ""),
-                last_login=user_dict.get("last_login"),
-                deals_count=deals_count,
-                stripe_customer_id=user_dict.get("stripe_customer_id")
-            )
-            users.append(admin_user)
+            try:
+                # Convert datetime fields to strings for JSON serialization
+                user_dict = dict(user_data)
+                
+                # Ensure 'id' field exists - skip user if missing
+                if "id" not in user_dict or user_dict["id"] is None:
+                    logger.warning(f"Skipping user {user_dict.get('email', 'UNKNOWN')} - missing 'id' field")
+                    continue
+                
+                # Handle datetime fields
+                for field in ["created_at", "updated_at", "last_login"]:
+                    if field in user_dict and user_dict[field]:
+                        if isinstance(user_dict[field], datetime):
+                            user_dict[field] = user_dict[field].isoformat()
+                        elif isinstance(user_dict[field], str):
+                            # Already a string, keep as is
+                            pass
+                        else:
+                            user_dict[field] = str(user_dict[field])
+                
+                # Get deals count for this user (with error handling)
+                try:
+                    deals_count = await db.pnl_deals.count_documents({"user_id": user_dict["id"]})
+                except Exception as deals_error:
+                    logger.warning(f"Could not fetch deals count for user {user_dict['id']}: {deals_error}")
+                    deals_count = 0
+                
+                admin_user = AdminUserResponse(
+                    id=user_dict["id"],
+                    email=user_dict["email"],
+                    full_name=user_dict.get("full_name"),
+                    plan=user_dict.get("plan", "FREE"),
+                    status=user_dict.get("status", "active"),
+                    role=user_dict.get("role", "user"),
+                    created_at=user_dict.get("created_at", ""),
+                    last_login=user_dict.get("last_login"),
+                    deals_count=deals_count,
+                    stripe_customer_id=user_dict.get("stripe_customer_id")
+                )
+                users.append(admin_user)
+            except Exception as user_error:
+                logger.error(f"Error processing user {user_data.get('email', 'UNKNOWN')}: {user_error}")
+                # Continue processing other users even if one fails
+                continue
         
         return {
             "users": users,
