@@ -24511,9 +24511,11 @@ if __name__ == "__main__":
             main_2fa_endpoints_test()
         elif test_type == "admin_crud":
             main_admin_crud_tests()
+        elif test_type == "audit_logs":
+            main_audit_logs_tests()
         else:
-            print("Available tests: pdf, affordability, ai-coach, starter, 2fa, admin_crud")
+            print("Available tests: pdf, affordability, ai-coach, starter, 2fa, admin_crud, audit_logs")
             sys.exit(1)
     else:
-        # Default: run admin CRUD tests as requested in review
-        main_admin_crud_tests()
+        # Default: run audit logs tests as requested in review
+        main_audit_logs_tests()
