@@ -877,6 +877,18 @@ const AdminUsers = ({ globalSearch = '' }) => {
         </div>
       )}
       
+      {/* Reset Password Modal */}
+      {showResetPasswordModal && selectedUser && (
+        <AdminResetUserPasswordModal
+          isOpen={showResetPasswordModal}
+          onClose={() => {
+            setShowResetPasswordModal(false);
+            setSelectedUser(null);
+          }}
+          user={selectedUser}
+        />
+      )}
+      
     </div>
   );
 };
