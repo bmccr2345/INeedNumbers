@@ -9,6 +9,54 @@ const NetSheetAICoach = ({ isOpen, onClose, inputs, results, dealState }) => {
   const [analysis, setAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
+  // Helper function to format JSON analysis into readable text
+  const formatJsonAnalysis = (data) => {
+    let formatted = '';
+    
+    // Extract summary if it exists
+    if (data.summary) {
+      formatted += data.summary + '\n\n';
+    }
+    
+    // Format stats section
+    if (data.stats) {
+      formatted += '📊 Deal Summary:\n';
+      Object.entries(data.stats).forEach(([key, value]) => {
+        const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        formatted += `• ${label}: ${value}\n`;
+      });
+      formatted += '\n';
+    }
+    
+    // Format insights
+    if (data.insights && Array.isArray(data.insights)) {
+      formatted += '💡 Key Insights:\n';
+      data.insights.forEach((insight, idx) => {
+        formatted += `${idx + 1}. ${insight}\n`;
+      });
+      formatted += '\n';
+    }
+    
+    // Format recommendations
+    if (data.recommendations && Array.isArray(data.recommendations)) {
+      formatted += '🎯 Recommendations:\n';
+      data.recommendations.forEach((rec, idx) => {
+        formatted += `${idx + 1}. ${rec}\n`;
+      });
+      formatted += '\n';
+    }
+    
+    // Format risks
+    if (data.risks && Array.isArray(data.risks)) {
+      formatted += '⚠️ Risks to Consider:\n';
+      data.risks.forEach((risk, idx) => {
+        formatted += `${idx + 1}. ${risk}\n`;
+      });
+    }
+    
+    return formatted.trim();
+  };
+
   // Helper function for API headers (using HttpOnly cookie authentication)
   const getHeaders = () => {
     return {
