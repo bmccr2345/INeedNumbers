@@ -3615,9 +3615,6 @@ async def get_2fa_status(current_user: User = Depends(require_auth)):
         raise HTTPException(status_code=500, detail="Failed to get 2FA status")
 
 
-        "user": UserResponse(**user.dict())
-    }
-
 @api_router.post("/auth/logout")
 async def logout(response: Response):
     """Logout user by clearing authentication cookie"""
