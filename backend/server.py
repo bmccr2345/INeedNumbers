@@ -17,6 +17,14 @@ import math
 from calendar import monthrange
 from jose import JWTError, jwt
 from app.security_modules.password import hash_password, verify_password, check_needs_rehash
+from app.two_factor import (
+    generate_totp_secret,
+    generate_qr_code,
+    verify_totp_code,
+    generate_backup_codes,
+    hash_backup_codes,
+    verify_backup_code
+)
 import stripe
 import logging
 import uuid
