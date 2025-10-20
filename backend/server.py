@@ -7277,6 +7277,59 @@ async def admin_reset_user_password(
         raise HTTPException(status_code=500, detail="Failed to reset password")
 
 
+
+@api_router.get("/admin/audit-logs")
+async def get_audit_logs(
+    page: int = 1,
+    limit: int = 50,
+    action_filter: str = None,
+    user_email: str = None,
+    current_user: User = Depends(require_master_admin)
+):
+    """Get audit logs (admin only)"""
+    try:
+        # Build query
+        query = {}
+        if action_filter:
+            query["action"] = action_filter
+        if user_email:
+            query["user_email"] = {"$regex": user_email, "$options": "i"}
+        
+        # Get total count
+        total = await db.audit_logs.count_documents(query)
+        
+        # Get logs with pagination
+        skip = (page - 1) * limit
+        logs_cursor = db.audit_logs.find(query).sort("timestamp", -1).skip(skip).limit(limit)
+        logs = []
+        
+        async for log in logs_cursor:
+            log_dict = dict(log)
+            
+            # Convert ObjectId to string if present
+            if "_id" in log_dict:
+                log_dict["_id"] = str(log_dict["_id"])
+            
+            # Convert datetime to ISO string
+            if "timestamp" in log_dict and log_dict["timestamp"]:
+                if isinstance(log_dict["timestamp"], datetime):
+                    log_dict["timestamp"] = log_dict["timestamp"].isoformat()
+            
+            logs.append(log_dict)
+        
+        return {
+            "logs": logs,
+            "total": total,
+            "page": page,
+            "pages": (total + limit - 1) // limit
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching audit logs: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch audit logs")
+
+
+
         return {"message": "User deleted successfully", "deleted_user_id": user_id}
         
     except HTTPException:
