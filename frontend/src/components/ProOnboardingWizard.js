@@ -256,7 +256,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           description: 'Check how you\'re tracking against targets',
           content: (
             <div className="space-y-3 text-sm">
-              <p className="font-medium">Goals Tab → Review Progress</p>
+              <p className="font-medium">Plan and Track → Goal Settings → Review Progress</p>
               <ol className="space-y-2 ml-4 list-decimal">
                 <li>Compare actual activities vs. targets</li>
                 <li>Check your income projection based on current pace</li>
