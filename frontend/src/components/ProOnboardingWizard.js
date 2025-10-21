@@ -443,12 +443,22 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
               <p className="text-emerald-100 text-sm mt-1">{currentDayData.description}</p>
             </div>
           </div>
-          <button 
-            onClick={onClose}
-            className="text-white hover:text-emerald-100 transition-colors"
-          >
-            <X className="w-6 h-6" />
-          </button>
+          <div className="flex items-center space-x-2">
+            <button 
+              onClick={() => setIsMinimized(true)}
+              className="text-white hover:text-emerald-100 transition-colors p-1 hover:bg-emerald-600 rounded"
+              title="Minimize"
+            >
+              <ChevronRight className="w-6 h-6" />
+            </button>
+            <button 
+              onClick={onClose}
+              className="text-white hover:text-emerald-100 transition-colors p-1 hover:bg-emerald-600 rounded"
+              title="Close"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Progress Bar */}
