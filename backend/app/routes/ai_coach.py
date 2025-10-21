@@ -268,6 +268,9 @@ async def generate_coach(
         elif context == "affordability_analysis":
             from app.prompts import affordability_analysis_system_prompt
             system_prompt = affordability_analysis_system_prompt()
+        elif context == "net_sheet_analysis":
+            from app.prompts import net_sheet_analysis_system_prompt
+            system_prompt = net_sheet_analysis_system_prompt()
         else:
             system_prompt = coach_system_prompt()
         
