@@ -49,14 +49,8 @@ const CapTrackerPanel = () => {
       setIsLoading(true);
       setError(null);
 
-      const token = Cookies.get('access_token');
-      if (!token) {
-        setError('Authentication required');
-        return;
-      }
-
       const response = await axios.get(`${backendUrl}/api/cap-tracker/config`, {
-        headers: { Authorization: `Bearer ${token}` }
+        withCredentials: true  // Use HttpOnly cookie authentication
       });
 
       if (response.data) {
