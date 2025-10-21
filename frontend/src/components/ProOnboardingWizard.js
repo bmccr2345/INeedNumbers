@@ -535,15 +535,20 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
 
         {/* Footer */}
         <div className="border-t bg-gray-50 px-6 py-4 flex justify-between items-center">
-          <button
-            onClick={() => {
-              onClose();
-              localStorage.setItem('pro_onboarding_dismissed', 'true');
-            }}
-            className="text-sm text-gray-600 hover:text-gray-800"
-          >
-            I'll do this later
-          </button>
+          <div className="flex items-center space-x-4">
+            <button
+              onClick={() => {
+                onClose();
+                localStorage.setItem('pro_onboarding_dismissed', 'true');
+              }}
+              className="text-sm text-gray-600 hover:text-gray-800"
+            >
+              I'll do this later
+            </button>
+            <span className="text-xs text-gray-500 italic">
+              💡 Tip: Click outside or "Minimize" to continue working
+            </span>
+          </div>
           <div className="flex items-center space-x-3">
             {currentDay < 3 && (
               <Button
