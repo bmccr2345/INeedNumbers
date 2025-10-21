@@ -36,6 +36,7 @@ import CapTrackerPanel from '../components/dashboard/CapTrackerPanel';
 import BrandingPanel from '../components/dashboard/BrandingPanel';
 import GoalSettingsPanel from '../components/dashboard/GoalSettingsPanel';
 import UpgradeModal from '../components/dashboard/UpgradeModal';
+import ProOnboardingWizard from '../components/ProOnboardingWizard';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
@@ -44,6 +45,22 @@ const DashboardPage = () => {
   const [activeTab, setActiveTab] = useState('homepage'); // Default to homepage
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+
+  // Check if Pro user needs onboarding
+  useEffect(() => {
+    if (user && user.plan === 'PRO') {
+      const hasCompletedOnboarding = localStorage.getItem('pro_onboarding_completed');
+      const hasDismissed = localStorage.getItem('pro_onboarding_dismissed');
+      
+      if (!hasCompletedOnboarding && !hasDismissed) {
+        // Show wizard after a brief delay to let dashboard load
+        setTimeout(() => {
+          setShowOnboardingWizard(true);
+        }, 1000);
+      }
+    }
+  }, [user]);
 
   // Tab configuration - Homepage is now first
   const tabs = [
