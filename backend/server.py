@@ -2520,7 +2520,6 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
         # Check if template variables are still present
         if "{{" in html_content:
             logger.error(f"Commission PDF - Template variables still present in rendered HTML!")
-            import re
             vars_found = re.findall(r'\{\{[^}]+\}\}', html_content)
             logger.error(f"Commission PDF - Template variables found: {vars_found[:10]}")
         else:
