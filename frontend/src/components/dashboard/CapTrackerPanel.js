@@ -118,6 +118,9 @@ const CapTrackerPanel = () => {
       setCapConfig(response.data);
       setIsEditing(false);
       setError(null);
+      
+      // Reload progress after saving config
+      await loadCapProgress();
     } catch (error) {
       console.error('Failed to save cap configuration:', error);
       setError('Failed to save configuration');
