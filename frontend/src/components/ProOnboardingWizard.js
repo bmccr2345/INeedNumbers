@@ -385,7 +385,52 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
 
   const currentDayData = dayContent[currentDay];
   const progress = getDayProgress(currentDay);
+  const overallProgress = Math.round(
+    (Object.values(checklist.day1).filter(Boolean).length +
+     Object.values(checklist.day2).filter(Boolean).length +
+     Object.values(checklist.day3).filter(Boolean).length) / 12 * 100
+  );
 
+  // Minimized widget (floating on right side)
+  if (isMinimized) {
+    return (
+      <div className="fixed right-4 bottom-4 z-50">
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white rounded-lg shadow-2xl hover:shadow-3xl transition-all hover:scale-105 p-4 flex flex-col items-center space-y-2 w-64"
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center space-x-2">
+              <Sparkles className="w-5 h-5" />
+              <span className="font-bold">Pro Onboarding</span>
+            </div>
+            <span className="text-xs bg-white text-emerald-700 px-2 py-1 rounded-full font-bold">
+              Day {currentDay}/3
+            </span>
+          </div>
+          
+          <div className="w-full">
+            <div className="flex justify-between text-xs mb-1">
+              <span>Overall Progress</span>
+              <span className="font-bold">{overallProgress}%</span>
+            </div>
+            <div className="w-full bg-emerald-800 rounded-full h-2">
+              <div 
+                className="bg-white h-2 rounded-full transition-all duration-300"
+                style={{ width: `${overallProgress}%` }}
+              />
+            </div>
+          </div>
+          
+          <div className="text-xs text-emerald-100 text-center">
+            Click to continue your journey →
+          </div>
+        </button>
+      </div>
+    );
+  }
+
+  // Full expanded modal
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
       <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white shadow-2xl">
