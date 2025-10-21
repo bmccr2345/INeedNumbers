@@ -37,7 +37,7 @@ from enum import Enum
 import asyncio
 import tempfile
 from fastapi.responses import Response
-from weasyprint import HTML, CSS
+# WeasyPrint removed - using Playwright for PDF generation (Emergent compatibility)
 import io
 import os
 import re
