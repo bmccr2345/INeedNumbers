@@ -134,7 +134,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           description: 'Record today\'s conversations and appointments',
           content: (
             <div className="space-y-3 text-sm">
-              <p className="font-medium">Navigate to Action Tracker → Click "Log Activity"</p>
+              <p className="font-medium">Navigate to Plan and Track → Action Tracker → Click "Log Activity"</p>
               <ol className="space-y-2 ml-4 list-decimal">
                 <li>Enter the activities you completed today:
                   <ul className="ml-4 mt-1 space-y-1">
