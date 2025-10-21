@@ -338,10 +338,10 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
             <div className="space-y-3 text-sm">
               <p className="font-medium">Dashboard Customization:</p>
               <ul className="space-y-2 ml-4">
-                <li>• Pin your most-used calculators</li>
-                <li>• Set up recurring expenses in P&L</li>
-                <li>• Customize activity categories to match your business</li>
-                <li>• Upload your branding for investor PDFs</li>
+                <li>• Pin your most-used tools from the Work Deals section</li>
+                <li>• Set up recurring expenses in Manage Finances → P&L Tracker</li>
+                <li>• Customize activity categories in Action Tracker to match your business</li>
+                <li>• Upload your branding in My Business → Branding & Profile for investor PDFs</li>
               </ul>
               <div className="bg-blue-50 p-3 rounded-lg mt-3">
                 <p className="text-blue-900 font-medium">⚡ Power User Tip:</p>
