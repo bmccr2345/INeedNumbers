@@ -432,8 +432,14 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
 
   // Full expanded modal
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white shadow-2xl">
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
+      onClick={() => setIsMinimized(true)} // Click backdrop to minimize
+    >
+      <Card 
+        className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white shadow-2xl"
+        onClick={(e) => e.stopPropagation()} // Prevent click from bubbling to backdrop
+      >
         {/* Header */}
         <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 text-white p-6 flex justify-between items-start">
           <div className="flex items-start space-x-3">
