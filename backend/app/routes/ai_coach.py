@@ -182,6 +182,22 @@ async def generate_coach(
                 "user_plan": user.plan,
                 "context": "Home affordability analysis focusing on qualification status, DTI, and monthly payment affordability"
             }
+        elif context == "net_sheet_analysis":
+            # Get seller net sheet specific data from request body
+            deal_data = body.get("deal_data", {})
+            
+            payload = {
+                "analysis_type": "seller_net_sheet_analysis",
+                "sale_price": deal_data.get("sale_price", 0),
+                "commission": deal_data.get("commission", 0),
+                "net_amount": deal_data.get("net_amount", 0),
+                "net_percentage": deal_data.get("net_percentage", 0),
+                "deal_state": deal_data.get("deal_state", ""),
+                "inputs": deal_data.get("inputs", {}),
+                "results": deal_data.get("results", {}),
+                "user_plan": user.plan,
+                "context": "Seller net sheet analysis focusing on net proceeds, cost optimization, and deal structure"
+            }
         else:
             # Standard dashboard AI Coach payload
             payload = {
