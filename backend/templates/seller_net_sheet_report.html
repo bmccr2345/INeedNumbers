@@ -6,6 +6,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
+:root {
+  --brand-primary: {{ branding.colors.primary if branding.colors.primary else '#16a34a' }};
+  --brand-primary-dark: {{ branding.colors.primary if branding.colors.primary else '#15803d' }}dd;
+}
+
 /* Print rules */
 @page { 
   size: Letter; 
