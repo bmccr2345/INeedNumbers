@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, Circle, ChevronRight, Sparkles, TrendingUp, Target, Calendar, Clock, Brain, Trophy } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Card, CardContent } from '../ui/card';
+import { Button } from './ui/button';
+import { Card, CardContent } from './ui/card';
 
 const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
   const [currentDay, setCurrentDay] = useState(1);
