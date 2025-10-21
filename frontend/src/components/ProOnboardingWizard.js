@@ -452,15 +452,16 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           <div className="flex items-center space-x-2">
             <button 
               onClick={() => setIsMinimized(true)}
-              className="text-white hover:text-emerald-100 transition-colors p-1 hover:bg-emerald-600 rounded"
-              title="Minimize"
+              className="flex items-center space-x-2 text-white hover:text-emerald-100 transition-colors px-3 py-2 hover:bg-emerald-600 rounded-lg group"
+              title="Minimize to continue working"
             >
-              <ChevronRight className="w-6 h-6" />
+              <span className="text-sm font-medium">Minimize</span>
+              <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button 
               onClick={onClose}
-              className="text-white hover:text-emerald-100 transition-colors p-1 hover:bg-emerald-600 rounded"
-              title="Close"
+              className="text-white hover:text-emerald-100 transition-colors p-2 hover:bg-emerald-600 rounded-lg"
+              title="Close wizard"
             >
               <X className="w-6 h-6" />
             </button>
