@@ -2685,17 +2685,53 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
         raise HTTPException(status_code=500, detail=str(e))
 
 async def generate_pdf_with_weasyprint_from_html(html_content: str) -> bytes:
-    """Generate PDF using WeasyPrint from HTML content"""
+    """
+    Generate PDF from HTML using Playwright (WeasyPrint replacement for Emergent compatibility)
+    
+    Emergent platform doesn't support system-level libraries required by WeasyPrint.
+    Using Playwright as a pure-Python alternative that works in containerized environments.
+    """
     try:
-        # Generate PDF using WeasyPrint
-        html_obj = HTML(string=html_content)
-        pdf_buffer = html_obj.write_pdf()
+        from playwright.async_api import async_playwright
         
-        return pdf_buffer
+        logger.info("Generating PDF using Playwright (WeasyPrint alternative)")
         
+        async with async_playwright() as p:
+            browser = await p.chromium.launch()
+            page = await browser.new_page()
+            
+            # Set content
+            await page.set_content(html_content, wait_until="networkidle")
+            
+            # Generate PDF with print-friendly settings
+            pdf_bytes = await page.pdf(
+                format='Letter',
+                print_background=True,
+                margin={
+                    'top': '0.5in',
+                    'right': '0.5in',
+                    'bottom': '0.5in',
+                    'left': '0.5in'
+                }
+            )
+            
+            await browser.close()
+            
+            logger.info(f"PDF generated successfully using Playwright: {len(pdf_bytes)} bytes")
+            return pdf_bytes
+            
+    except ImportError:
+        logger.error("Playwright not available - this is required for PDF generation on Emergent platform")
+        raise HTTPException(
+            status_code=500,
+            detail="PDF generation service unavailable. Playwright is required."
+        )
     except Exception as e:
-        logger.error(f"WeasyPrint PDF generation error: {str(e)}")
-        raise e
+        logger.error(f"Playwright PDF generation error: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to generate PDF: {str(e)}"
+        )
 
 @api_router.post("/reports/{tool}/pdf-playwright")
 async def generate_pdf_playwright(tool: str, request: Request, current_user: Optional[User] = Depends(get_current_user_optional)):
