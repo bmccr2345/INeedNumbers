@@ -239,9 +239,9 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
             <div className="space-y-3 text-sm">
               <p className="font-medium">Try AI Coach in Multiple Places:</p>
               <ul className="space-y-2 ml-4">
-                <li>• <strong>Dashboard:</strong> Click AI Coach for daily insights</li>
-                <li>• <strong>Calculators:</strong> Get deal analysis with AI recommendations</li>
-                <li>• <strong>P&L Tracker:</strong> Ask AI about expense patterns</li>
+                <li>• <strong>Dashboard Overview:</strong> Click AI Coach banner for daily insights</li>
+                <li>• <strong>Work Deals Calculators:</strong> Get deal analysis with AI recommendations</li>
+                <li>• <strong>Manage Finances → P&L Tracker:</strong> Ask AI about expense patterns</li>
               </ul>
               <div className="bg-purple-50 p-3 rounded-lg mt-3">
                 <p className="text-purple-900 font-medium">✨ AI Gets Smarter:</p>
