@@ -5427,23 +5427,31 @@ async def resolve_brand_data(
 async def storage_health_check():
     """Health check for S3 storage connectivity"""
     try:
-        if STORAGE_DRIVER != 's3':
-            return {"ok": False, "error": "Storage driver not configured for S3"}
-        
         if not s3_client:
-            return {"ok": False, "error": "S3 client not initialized"}
+            # S3 not configured - running in development mode with local storage fallback
+            return {
+                "ok": True, 
+                "storage": "local", 
+                "mode": "development",
+                "message": "Using local file storage (S3 not configured)"
+            }
         
         # Test S3 connection
         is_healthy = await test_s3_connection()
         
         if is_healthy:
-            return {"ok": True, "storage": "S3", "region": S3_REGION}
+            return {
+                "ok": True, 
+                "storage": "S3", 
+                "bucket": config.S3_BUCKET,
+                "mode": "production"
+            }
         else:
             return {"ok": False, "error": "S3 connection test failed"}
             
     except Exception as e:
         logger.error(f"Storage health check error: {e}")
-        return {"ok": False, "error": "Health check failed"}
+        return {"ok": False, "error": str(e)}
 
 # P&L Tracker API Endpoints
 @api_router.get("/pnl/deals")
