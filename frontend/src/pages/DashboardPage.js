@@ -12,12 +12,17 @@ import {
   LogOut,
   Sparkles,
   ChevronDown,
+  ChevronRight,
   LayoutDashboard,
   Shield,
   Calendar,
   Target,
   Badge,
-  TrendingUp
+  TrendingUp,
+  Briefcase,
+  PiggyBank,
+  Store,
+  CheckSquare
 } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
@@ -46,6 +51,12 @@ const DashboardPage = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showOnboardingWizard, setShowOnboardingWizard] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState({
+    planTrack: true,
+    workDeals: true,
+    manageFinances: true,
+    myBusiness: true
+  });
 
   // Check if Pro user needs onboarding
   useEffect(() => {
@@ -62,7 +73,126 @@ const DashboardPage = () => {
     }
   }, [user]);
 
-  // Tab configuration - Homepage is now first
+  // Sidebar categories with sub-tabs
+  const sidebarStructure = [
+    {
+      id: 'overview',
+      type: 'single',
+      name: 'Dashboard Overview',
+      icon: <LayoutDashboard className="w-5 h-5" />,
+      tabId: 'homepage',
+      available: ['FREE', 'STARTER', 'PRO']
+    },
+    {
+      id: 'planTrack',
+      type: 'category',
+      name: 'Plan and Track',
+      icon: <CheckSquare className="w-5 h-5" />,
+      available: ['STARTER', 'PRO'],
+      subTabs: [
+        {
+          id: 'actiontracker',
+          name: 'Action Tracker',
+          icon: <Target className="w-4 h-4" />,
+          available: ['PRO'],
+          proOnly: true
+        },
+        {
+          id: 'goalsettings',
+          name: 'Goal Settings',
+          icon: <TrendingUp className="w-4 h-4" />,
+          available: ['PRO'],
+          proOnly: true
+        },
+        {
+          id: 'captracker',
+          name: 'Cap Tracker',
+          icon: <Badge className="w-4 h-4" />,
+          available: ['PRO'],
+          proOnly: true
+        }
+      ]
+    },
+    {
+      id: 'workDeals',
+      type: 'category',
+      name: 'Work Deals',
+      icon: <Briefcase className="w-5 h-5" />,
+      available: ['FREE', 'STARTER', 'PRO'],
+      subTabs: [
+        {
+          id: 'commission',
+          name: 'Commission Split',
+          icon: <DollarSign className="w-4 h-4" />,
+          available: ['FREE', 'STARTER', 'PRO']
+        },
+        {
+          id: 'sellernet',
+          name: 'Seller Net Sheet',
+          icon: <FileText className="w-4 h-4" />,
+          available: ['FREE', 'STARTER', 'PRO']
+        },
+        {
+          id: 'closingdate',
+          name: 'Closing Date Calculator',
+          icon: <Calendar className="w-4 h-4" />,
+          available: ['FREE', 'STARTER', 'PRO']
+        },
+        {
+          id: 'investor',
+          name: 'Investor PDFs',
+          icon: <FileText className="w-4 h-4" />,
+          available: ['FREE', 'STARTER', 'PRO']
+        },
+        {
+          id: 'mortgage',
+          name: 'Mortgage & Affordability',
+          icon: <Calculator className="w-4 h-4" />,
+          available: ['FREE', 'STARTER', 'PRO']
+        }
+      ]
+    },
+    {
+      id: 'manageFinances',
+      type: 'category',
+      name: 'Manage Finances',
+      icon: <PiggyBank className="w-5 h-5" />,
+      available: ['STARTER', 'PRO'],
+      subTabs: [
+        {
+          id: 'pnl',
+          name: 'P&L Tracker',
+          icon: <BarChart3 className="w-4 h-4" />,
+          available: ['STARTER', 'PRO']
+        }
+      ]
+    },
+    {
+      id: 'myBusiness',
+      type: 'category',
+      name: 'My Business',
+      icon: <Store className="w-5 h-5" />,
+      available: ['PRO'],
+      subTabs: [
+        {
+          id: 'branding',
+          name: 'Branding & Profile',
+          icon: <Sparkles className="w-4 h-4" />,
+          available: ['PRO'],
+          proOnly: true
+        }
+      ]
+    }
+  ];
+
+  const toggleCategory = (categoryId) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
+  };
+
+  // Tab configuration for rendering content
   const tabs = [
     {
       id: 'homepage',
