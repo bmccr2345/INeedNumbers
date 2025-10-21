@@ -196,7 +196,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           description: 'Make activity logging a daily habit',
           content: (
             <div className="space-y-3 text-sm">
-              <p className="font-medium">Action Tracker → Log Activity</p>
+              <p className="font-medium">Plan and Track → Action Tracker → Log Activity</p>
               <p>Today, focus on being thorough:</p>
               <ul className="space-y-2 ml-4">
                 <li>• Record ALL conversations (not just promising ones)</li>
