@@ -3607,13 +3607,139 @@ async def get_current_user_info(current_user: User = Depends(require_auth)):
 
 @api_router.post("/auth/password-reset")
 async def request_password_reset(request: PasswordResetRequest):
-    # For MVP, just return success (implement email sending later)
-    return {"message": "Password reset email sent (MVP: not actually sent)"}
+    """
+    Request a password reset link.
+    Generates a secure token and stores it in the database.
+    In production, this would send an email with the reset link.
+    """
+    try:
+        # Find user by email
+        user = await db.users.find_one({"email": request.email})
+        
+        # Always return success to prevent email enumeration
+        if not user:
+            logger.warning(f"Password reset requested for non-existent email: {request.email}")
+            return {
+                "success": True,
+                "message": "If an account exists with this email, a password reset link has been sent."
+            }
+        
+        # Generate secure reset token (valid for 1 hour)
+        reset_token = secrets.token_urlsafe(32)
+        reset_expires = datetime.now(timezone.utc) + timedelta(hours=1)
+        
+        # Store reset token in database
+        await db.users.update_one(
+            {"email": request.email},
+            {
+                "$set": {
+                    "password_reset_token": reset_token,
+                    "password_reset_expires": reset_expires.isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Log the event
+        await log_audit_event(
+            User(**user),
+            AuditAction.PASSWORD_RESET_REQUEST,
+            {"method": "email"},
+            None
+        )
+        
+        # In production, send email with reset link
+        # For now, log the token (REMOVE IN PRODUCTION)
+        logger.info(f"Password reset token for {request.email}: {reset_token}")
+        logger.info(f"Reset link: /auth/reset-password?token={reset_token}")
+        
+        return {
+            "success": True,
+            "message": "If an account exists with this email, a password reset link has been sent.",
+            # ONLY FOR DEVELOPMENT - remove in production
+            "dev_reset_token": reset_token if config.NODE_ENV == "development" else None
+        }
+        
+    except Exception as e:
+        logger.error(f"Error processing password reset request: {e}")
+        return {
+            "success": True,
+            "message": "If an account exists with this email, a password reset link has been sent."
+        }
 
 @api_router.post("/auth/password-reset/confirm")
-async def confirm_password_reset(request: dict):
-    # For MVP, just return success
-    return {"message": "Password reset successful (MVP: not implemented)"}
+async def confirm_password_reset(reset_request: PasswordResetConfirm):
+    """
+    Confirm password reset with token and set new password.
+    """
+    try:
+        # Find user with valid reset token
+        user = await db.users.find_one({
+            "password_reset_token": reset_request.token
+        })
+        
+        if not user:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid or expired reset token"
+            )
+        
+        # Check if token has expired
+        if 'password_reset_expires' in user:
+            expires = datetime.fromisoformat(user['password_reset_expires'])
+            if expires < datetime.now(timezone.utc):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Reset token has expired. Please request a new one."
+                )
+        else:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid reset token"
+            )
+        
+        # Hash the new password
+        new_password_hash = hash_password(reset_request.new_password)
+        
+        # Update password and clear reset token
+        await db.users.update_one(
+            {"email": user['email']},
+            {
+                "$set": {
+                    "hashed_password": new_password_hash,
+                    "password_changed_at": datetime.now(timezone.utc).isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                },
+                "$unset": {
+                    "password_reset_token": "",
+                    "password_reset_expires": ""
+                }
+            }
+        )
+        
+        # Log the event
+        await log_audit_event(
+            User(**user),
+            AuditAction.PASSWORD_RESET_CONFIRM,
+            {"method": "email_token"},
+            None
+        )
+        
+        logger.info(f"Password reset successful for user: {user['email']}")
+        
+        return {
+            "success": True,
+            "message": "Password has been reset successfully. You can now log in with your new password."
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error confirming password reset: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to reset password. Please try again."
+        )
 
 @api_router.delete("/auth/delete-account")
 async def delete_account(request: Request, confirmation: dict, current_user: User = Depends(require_auth)):
