@@ -109,7 +109,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           description: 'Define your targets for income and activities',
           content: (
             <div className="space-y-3 text-sm">
-              <p className="font-medium">Navigate to Dashboard → Goals Tab</p>
+              <p className="font-medium">Navigate to Plan and Track → Goal Settings</p>
               <ol className="space-y-2 ml-4 list-decimal">
                 <li>Set your <strong>Monthly Income Goal</strong> (e.g., $8,000)</li>
                 <li>Set <strong>Activity Targets</strong>:
