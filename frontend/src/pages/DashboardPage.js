@@ -324,6 +324,19 @@ const DashboardPage = () => {
                     </button>
                   )}
                   
+                  {user?.plan === 'PRO' && (
+                    <button
+                      onClick={() => {
+                        setShowOnboardingWizard(true);
+                        setShowAccountMenu(false);
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-emerald-700 hover:bg-emerald-50"
+                    >
+                      <Sparkles className="w-4 h-4 mr-3" />
+                      Pro Onboarding Guide
+                    </button>
+                  )}
+                  
                   <div className="border-t">
                     <button
                       onClick={handleLogout}
