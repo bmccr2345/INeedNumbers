@@ -3741,6 +3741,84 @@ async def confirm_password_reset(reset_request: PasswordResetConfirm):
             detail="Failed to reset password. Please try again."
         )
 
+@api_router.post("/auth/change-password")
+async def change_password(
+    request: Request,
+    password_data: Dict[str, str],
+    current_user: User = Depends(require_auth)
+):
+    """
+    Change password for logged-in user.
+    Requires current password for verification.
+    """
+    try:
+        current_password = password_data.get("current_password")
+        new_password = password_data.get("new_password")
+        
+        if not current_password or not new_password:
+            raise HTTPException(
+                status_code=400,
+                detail="Both current and new passwords are required"
+            )
+        
+        if len(new_password) < 8:
+            raise HTTPException(
+                status_code=400,
+                detail="New password must be at least 8 characters"
+            )
+        
+        # Verify current password
+        if not verify_password(current_password, current_user.hashed_password):
+            await log_audit_event(
+                current_user,
+                AuditAction.PASSWORD_CHANGE,
+                {"success": False, "reason": "incorrect_current_password"},
+                request
+            )
+            raise HTTPException(
+                status_code=401,
+                detail="Current password is incorrect"
+            )
+        
+        # Hash new password
+        new_password_hash = hash_password(new_password)
+        
+        # Update password
+        await db.users.update_one(
+            {"id": current_user.id},
+            {
+                "$set": {
+                    "hashed_password": new_password_hash,
+                    "password_changed_at": datetime.now(timezone.utc).isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Log successful password change
+        await log_audit_event(
+            current_user,
+            AuditAction.PASSWORD_CHANGE,
+            {"success": True, "changed_by": "user_self"},
+            request
+        )
+        
+        logger.info(f"User {current_user.email} changed their password successfully")
+        
+        return {
+            "success": True,
+            "message": "Password changed successfully"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error changing password: {e}")
+        raise HTTPException(
+            status_code=500,
+            detail="Failed to change password"
+        )
+
 @api_router.delete("/auth/delete-account")
 async def delete_account(request: Request, confirmation: dict, current_user: User = Depends(require_auth)):
     if confirmation.get("confirmation") != "DELETE":
