@@ -19,10 +19,9 @@ const ForgotPasswordPage = () => {
     setError('');
 
     try {
-      // TODO: Implement actual password reset API call
-      // For now, we'll show a success message
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || import.meta.env.REACT_APP_BACKEND_URL;
       
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/forgot-password`, {
+      const response = await fetch(`${backendUrl}/api/auth/password-reset`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,17 +29,22 @@ const ForgotPasswordPage = () => {
         body: JSON.stringify({ email }),
       });
 
-      if (response.ok) {
+      const data = await response.json();
+      
+      if (response.ok && data.success) {
         setSuccess(true);
+        
+        // In development, log the reset token
+        if (data.dev_reset_token) {
+          console.log('🔐 DEV MODE: Password reset token:', data.dev_reset_token);
+          console.log('🔗 Reset link:', `${window.location.origin}/auth/reset-password?token=${data.dev_reset_token}`);
+        }
       } else {
-        const errorData = await response.json();
-        setError(errorData.detail || 'Failed to send password reset email');
+        setError(data.detail || data.message || 'Failed to send password reset email');
       }
     } catch (err) {
-      // For development, show a mock success message
-      console.log('Forgot password request for:', email);
-      setSuccess(true);
-      // setError('Unable to send password reset email. Please try again later.');
+      console.error('Password reset error:', err);
+      setError('Unable to send password reset email. Please try again later.');
     }
     
     setLoading(false);
