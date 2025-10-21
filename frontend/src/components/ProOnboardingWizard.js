@@ -160,7 +160,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           description: 'Add your first deal and expenses',
           content: (
             <div className="space-y-3 text-sm">
-              <p className="font-medium">Navigate to Agent P&L Tracker</p>
+              <p className="font-medium">Navigate to Manage Finances → P&L Tracker</p>
               <ol className="space-y-2 ml-4 list-decimal">
                 <li><strong>Add a Deal:</strong> Enter a recent closed transaction
                   <ul className="ml-4 mt-1 space-y-1">
