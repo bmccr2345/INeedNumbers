@@ -2686,48 +2686,96 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
 
 async def generate_pdf_with_weasyprint_from_html(html_content: str) -> bytes:
     """
-    Generate PDF from HTML using Playwright (WeasyPrint replacement for Emergent compatibility)
+    Generate PDF from HTML using ReportLab (Simple HTML renderer)
     
-    Emergent platform doesn't support system-level libraries required by WeasyPrint.
-    Using Playwright as a pure-Python alternative that works in containerized environments.
+    Emergent platform requires pure-Python solutions without system dependencies.
+    Using ReportLab as a lightweight PDF generator.
     """
     try:
-        from playwright.async_api import async_playwright
+        from reportlab.lib.pagesizes import letter
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.units import inch
+        from reportlab.lib import colors
+        import io
+        from bs4 import BeautifulSoup
         
-        logger.info("Generating PDF using Playwright (WeasyPrint alternative)")
+        logger.info("Generating PDF using ReportLab")
         
-        async with async_playwright() as p:
-            browser = await p.chromium.launch()
-            page = await browser.new_page()
+        # Parse HTML to extract content
+        soup = BeautifulSoup(html_content, 'html.parser')
+        
+        # Create PDF buffer
+        buffer = io.BytesIO()
+        doc = SimpleDocTemplate(buffer, pagesize=letter,
+                              rightMargin=0.5*inch, leftMargin=0.5*inch,
+                              topMargin=0.5*inch, bottomMargin=0.5*inch)
+        
+        # Container for PDF elements
+        elements = []
+        styles = getSampleStyleSheet()
+        
+        # Add title
+        title_style = ParagraphStyle(
+            'CustomTitle',
+            parent=styles['Heading1'],
+            fontSize=18,
+            textColor=colors.HexColor('#10b981'),
+            spaceAfter=12,
+        )
+        
+        # Extract text content
+        title = soup.find(['h1', 'h2'])
+        if title:
+            elements.append(Paragraph(title.get_text(), title_style))
+            elements.append(Spacer(1, 0.2*inch))
+        
+        # Extract and add paragraphs
+        for p in soup.find_all('p'):
+            text = p.get_text().strip()
+            if text:
+                elements.append(Paragraph(text, styles['Normal']))
+                elements.append(Spacer(1, 0.1*inch))
+        
+        # Extract tables
+        for table in soup.find_all('table'):
+            data = []
+            for row in table.find_all('tr'):
+                row_data = [cell.get_text().strip() for cell in row.find_all(['td', 'th'])]
+                if row_data:
+                    data.append(row_data)
             
-            # Set content
-            await page.set_content(html_content, wait_until="networkidle")
+            if data:
+                t = Table(data)
+                t.setStyle(TableStyle([
+                    ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#10b981')),
+                    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                    ('FONTSIZE', (0, 0), (-1, 0), 12),
+                    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                    ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ]))
+                elements.append(t)
+                elements.append(Spacer(1, 0.2*inch))
+        
+        # Build PDF
+        doc.build(elements)
+        pdf_bytes = buffer.getvalue()
+        buffer.close()
+        
+        logger.info(f"PDF generated successfully using ReportLab: {len(pdf_bytes)} bytes")
+        return pdf_bytes
             
-            # Generate PDF with print-friendly settings
-            pdf_bytes = await page.pdf(
-                format='Letter',
-                print_background=True,
-                margin={
-                    'top': '0.5in',
-                    'right': '0.5in',
-                    'bottom': '0.5in',
-                    'left': '0.5in'
-                }
-            )
-            
-            await browser.close()
-            
-            logger.info(f"PDF generated successfully using Playwright: {len(pdf_bytes)} bytes")
-            return pdf_bytes
-            
-    except ImportError:
-        logger.error("Playwright not available - this is required for PDF generation on Emergent platform")
+    except ImportError as e:
+        logger.error(f"Required library not available: {e}")
         raise HTTPException(
             status_code=500,
-            detail="PDF generation service unavailable. Playwright is required."
+            detail="PDF generation service unavailable. Required libraries missing."
         )
     except Exception as e:
-        logger.error(f"Playwright PDF generation error: {e}")
+        logger.error(f"ReportLab PDF generation error: {e}")
         raise HTTPException(
             status_code=500,
             detail=f"Failed to generate PDF: {str(e)}"
