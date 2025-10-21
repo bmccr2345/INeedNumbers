@@ -317,7 +317,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
             <div className="space-y-3 text-sm">
               <p className="font-medium">Weekly Review Checklist (Every Sunday):</p>
               <ol className="space-y-2 ml-4 list-decimal">
-                <li>Review last week's activity totals vs. goals</li>
+                <li>Review last week's activity totals vs. goals in Action Tracker</li>
                 <li>Check P&L: deals closed, profit margins, expense trends</li>
                 <li>Read AI Coach insights for the week</li>
                 <li>Identify patterns: What days/activities were most productive?</li>
