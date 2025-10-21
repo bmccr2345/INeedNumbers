@@ -639,24 +639,6 @@ const DashboardPage = () => {
           </div>
         </div>
 
-                        ? 'text-gray-700 hover:text-primary hover:bg-gray-100 cursor-pointer'
-                        : 'text-gray-400 cursor-not-allowed opacity-60'
-                    }`}
-                  >
-                    {tab.icon}
-                    <span className="ml-2">{tab.name}</span>
-                    {tab.proOnly && !isAvailable && (
-                      <span className="ml-2 text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">
-                        Pro
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
         {/* Tab Content */}
         <main className="flex-1 overflow-hidden">
           <div 
