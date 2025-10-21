@@ -475,6 +475,10 @@ const DashboardPage = () => {
         <ProOnboardingWizard 
           isOpen={showOnboardingWizard}
           onClose={() => setShowOnboardingWizard(false)}
+          onComplete={() => {
+            localStorage.setItem('pro_onboarding_completed', 'true');
+            setShowOnboardingWizard(false);
+          }}
         />
       )}
 
