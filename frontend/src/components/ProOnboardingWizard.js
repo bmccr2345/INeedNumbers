@@ -302,16 +302,9 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
                   <p className="text-xs text-amber-800">Log activities, daily reflection, plan tomorrow</p>
                 </div>
               </div>
-              <div className="bg-gray-50 p-3 rounded-lg mt-3">
-                <p className="text-gray-900 font-medium text-xs">📚 Learn More:</p>
-                <a 
-                  href="https://placester.com/real-estate-marketing-academy/time-blocking-for-real-estate-agents-getting-started-guide" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-emerald-600 hover:text-emerald-700 text-xs underline"
-                >
-                  Complete Time Blocking Guide for Real Estate Agents →
-                </a>
+              <div className="bg-emerald-50 p-3 rounded-lg mt-3">
+                <p className="text-emerald-900 font-medium">⚡ Power Tip:</p>
+                <p className="text-emerald-800 text-xs">Block the same time slots each week for consistency. Your brain adapts to the routine, making it easier to focus. Sunday evening plan + daily morning review = unstoppable momentum!</p>
               </div>
             </div>
           )
