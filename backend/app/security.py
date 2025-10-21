@@ -260,6 +260,8 @@ class CSRFMiddleware(BaseHTTPMiddleware):
             "/api/auth/login", 
             "/api/auth/logout",
             "/api/auth/register",
+            "/api/auth/password-reset",
+            "/api/auth/password-reset/confirm",
             "/api/health",
             "/health",
             "/api/ai-coach-v2/generate",
