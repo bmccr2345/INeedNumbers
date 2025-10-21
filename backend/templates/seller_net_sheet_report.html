@@ -35,7 +35,7 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  background: linear-gradient(135deg, {{branding.colors.primary}} 0%, {{branding.colors.primaryDark}} 100%);
   color: white;
   padding: 25px;
   margin-bottom: 25px;
@@ -73,6 +73,12 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.agent-logo {
+  max-width: 120px;
+  max-height: 60px;
+  object-fit: contain;
 }
 
 .agent-avatar {
