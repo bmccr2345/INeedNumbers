@@ -590,7 +590,7 @@ const DashboardPage = () => {
           </div>
         </nav>
 
-        {/* Mobile Tabs */}
+        {/* Mobile Tabs - Simplified horizontal scroll */}
         <div className="lg:hidden bg-white border-b border-gray-200 sticky top-16 z-30">
           <div className="flex overflow-x-auto">
             <div 
@@ -598,21 +598,47 @@ const DashboardPage = () => {
               aria-orientation="horizontal"
               className="flex space-x-1 p-4 min-w-max"
             >
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.id;
-                const isAvailable = tab.available.includes(user?.plan || 'FREE');
-                
-                return (
-                  <button
-                    key={tab.id}
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-controls={`panel-${tab.id}`}
-                    onClick={() => handleTabClick(tab.id)}
-                    className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors min-h-[44px] ${
-                      isActive
-                        ? 'bg-primary text-white'
-                        : isAvailable
+              {/* Dashboard Overview */}
+              <button
+                role="tab"
+                onClick={() => handleTabClick('homepage')}
+                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+                  activeTab === 'homepage'
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
+                }`}
+              >
+                <LayoutDashboard className="w-4 h-4 mr-2" />
+                Overview
+              </button>
+              
+              {/* Flatten all sub-tabs for mobile */}
+              {sidebarStructure.filter(item => item.type === 'category').map(category => 
+                category.subTabs
+                  .filter(subTab => subTab.available.includes(user?.plan || 'FREE'))
+                  .map(subTab => {
+                    const isActive = activeTab === subTab.id;
+                    return (
+                      <button
+                        key={subTab.id}
+                        role="tab"
+                        onClick={() => handleTabClick(subTab.id)}
+                        className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+                          isActive
+                            ? 'bg-emerald-600 text-white'
+                            : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
+                        }`}
+                      >
+                        {subTab.icon}
+                        <span className="ml-2">{subTab.name}</span>
+                      </button>
+                    );
+                  })
+              )}
+            </div>
+          </div>
+        </div>
+
                         ? 'text-gray-700 hover:text-primary hover:bg-gray-100 cursor-pointer'
                         : 'text-gray-400 cursor-not-allowed opacity-60'
                     }`}
