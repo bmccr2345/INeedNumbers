@@ -83,12 +83,6 @@ const CapTrackerPanel = () => {
   const handleSaveConfiguration = async (e) => {
     e.preventDefault();
     try {
-      const token = Cookies.get('access_token');
-      if (!token) {
-        setError('Authentication required');
-        return;
-      }
-
       const configData = {
         annual_cap_amount: parseFloat(capForm.annual_cap_amount) || 0,
         cap_percentage: parseFloat(capForm.cap_percentage) || 0,
@@ -99,7 +93,7 @@ const CapTrackerPanel = () => {
       };
 
       const response = await axios.post(`${backendUrl}/api/cap-tracker/config`, configData, {
-        headers: { Authorization: `Bearer ${token}` }
+        withCredentials: true  // Use HttpOnly cookie authentication
       });
 
       setCapConfig(response.data);
