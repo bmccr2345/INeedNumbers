@@ -385,6 +385,7 @@ class AuditAction(str, Enum):
     DELETE_ACCOUNT = "delete_account"
     PASSWORD_RESET_REQUEST = "password_reset_request"
     PASSWORD_RESET_CONFIRM = "password_reset_confirm"
+    PASSWORD_CHANGE = "password_change"
     UPDATE_PROFILE = "update_profile"
     ADMIN_USER_VIEW = "admin_user_view"
     ADMIN_USER_UPDATE = "admin_user_update"
