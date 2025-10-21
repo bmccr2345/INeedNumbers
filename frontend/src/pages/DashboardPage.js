@@ -470,6 +470,14 @@ const DashboardPage = () => {
         />
       )}
 
+      {/* Pro Onboarding Wizard */}
+      {showOnboardingWizard && (
+        <ProOnboardingWizard 
+          isOpen={showOnboardingWizard}
+          onClose={() => setShowOnboardingWizard(false)}
+        />
+      )}
+
       {/* Click away handler for account menu */}
       {showAccountMenu && (
         <div 
