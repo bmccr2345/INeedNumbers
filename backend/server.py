@@ -2288,14 +2288,12 @@ async def get_report_preview(tool: str, request: Request, current_user: Optional
             branding_data = {}
             if current_user:
                 try:
-                    # Get branding data using the resolver
-                    import aiohttp
-                    async with aiohttp.ClientSession() as session:
-                        resolver_url = f"{os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001')}/api/brand/resolve"
-                        headers = {'Authorization': f'Bearer {getattr(current_user, "access_token", "")}'}
-                        async with session.get(f"{resolver_url}?context=pdf&embed=true", headers=headers) as resp:
-                            if resp.status == 200:
-                                branding_data = await resp.json()
+                    # Call brand resolver directly instead of HTTP request
+                    branding_data = await resolve_brand_data(
+                        context="pdf",
+                        embed=True,
+                        current_user=current_user
+                    )
                 except Exception as e:
                     logger.warning(f"Failed to get branding data: {e}")
                     branding_data = {}
@@ -2394,14 +2392,12 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             branding_data = {}
             if current_user:
                 try:
-                    # Get branding data using the resolver
-                    import aiohttp
-                    async with aiohttp.ClientSession() as session:
-                        resolver_url = f"{os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001')}/api/brand/resolve"
-                        headers = {'Authorization': f'Bearer {getattr(current_user, "access_token", "")}'}
-                        async with session.get(f"{resolver_url}?context=pdf&embed=true", headers=headers) as resp:
-                            if resp.status == 200:
-                                branding_data = await resp.json()
+                    # Call brand resolver directly instead of HTTP request
+                    branding_data = await resolve_brand_data(
+                        context="pdf",
+                        embed=True,
+                        current_user=current_user
+                    )
                 except Exception as e:
                     logger.warning(f"Failed to get branding data: {e}")
                     branding_data = {}
@@ -2627,14 +2623,12 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
             branding_data = {}
             if current_user:
                 try:
-                    # Get branding data using the resolver
-                    import aiohttp
-                    async with aiohttp.ClientSession() as session:
-                        resolver_url = f"{os.environ.get('REACT_APP_BACKEND_URL', 'http://localhost:8001')}/api/brand/resolve"
-                        headers = {'Authorization': f'Bearer {getattr(current_user, "access_token", "")}'}
-                        async with session.get(f"{resolver_url}?context=pdf&embed=true", headers=headers) as resp:
-                            if resp.status == 200:
-                                branding_data = await resp.json()
+                    # Call brand resolver directly instead of HTTP request
+                    branding_data = await resolve_brand_data(
+                        context="pdf",
+                        embed=True,
+                        current_user=current_user
+                    )
                 except Exception as e:
                     logger.warning(f"Failed to get branding data: {e}")
                     branding_data = {}
