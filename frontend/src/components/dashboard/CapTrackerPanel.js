@@ -127,9 +127,22 @@ const CapTrackerPanel = () => {
     }
   };
 
-  // Calculate cap progress
+  // Calculate cap progress from backend data or fallback to config
   const calculateProgress = () => {
-    if (!capConfig) return { percentage: 0, remaining: 0, paid: 0, isComplete: false };
+    // If we have real-time progress data from backend, use that
+    if (capProgress) {
+      return {
+        percentage: capProgress.percentage || 0,
+        remaining: capProgress.remaining || 0,
+        paid: capProgress.paid_so_far || 0,
+        total: capProgress.total_cap || 0,
+        isComplete: capProgress.is_complete || false,
+        dealsContributing: capProgress.deals_contributing || 0
+      };
+    }
+    
+    // Fallback to config-based calculation (for backwards compatibility)
+    if (!capConfig) return { percentage: 0, remaining: 0, paid: 0, total: 0, isComplete: false, dealsContributing: 0 };
     
     const totalCap = capConfig.annual_cap_amount || 0;
     const paidSoFar = capConfig.current_cap_paid || 0;
@@ -142,7 +155,8 @@ const CapTrackerPanel = () => {
       remaining,
       paid: paidSoFar,
       total: totalCap,
-      isComplete
+      isComplete,
+      dealsContributing: 0
     };
   };
 
