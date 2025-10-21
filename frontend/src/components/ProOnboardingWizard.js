@@ -5,6 +5,7 @@ import { Card, CardContent } from './ui/card';
 
 const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
   const [currentDay, setCurrentDay] = useState(1);
+  const [isMinimized, setIsMinimized] = useState(false);
   const [checklist, setChecklist] = useState({
     day1: {
       welcome: false,
