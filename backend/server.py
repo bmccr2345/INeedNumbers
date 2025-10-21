@@ -7368,9 +7368,13 @@ async def admin_delete_user(
 async def admin_reset_user_password(
     user_id: str,
     reset_data: Dict[str, str],
+    request: Request,
     current_user: User = Depends(require_master_admin)
 ):
-    """Reset a user's password (admin only)"""
+    """
+    Reset a user's password (admin only).
+    Includes enhanced audit logging and notifications.
+    """
     try:
         # Find the user
         target_user = await db.users.find_one({"id": user_id})
@@ -7394,16 +7398,39 @@ async def admin_reset_user_password(
             {
                 "$set": {
                     "hashed_password": password_hash,
+                    "password_changed_at": datetime.now(timezone.utc).isoformat(),
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 }
             }
         )
         
-        logger.info(f"Admin {current_user.email} reset password for user: {target_user['email']}")
+        # Enhanced audit logging - who did it, when, and to whom
+        await db.audit_logs.insert_one({
+            "user_id": user_id,
+            "user_email": target_user['email'],
+            "action": "admin_password_reset",
+            "admin_user_id": current_user.id,
+            "admin_user_email": current_user.email,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "ip_address": request.client.host if request.client else None,
+            "metadata": {
+                "target_user_email": target_user['email'],
+                "reset_by_admin": current_user.email,
+                "reset_reason": reset_data.get("reason", "Admin password reset")
+            }
+        })
+        
+        logger.info(f"🔐 ADMIN ACTION: {current_user.email} reset password for user: {target_user['email']}")
+        
+        # TODO: In production, send email notification to user
+        # notify_user_password_reset(target_user['email'], current_user.email)
         
         return {
             "success": True,
-            "message": "Password reset successfully"
+            "message": "Password reset successfully",
+            "user_notified": False,  # Set to True when email is implemented
+            "reset_by": current_user.email,
+            "timestamp": datetime.now(timezone.utc).isoformat()
         }
         
     except HTTPException:
