@@ -7,7 +7,7 @@ import requests
 import json
 
 def test_login_with_correct_password():
-    base_url = "https://realestate-finance-1.preview.emergentagent.com"
+    base_url = "https://realestate-coach-1.preview.emergentagent.com"
     
     print("🔐 Testing login with correct password...")
     

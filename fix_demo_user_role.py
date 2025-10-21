@@ -107,7 +107,7 @@ async def verify_fix():
     try:
         import requests
         
-        base_url = "https://realestate-finance-1.preview.emergentagent.com"
+        base_url = "https://realestate-coach-1.preview.emergentagent.com"
         
         # Login and check role
         login_data = {
