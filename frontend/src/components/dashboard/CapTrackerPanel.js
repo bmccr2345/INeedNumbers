@@ -23,6 +23,7 @@ const CapTrackerPanel = () => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
   const [capConfig, setCapConfig] = useState(null);
+  const [capProgress, setCapProgress] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [error, setError] = useState(null);
 
