@@ -433,23 +433,23 @@ async def generate_coach(
                         "next_inputs": obj.get("next_inputs", [])
                     }
                     
-                    logger.info(f"Affordability Analysis - Response summary: {affordability_response['summary'][:100]}...")
+                    logger.info(f"{analysis_type} Analysis - Response summary: {analysis_response['summary'][:100]}...")
                     
                 except (json.JSONDecodeError, ValueError) as e:
-                    logger.error(f"Affordability Analysis - JSON parsing failed after cleaning: {e}")
-                    logger.info(f"Affordability Analysis - Treating as plain text: {clean_text[:200]}...")
+                    logger.error(f"{analysis_type} Analysis - JSON parsing failed after cleaning: {e}")
+                    logger.info(f"{analysis_type} Analysis - Treating as plain text: {clean_text[:200]}...")
                     # If JSON parsing fails, create structured response
-                    affordability_response = {
-                        "summary": clean_text.strip()[:300] if clean_text.strip() else "Affordability analysis completed",
+                    analysis_response = {
+                        "summary": clean_text.strip()[:300] if clean_text.strip() else f"{analysis_type} analysis completed",
                         "stats": {},
-                        "actions": ["Review home affordability details", "Consider different loan options"],
-                        "risks": ["Incomplete affordability assessment"],
-                        "next_inputs": ["Monthly payment calculation", "Down payment optimization", "Loan pre-approval"]
+                        "actions": ["Review details", "Consider optimization opportunities"],
+                        "risks": ["Incomplete assessment"],
+                        "next_inputs": ["Additional data needed for comprehensive analysis"]
                     }
                 
                 # Cache successful response
-                set_cache(cache_key, json.dumps(affordability_response))
-                return JSONResponse(content=affordability_response)
+                set_cache(cache_key, json.dumps(analysis_response))
+                return JSONResponse(content=analysis_response)
             else:
                 # Standard AI Coach processing
                 try:
