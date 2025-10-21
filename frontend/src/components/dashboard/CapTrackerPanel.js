@@ -452,6 +452,12 @@ const CapTrackerPanel = () => {
                         ></div>
                       </div>
                       
+                      {progress.dealsContributing > 0 && (
+                        <div className="text-sm text-gray-600">
+                          <span className="font-medium">{progress.dealsContributing}</span> deal{progress.dealsContributing !== 1 ? 's' : ''} contributing to cap from P&L Tracker
+                        </div>
+                      )}
+                      
                       {progress.isComplete && (
                         <div className="flex items-center space-x-2 text-green-700 bg-green-50 p-3 rounded-lg">
                           <CheckCircle className="w-5 h-5" />
