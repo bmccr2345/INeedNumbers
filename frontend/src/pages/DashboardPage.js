@@ -500,35 +500,90 @@ const DashboardPage = () => {
             <div 
               role="tablist" 
               aria-orientation="vertical"
-              className="space-y-2"
+              className="space-y-1"
             >
-              {tabs.map((tab) => {
-                const isActive = activeTab === tab.id;
-                const isAvailable = tab.available.includes(user?.plan || 'FREE');
+              {sidebarStructure.map((item) => {
+                const isItemAvailable = item.available.includes(user?.plan || 'FREE');
+                
+                if (item.type === 'single') {
+                  // Single tab without category
+                  const isActive = activeTab === item.tabId;
+                  return (
+                    <button
+                      key={item.id}
+                      role="tab"
+                      aria-selected={isActive}
+                      onClick={() => handleTabClick(item.tabId)}
+                      className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                        isActive
+                          ? 'bg-emerald-600 text-white shadow-sm'
+                          : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50 cursor-pointer'
+                      }`}
+                    >
+                      {item.icon}
+                      <span className="ml-3 truncate">{item.name}</span>
+                    </button>
+                  );
+                }
+                
+                // Category with sub-tabs
+                if (!isItemAvailable) return null;
+                
+                const isExpanded = expandedCategories[item.id];
                 
                 return (
-                  <button
-                    key={tab.id}
-                    role="tab"
-                    aria-selected={isActive}
-                    aria-controls={`panel-${tab.id}`}
-                    onClick={() => handleTabClick(tab.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-                      isActive
-                        ? 'bg-primary text-white'
-                        : isAvailable
-                        ? 'text-gray-700 hover:text-primary hover:bg-gray-100 cursor-pointer'
-                        : 'text-gray-400 cursor-not-allowed opacity-60'
-                    }`}
-                  >
-                    {tab.icon}
-                    <span className="ml-3 truncate">{tab.name}</span>
-                    {tab.proOnly && !isAvailable && (
-                      <span className="ml-auto text-xs bg-gray-200 text-gray-600 px-2 py-0.5 rounded">
-                        Pro
-                      </span>
+                  <div key={item.id} className="space-y-1">
+                    {/* Category Header */}
+                    <button
+                      onClick={() => toggleCategory(item.id)}
+                      className="w-full flex items-center justify-between px-3 py-2.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+                    >
+                      <div className="flex items-center">
+                        {item.icon}
+                        <span className="ml-3">{item.name}</span>
+                      </div>
+                      {isExpanded ? (
+                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                      ) : (
+                        <ChevronRight className="w-4 h-4 text-gray-500" />
+                      )}
+                    </button>
+                    
+                    {/* Sub-tabs */}
+                    {isExpanded && (
+                      <div className="ml-6 space-y-0.5 border-l-2 border-gray-200 pl-3">
+                        {item.subTabs.map((subTab) => {
+                          const isActive = activeTab === subTab.id;
+                          const isSubAvailable = subTab.available.includes(user?.plan || 'FREE');
+                          
+                          return (
+                            <button
+                              key={subTab.id}
+                              role="tab"
+                              aria-selected={isActive}
+                              onClick={() => handleTabClick(subTab.id)}
+                              disabled={!isSubAvailable}
+                              className={`w-full flex items-center px-3 py-2 text-sm rounded-md transition-colors ${
+                                isActive
+                                  ? 'bg-emerald-100 text-emerald-700 font-medium border-l-2 border-emerald-600 -ml-[14px] pl-[14px]'
+                                  : isSubAvailable
+                                  ? 'text-gray-600 hover:text-emerald-700 hover:bg-emerald-50 cursor-pointer'
+                                  : 'text-gray-400 cursor-not-allowed opacity-50'
+                              }`}
+                            >
+                              {subTab.icon}
+                              <span className="ml-2 truncate">{subTab.name}</span>
+                              {subTab.proOnly && !isSubAvailable && (
+                                <span className="ml-auto text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded">
+                                  Pro
+                                </span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
