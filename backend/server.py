@@ -2663,7 +2663,6 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
                 debug_info["font_count"] = style_block.count("@font-face")
                 
                 # Find CSS classes
-                import re
                 classes = re.findall(r'\.([a-zA-Z][a-zA-Z0-9_-]*)', style_block)
                 debug_info["css_classes_found"] = list(set(classes))[:20]  # First 20 unique classes
         
