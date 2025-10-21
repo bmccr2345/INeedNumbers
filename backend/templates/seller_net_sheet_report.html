@@ -35,7 +35,12 @@ body {
 
 /* Header */
 .header {
-  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+  {{#branding.colors.primary}}
+  background: linear-gradient(135deg, {{branding.colors.primary}} 0%, {{branding.colors.primary}}dd 100%);
+  {{/branding.colors.primary}}
+  {{^branding.colors.primary}}
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  {{/branding.colors.primary}}
   color: white;
   padding: 25px;
   margin-bottom: 25px;
