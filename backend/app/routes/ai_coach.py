@@ -398,8 +398,9 @@ async def generate_coach(
                 # Cache successful response
                 set_cache(cache_key, json.dumps(formatted_response))
                 return JSONResponse(content=formatted_response)
-            elif context == "affordability_analysis":
-                logger.info(f"Affordability Analysis - Raw AI response: {text[:500]}...")  # Log first 500 chars
+            elif context == "affordability_analysis" or context == "net_sheet_analysis":
+                analysis_type = "Affordability" if context == "affordability_analysis" else "Net Sheet"
+                logger.info(f"{analysis_type} Analysis - Raw AI response: {text[:500]}...")  # Log first 500 chars
                 
                 # Strip markdown code block syntax if present
                 clean_text = text.strip()
@@ -411,21 +412,21 @@ async def generate_coach(
                     clean_text = clean_text[:-3]
                 clean_text = clean_text.strip()
                 
-                logger.info(f"Affordability Analysis - Cleaned text: {clean_text[:200]}...")
+                logger.info(f"{analysis_type} Analysis - Cleaned text: {clean_text[:200]}...")
                 
                 # Try to parse as JSON first
                 try:
                     obj = json.loads(clean_text)
-                    logger.info(f"Affordability Analysis - Parsed JSON keys: {list(obj.keys())}")
+                    logger.info(f"{analysis_type} Analysis - Parsed JSON keys: {list(obj.keys())}")
                     
-                    # Validate required keys for affordability analysis
+                    # Validate required keys
                     required_keys = ['summary', 'stats', 'actions', 'risks', 'next_inputs']
                     if not all(key in obj for key in required_keys):
-                        logger.warning(f"Affordability Analysis - Missing required keys: {[k for k in required_keys if k not in obj]}")
+                        logger.warning(f"{analysis_type} Analysis - Missing required keys: {[k for k in required_keys if k not in obj]}")
                     
                     # Return the parsed JSON directly
-                    affordability_response = {
-                        "summary": obj.get("summary", "Affordability analysis completed"),
+                    analysis_response = {
+                        "summary": obj.get("summary", f"{analysis_type} analysis completed"),
                         "stats": obj.get("stats", {}),
                         "actions": obj.get("actions", []),
                         "risks": obj.get("risks", []),
