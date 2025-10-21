@@ -291,7 +291,11 @@ body {
   <!-- Branded Header Section -->
   <div class="agent-info">
     <div class="agent-details">
-      <div class="agent-avatar">{{branding.agent.initials}}</div>
+      {% if branding.assets.agentLogo %}
+        <img src="{{branding.assets.agentLogo}}" alt="Agent Logo" class="agent-logo">
+      {% else %}
+        <div class="agent-avatar">{{branding.agent.initials}}</div>
+      {% endif %}
       <div class="agent-text">
         <div class="agent-name">{{branding.agent.name}}</div>
         <div class="agent-contact">{{branding.agent.email}}</div>
