@@ -33,6 +33,7 @@ import ClosingDateCalculator from "./pages/ClosingDateCalculator";
 import AdminConsolePage from "./pages/AdminConsolePage";
 import BrandingProfilePage from "./pages/BrandingProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 
 function App() {
   return (
