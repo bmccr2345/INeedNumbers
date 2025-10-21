@@ -42,6 +42,7 @@ const CapTrackerPanel = () => {
 
   useEffect(() => {
     loadCapConfiguration();
+    loadCapProgress();
   }, []);
 
   const loadCapConfiguration = async () => {
@@ -77,6 +78,24 @@ const CapTrackerPanel = () => {
       }
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadCapProgress = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/cap-tracker/progress`, {
+        withCredentials: true
+      });
+
+      if (response.data) {
+        setCapProgress(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to load cap progress:', error);
+      // Don't show error if config doesn't exist yet
+      if (error.response?.status !== 404) {
+        console.error('Error loading cap progress:', error);
+      }
     }
   };
 
