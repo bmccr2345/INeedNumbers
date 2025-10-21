@@ -17,7 +17,6 @@ import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useAuth } from '../../contexts/AuthContext';
 import axios from 'axios';
-import Cookies from 'js-cookie';
 
 const CapTrackerPanel = () => {
   const navigate = useNavigate();
