@@ -277,7 +277,8 @@ class CSRFMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable):
         # Skip CSRF for safe methods and exempt paths
         if (request.method not in self.protected_methods or 
-            request.url.path in self.exempt_paths):
+            request.url.path in self.exempt_paths or
+            any(request.url.path.startswith(path) for path in self.exempt_paths)):
             return await call_next(request)
         
         # Skip CSRF for authenticated API requests (SPA with JWT doesn't need CSRF protection)
