@@ -252,12 +252,13 @@ const DashboardPage = () => {
       available: ['PRO'],
       proOnly: true
     },
-    {
-      id: 'branding',
-      name: 'Branding & Profile',
-      icon: <Badge className="w-5 h-5" />,
-      available: ['STARTER', 'PRO']
-    },
+    // BRANDING DISABLED - Hidden for future work
+    // {
+    //   id: 'branding',
+    //   name: 'Branding & Profile',
+    //   icon: <Badge className="w-5 h-5" />,
+    //   available: ['STARTER', 'PRO']
+    // },
     {
       id: 'goalsettings',
       name: 'Goal Settings',
