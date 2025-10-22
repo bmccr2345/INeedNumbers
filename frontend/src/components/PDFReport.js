@@ -37,7 +37,7 @@ const PDFReport = ({ data, plan = "FREE", agentProfile = null }) => {
     if (!hasContactInfo) {
       return (
         <div className={`${compact ? 'text-xs' : 'text-sm'} text-gray-500 italic p-3 bg-gray-50 rounded`}>
-          Add your contact details in Settings → Branding & Contact to show your info here.
+          Professional real estate analysis report.
         </div>
       );
     }
