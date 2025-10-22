@@ -1248,9 +1248,9 @@ def render_template(template_content: str, data: dict) -> str:
     import pystache
     
     # Create renderer with no HTML escaping (we want raw output for PDFs)
+    # Use default missing_tags behavior (returns empty string for missing keys)
     renderer = pystache.Renderer(
-        escape=lambda u: u,  # Disable HTML escaping
-        missing_tags='strict'  # Raise error on missing tags for debugging
+        escape=lambda u: u  # Disable HTML escaping
     )
     
     try:
