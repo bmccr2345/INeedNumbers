@@ -291,29 +291,28 @@ body {
   <!-- Branded Header Section -->
   <div class="agent-info">
     <div class="agent-details">
-      {% if branding.assets.agentLogoPngBase64 and branding.assets.agentLogoPngBase64|length > 100 %}
-        <img src="data:image/png;base64,{{branding.assets.agentLogoPngBase64}}" alt="Agent Logo" class="agent-logo">
-      {% elif branding.assets.agentLogoUrl %}
-        <img src="{{branding.assets.agentLogoUrl}}" alt="Agent Logo" class="agent-logo">
-      {% else %}
+      {{#agentLogoUrl}}
+        <img src="{{agentLogoUrl}}" alt="Agent Logo" class="agent-logo">
+      {{/agentLogoUrl}}
+      {{^agentLogoUrl}}
         <div class="agent-avatar">{{branding.agent.initials}}</div>
-      {% endif %}
+      {{/agentLogoUrl}}
       <div class="agent-text">
         <div class="agent-name">{{branding.agent.name}}</div>
         <div class="agent-contact">{{branding.agent.email}}</div>
-        {% if branding.agent.phone %}
+        {{#branding.agent.phone}}
         <div class="agent-contact">{{branding.agent.phone}}</div>
-        {% endif %}
+        {{/branding.agent.phone}}
       </div>
     </div>
-    {% if branding.brokerage.name %}
+    {{#branding.brokerage.name}}
     <div class="brokerage-info">
       <div>{{branding.brokerage.name}}</div>
-      {% if branding.brokerage.address %}
+      {{#branding.brokerage.address}}
       <div>{{branding.brokerage.address}}</div>
-      {% endif %}
+      {{/branding.brokerage.address}}
     </div>
-    {% endif %}
+    {{/branding.brokerage.name}}
   </div>
   
   <h1>Seller Net Sheet Analysis</h1>
