@@ -16,7 +16,7 @@ import axios from 'axios';
 
 const AICoachBanner = () => {
   const { user } = useAuth();
-  const [isExpanded, setIsExpanded] = useState(true); // Always start expanded
+  const [isExpanded, setIsExpanded] = useState(false); // Start minimized by default
   const [coachData, setCoachData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
