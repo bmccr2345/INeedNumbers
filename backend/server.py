@@ -2464,6 +2464,12 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             report_data = prepare_seller_net_sheet_report_data(calculation_data, property_data, current_user)
             # Merge branding data
             report_data["branding"] = branding_data
+            
+            # Pre-compute brand colors for template (avoids Jinja2 # character issues)
+            primary_color = branding_data.get("colors", {}).get("primary", "#10b981")
+            report_data["brandPrimaryColor"] = primary_color
+            report_data["brandPrimaryDark"] = primary_color + "dd" if primary_color else "#15803ddd"
+            report_data["agentLogoUrl"] = branding_data.get("assets", {}).get("agentLogoUrl", "")
         elif tool == "closing-date":
             # Load closing date timeline template
             template_path = Path(__file__).parent / "templates" / "closing_date_report.html"
