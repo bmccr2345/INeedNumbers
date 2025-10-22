@@ -2510,28 +2510,19 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
         else:
             raise HTTPException(status_code=404, detail="Tool not supported")
         
-        # Render template using Jinja2
-        logger.info(f"Rendering template with Jinja2 for tool: {tool}")
+        # Render template
+        logger.info(f"Rendering template for tool: {tool}")
         logger.info(f"Template content length: {len(template_content)}")
-        
-        # Use Jinja2 template environment with disabled autoescape
-        from jinja2 import Template, Environment
-        env = Environment(autoescape=False, comment_start_string='{##', comment_end_string='##}')
-        template = env.from_string(template_content)
-        html_content = template.render(**report_data)
-        
+        html_content = render_template(template_content, report_data)
         logger.info(f"Rendered HTML length: {len(html_content)}")
-        logger.info(f"First 1000 chars of HTML: {html_content[:1000]}")
         
         # Check if template variables are still present
-        if "{{" in html_content or "{%" in html_content:
+        if "{{" in html_content:
             logger.error(f"Template variables still present in rendered HTML!")
-            jinja_vars = re.findall(r'\{\{[^}]+\}\}', html_content)
-            jinja_blocks = re.findall(r'\{%[^%]+%\}', html_content)
-            logger.error(f"Jinja variables found: {jinja_vars[:10]}")
-            logger.error(f"Jinja blocks found: {jinja_blocks[:10]}")
+            vars_found = re.findall(r'\{\{[^}]+\}\}', html_content)
+            logger.error(f"Template variables found: {vars_found[:10]}")
         else:
-            logger.info(f"Template rendering successful, no Jinja syntax remaining")
+            logger.info(f"Template rendering successful, no variables remaining")
         
         # Generate PDF using WeasyPrint
         pdf_buffer = await generate_pdf_with_weasyprint_from_html(html_content)
