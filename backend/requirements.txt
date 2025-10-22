@@ -146,3 +146,4 @@ qrcode==8.2
 beautifulsoup4==4.14.2
 reportlab==4.4.4
 soupsieve==2.8
+pystache==0.6.8
