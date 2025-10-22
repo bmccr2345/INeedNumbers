@@ -110,9 +110,50 @@ class PDFBrandingTester:
             if details:
                 print(f"   {details}")
 
+    def create_test_user(self) -> bool:
+        """Create a test user for PDF branding tests"""
+        print(f"\n👤 CREATING TEST USER FOR PDF BRANDING TESTS...")
+        
+        test_email = f"pdftest_{uuid.uuid4().hex[:8]}@example.com"
+        test_password = "TestPassword123!"
+        
+        try:
+            register_data = {
+                "email": test_email,
+                "password": test_password,
+                "full_name": "PDF Test User"
+            }
+            
+            response = requests.post(
+                f"{self.base_url}/api/auth/register",
+                json=register_data,
+                timeout=15
+            )
+            
+            if response.status_code == 200:
+                print(f"   ✅ Test user created: {test_email}")
+                
+                # Store credentials for login
+                self.pro_user_email = test_email
+                self.pro_user_password = test_password
+                
+                return True
+            else:
+                print(f"   ❌ User creation failed: {response.status_code}")
+                try:
+                    error_data = response.json()
+                    print(f"   ❌ Error: {error_data.get('detail', 'Unknown error')}")
+                except:
+                    print(f"   ❌ Response: {response.text[:200]}")
+                return False
+                
+        except Exception as e:
+            print(f"   ❌ User creation error: {e}")
+            return False
+
     def authenticate_pro_user(self) -> bool:
         """Authenticate as PRO user for PDF branding tests"""
-        print(f"\n🔐 AUTHENTICATING PRO USER...")
+        print(f"\n🔐 AUTHENTICATING USER FOR PDF BRANDING TESTS...")
         
         # Try multiple potential user credentials
         test_credentials = [
@@ -121,6 +162,7 @@ class PDFBrandingTester:
             ("demo@demo.com", "demo123"),
             ("startertest@demo.com", "demo123"),
             ("test@example.com", "password123"),
+            (self.pro_user_email, self.pro_user_password),  # Created test user
         ]
         
         for email, password in test_credentials:
