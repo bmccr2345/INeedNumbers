@@ -468,7 +468,14 @@ const FreeCalculator = () => {
             <div className="flex items-center space-x-4">
               <Button
                 variant="ghost"
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  // Navigate to Dashboard Overview if user is logged in as STARTER or PRO
+                  if (user && (user.plan === 'STARTER' || user.plan === 'PRO')) {
+                    navigate('/dashboard?tab=overview');
+                  } else {
+                    navigate('/');
+                  }
+                }}
                 className="flex items-center space-x-2"
               >
                 <ArrowLeft className="w-4 h-4" />
