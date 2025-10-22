@@ -1278,10 +1278,18 @@ def render_template(template_content: str, data: dict) -> str:
     # Ensure branding data has proper structure for pystache
     if "branding" in data:
         data["branding"] = ensure_branding_structure(data["branding"])
+        logger.info(f"Branding structure ensured, keys: {list(data['branding'].keys())}")
+    else:
+        # Add empty branding structure if missing
+        data["branding"] = ensure_branding_structure({})
+        logger.info("Added empty branding structure to data")
     
     # Create renderer with no HTML escaping (we want raw output for PDFs)
+    # Using string_encoding=None to handle missing keys gracefully
     renderer = pystache.Renderer(
-        escape=lambda u: u  # Disable HTML escaping
+        escape=lambda u: u,  # Disable HTML escaping
+        string_encoding=None,  # Return unicode directly
+        missing_tags='ignore'  # Ignore missing tags instead of raising errors
     )
     
     try:
@@ -1293,7 +1301,7 @@ def render_template(template_content: str, data: dict) -> str:
         # Log the data keys for debugging
         logger.error(f"Available data keys: {list(data.keys())}")
         if "branding" in data:
-            logger.error(f"Branding structure: {data['branding']}")
+            logger.error(f"Branding structure: {json.dumps(data['branding'], indent=2)}")
         raise
 
 async def prepare_affordability_report_data_generic(calculation_data: dict, property_data: dict, current_user=None) -> dict:
