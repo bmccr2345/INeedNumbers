@@ -1243,12 +1243,43 @@ async def test_s3_connection() -> bool:
         return False
 
 # Template rendering functions
+def ensure_branding_structure(branding_data: dict) -> dict:
+    """Ensure branding data has proper nested structure for template rendering"""
+    if not branding_data:
+        branding_data = {}
+    
+    # Ensure all required nested structures exist with empty defaults
+    default_structure = {
+        "agent": {"name": "", "initials": "", "email": "", "phone": ""},
+        "brokerage": {"name": "", "license": "", "address": ""},
+        "colors": {"primary": "#16a34a", "secondary": "#0ea5e9"},
+        "assets": {"headshotPngBase64": "", "agentLogoPngBase64": "", "brokerLogoPngBase64": ""},
+        "footer": {"compliance": "", "cta": ""},
+        "plan": "FREE",
+        "show": {"headerBar": False, "agentLogo": False, "brokerLogo": False, "cta": False}
+    }
+    
+    # Merge with defaults - preserve any existing values
+    for key, default_value in default_structure.items():
+        if key not in branding_data:
+            branding_data[key] = default_value
+        elif isinstance(default_value, dict):
+            # Ensure nested dicts have all required keys
+            for nested_key, nested_default in default_value.items():
+                if nested_key not in branding_data[key]:
+                    branding_data[key][nested_key] = nested_default
+    
+    return branding_data
+
 def render_template(template_content: str, data: dict) -> str:
     """Production-ready Mustache template rendering using pystache library"""
     import pystache
     
+    # Ensure branding data has proper structure for pystache
+    if "branding" in data:
+        data["branding"] = ensure_branding_structure(data["branding"])
+    
     # Create renderer with no HTML escaping (we want raw output for PDFs)
-    # Use default missing_tags behavior (returns empty string for missing keys)
     renderer = pystache.Renderer(
         escape=lambda u: u  # Disable HTML escaping
     )
@@ -1261,6 +1292,8 @@ def render_template(template_content: str, data: dict) -> str:
         logger.error(f"Pystache template rendering error: {str(e)}")
         # Log the data keys for debugging
         logger.error(f"Available data keys: {list(data.keys())}")
+        if "branding" in data:
+            logger.error(f"Branding structure: {data['branding']}")
         raise
 
 async def prepare_affordability_report_data_generic(calculation_data: dict, property_data: dict, current_user=None) -> dict:
