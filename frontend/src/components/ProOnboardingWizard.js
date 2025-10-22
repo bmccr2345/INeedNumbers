@@ -341,7 +341,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
                 <li>• Pin your most-used tools from the Work Deals section</li>
                 <li>• Set up recurring expenses in Manage Finances → P&L Tracker</li>
                 <li>• Customize activity categories in Action Tracker to match your business</li>
-                <li>• Upload your branding in My Business → Branding & Profile for investor PDFs</li>
+                <li>• Generate professional PDF reports for your clients</li>
               </ul>
               <div className="bg-blue-50 p-3 rounded-lg mt-3">
                 <p className="text-blue-900 font-medium">⚡ Power User Tip:</p>
