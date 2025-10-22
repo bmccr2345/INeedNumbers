@@ -27,7 +27,8 @@ class PDFBrandingTester:
         self.auth_session = None
         
         # User credentials from review request (PRO plan user)
-        self.pro_user_email = "bmccr23@gmail.com"
+        # Try demo user first as bmccr23@gmail.com may have auth issues
+        self.pro_user_email = "demo@demo.com"
         self.pro_user_password = "Goosey23!!23"
         
         # Test data for PDF generation
