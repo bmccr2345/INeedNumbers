@@ -2256,22 +2256,9 @@ async def get_report_preview(tool: str, request: Request, current_user: Optional
         # Prepare data for template
         if tool == "investor":
             # Get branding data for PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_investor_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         elif tool == "affordability":
             # Load affordability template instead of investor template
             template_path = Path(__file__).parent / "templates" / "affordability_report.html"
@@ -2280,22 +2267,9 @@ async def get_report_preview(tool: str, request: Request, current_user: Optional
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for affordability PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = await prepare_affordability_report_data_generic(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         elif tool == "commission":
             # Load commission split template
             template_path = Path(__file__).parent / "templates" / "commission_split_report.html"
@@ -2304,22 +2278,9 @@ async def get_report_preview(tool: str, request: Request, current_user: Optional
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for commission split PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_commission_split_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         else:
             raise HTTPException(status_code=404, detail="Tool not supported")
         
@@ -2358,22 +2319,9 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
         # Prepare data for template
         if tool == "investor":
             # Get branding data for PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_investor_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         elif tool == "affordability":
             # Load affordability template instead of investor template
             template_path = Path(__file__).parent / "templates" / "affordability_report.html"
@@ -2382,22 +2330,9 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for affordability PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = await prepare_affordability_report_data_generic(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         elif tool == "commission":
             # Load commission split template
             template_path = Path(__file__).parent / "templates" / "commission_split_report.html"
@@ -2406,22 +2341,9 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for commission split PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_commission_split_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
             
             # Debug logging for commission PDF
             logger.info(f"Commission PDF - calculation_data: {calculation_data}")
@@ -2437,22 +2359,9 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for seller net sheet PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_seller_net_sheet_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
             
             # Pre-compute brand colors for template (avoids Jinja2 # character issues)
             primary_color = branding_data.get("colors", {}).get("primary", "#10b981")
@@ -2467,18 +2376,7 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for closing date PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             print(f"🔍 DEBUG: Closing Date PDF - Data received: calculation_data keys: {list(calculation_data.keys()) if calculation_data else 'None'}")
             print(f"🔍 DEBUG: Closing Date PDF - Timeline length: {len(calculation_data.get('timeline', [])) if calculation_data else 0}")
@@ -2489,8 +2387,6 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
                 logger.info(f"Closing Date PDF - First timeline item: {calculation_data['timeline'][0] if calculation_data['timeline'] else 'Empty'}")
             
             report_data = prepare_closing_date_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
             
             print(f"🔍 DEBUG: Closing Date PDF - Timeline HTML length: {len(report_data.get('timelineTableRows', ''))}")
             print(f"🔍 DEBUG: Closing Date PDF - Visual timeline HTML length: {len(report_data.get('visualTimelineSection', ''))}")
@@ -2587,22 +2483,9 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
         # Prepare data for template
         if tool == "investor":
             # Get branding data for PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_investor_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         elif tool == "affordability":
             # Load affordability template instead of investor template
             template_path = Path(__file__).parent / "templates" / "affordability_report.html"
@@ -2611,22 +2494,9 @@ async def debug_report(tool: str, request: Request, current_user: Optional[User]
             template_content = template_path.read_text(encoding='utf-8')
             
             # Get branding data for affordability PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = await prepare_affordability_report_data_generic(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         else:
             raise HTTPException(status_code=404, detail="Tool not supported")
         
@@ -2793,22 +2663,9 @@ async def generate_pdf_with_playwright_exact(tool: str, calculation_data: dict, 
         
         if tool == "investor":
             # Get branding data for PDF
-            branding_data = {}
-            if current_user:
-                try:
-                    # Call brand resolver directly instead of HTTP request
-                    branding_data = await resolve_brand_data(
-                        context="pdf",
-                        embed=True,
-                        current_user=current_user
-                    )
-                except Exception as e:
-                    logger.warning(f"Failed to get branding data: {e}")
-                    branding_data = {}
+            branding_data = {}  # Branding disabled
             
             report_data = prepare_investor_report_data(calculation_data, property_data, current_user)
-            # Merge branding data
-            report_data["branding"] = branding_data
         else:
             raise HTTPException(status_code=404, detail="Tool not supported")
         
@@ -2838,22 +2695,9 @@ async def generate_pdf_with_playwright_exact(tool: str, calculation_data: dict, 
             
             if tool == "investor":
                 # Get branding data for PDF
-                branding_data = {}
-                if current_user:
-                    try:
-                        # Call brand resolver directly instead of HTTP request
-                        branding_data = await resolve_brand_data(
-                            context="pdf",
-                            embed=True,
-                            current_user=current_user
-                        )
-                    except Exception as e:
-                        logger.warning(f"Failed to get branding data: {e}")
-                        branding_data = {}
+                branding_data = {}  # Branding disabled
                 
                 report_data = prepare_investor_report_data(calculation_data, property_data, current_user)
-                # Merge branding data
-                report_data["branding"] = branding_data
             else:
                 raise HTTPException(status_code=404, detail="Tool not supported")
             
