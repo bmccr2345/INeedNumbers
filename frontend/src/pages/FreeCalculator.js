@@ -481,7 +481,7 @@ const FreeCalculator = () => {
                   alt="DealPack Real Estate" 
                   className="h-6 w-auto"
                 />
-                <h1 className="text-xl font-bold">Free Deal Calculator</h1>
+                <h1 className="text-xl font-bold">Investment Deal Calculator</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
