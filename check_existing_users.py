@@ -8,7 +8,7 @@ import json
 
 def test_login(email, password):
     """Test login with given credentials"""
-    url = "https://realestate-coach-1.preview.emergentagent.com/api/auth/login"
+    url = "https://agent-financials.preview.emergentagent.com/api/auth/login"
     data = {
         "email": email,
         "password": password,

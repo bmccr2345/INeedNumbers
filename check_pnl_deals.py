@@ -7,7 +7,7 @@ import requests
 import json
 
 def check_pnl_deals():
-    base_url = "https://realestate-coach-1.preview.emergentagent.com"
+    base_url = "https://agent-financials.preview.emergentagent.com"
     
     # Authenticate
     login_data = {
