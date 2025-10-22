@@ -192,16 +192,12 @@ class PDFBrandingTester:
                     print(f"   ✅ Role: {user_data.get('role')}")
                     print(f"   ✅ Plan: {user_data.get('plan')}")
                     
-                    # Accept any STARTER or PRO user for testing
+                    # Accept any user for testing (FREE users can still test basic functionality)
                     user_plan = user_data.get('plan')
-                    if user_plan in ['STARTER', 'PRO']:
-                        print(f"   ✅ {user_plan} plan user - suitable for branding tests")
-                        self.auth_session = session
-                        self.pro_user_email = email  # Update for logging
-                        return True
-                    else:
-                        print(f"   ⚠️  User plan is {user_plan}, continuing to try other credentials...")
-                        continue
+                    print(f"   ✅ {user_plan} plan user - proceeding with tests")
+                    self.auth_session = session
+                    self.pro_user_email = email  # Update for logging
+                    return True
                 else:
                     print(f"   ❌ Authentication failed: {response.status_code}")
                     try:
