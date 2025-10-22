@@ -305,27 +305,11 @@ body {
 
 <!-- Header -->
 <div class="header">
-  <!-- Branded Header Section -->
-  <div class="agent-info">
-    <div class="agent-details">
-      <div class="agent-avatar">{{branding.agent.initials}}</div>
-      <div class="agent-text">
-        <div class="agent-name">{{branding.agent.name}}</div>
-        <div class="agent-contact">{{branding.agent.email}}</div>
-        <div class="agent-contact">{{branding.agent.phone}}</div>
-      </div>
-    </div>
-    <div class="brokerage-info">
-      <div>{{branding.brokerage.name}}</div>
-      <div>{{branding.brokerage.address}}</div>
-    </div>
-  </div>
-  
   <h1>{{title}}</h1>
   <p class="subtitle">Home Price: {{property.homePrice}}</p>
   
   <div class="header-meta">
-    <div><strong>Prepared by {{preparedBy}}</strong></div>
+    
     <div>{{generatedAt}}</div>
   </div>
 </div>
@@ -561,7 +545,7 @@ body {
 <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 11px; color: #6b7280;">
   <p><strong>This analysis is for informational purposes only and should not be considered as financial advice.</strong><br>
   Please consult with qualified professionals before making financial decisions. Actual loan terms may vary based on credit, income verification, and lender requirements.</p>
-  <p style="margin-top: 15px;"><strong>Report prepared by {{preparedBy}}</strong><br>
+  <p style="margin-top: 15px;">
   Generated on {{generatedAt}}</p>
 </div>
 

@@ -295,22 +295,15 @@ body {
         <img src="{{agentLogoUrl}}" alt="Agent Logo" class="agent-logo">
       {{/agentLogoUrl}}
       {{^agentLogoUrl}}
-        <div class="agent-avatar">{{branding.agent.initials}}</div>
+        <div class="agent-avatar"></div>
       {{/agentLogoUrl}}
       <div class="agent-text">
-        <div class="agent-name">{{branding.agent.name}}</div>
-        <div class="agent-contact">{{branding.agent.email}}</div>
-        {{#branding.agent.phone}}
-        <div class="agent-contact">{{branding.agent.phone}}</div>
-        {{/branding.agent.phone}}
+        <div class="agent-name"></div>
+        <div class="agent-contact"></div>
+        
       </div>
     </div>
-    {{#branding.brokerage.name}}
-    <div class="brokerage-info">
-      <div>{{branding.brokerage.name}}</div>
-      {{#branding.brokerage.address}}
-      <div>{{branding.brokerage.address}}</div>
-      {{/branding.brokerage.address}}
+    
     </div>
     {{/branding.brokerage.name}}
   </div>
@@ -319,7 +312,7 @@ body {
   <p class="subtitle">Expected Sale Price: {{salePrice}} • Commission Rate: {{commissionRate}}</p>
   
   <div class="header-meta">
-    <div><strong>Prepared by {{preparedBy}}</strong></div>
+    
     <div>{{generatedAt}}</div>
   </div>
 </div>
@@ -586,7 +579,7 @@ body {
 <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e7eb; text-align: center; font-size: 11px; color: #6b7280;">
   <p><strong>This analysis is for informational purposes only and should not be considered as financial advice.</strong><br>
   Actual costs may vary based on market conditions, negotiations, and local regulations. Always verify amounts with your title company, lender, and tax professional.</p>
-  <p style="margin-top: 15px;"><strong>Report prepared by {{preparedBy}}</strong><br>
+  <p style="margin-top: 15px;">
   Generated on {{generatedAt}}</p>
 </div>
 
