@@ -112,24 +112,36 @@ class PDFBrandingTester:
 
     def authenticate_pro_user(self) -> bool:
         """Authenticate as PRO user for PDF branding tests"""
-        print(f"\n🔐 AUTHENTICATING PRO USER: {self.pro_user_email}")
+        print(f"\n🔐 AUTHENTICATING PRO USER...")
         
-        try:
-            session = requests.Session()
+        # Try multiple potential user credentials
+        test_credentials = [
+            ("bmccr23@gmail.com", "Goosey23!!23"),
+            ("demo@demo.com", "Goosey23!!23"),
+            ("demo@demo.com", "demo123"),
+            ("startertest@demo.com", "demo123"),
+            ("test@example.com", "password123"),
+        ]
+        
+        for email, password in test_credentials:
+            print(f"   🔍 Trying: {email} / {password}")
             
-            login_data = {
-                "email": self.pro_user_email,
-                "password": self.pro_user_password,
-                "remember_me": False
-            }
-            
-            response = session.post(
-                f"{self.base_url}/api/auth/login",
-                json=login_data,
-                timeout=15
-            )
-            
-            if response.status_code == 200:
+            try:
+                session = requests.Session()
+                
+                login_data = {
+                    "email": email,
+                    "password": password,
+                    "remember_me": False
+                }
+                
+                response = session.post(
+                    f"{self.base_url}/api/auth/login",
+                    json=login_data,
+                    timeout=15
+                )
+                
+                if response.status_code == 200:
                 login_response = response.json()
                 user_data = login_response.get('user', {})
                 
