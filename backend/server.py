@@ -1244,76 +1244,24 @@ async def test_s3_connection() -> bool:
 
 # Template rendering functions
 def render_template(template_content: str, data: dict) -> str:
-    """Simple Mustache-style template rendering"""
-    rendered = template_content
+    """Production-ready Mustache template rendering using pystache library"""
+    import pystache
     
-    # Handle {{#condition}} blocks
-    def handle_conditional_blocks(text):
-        # Find all conditional blocks
-        pattern = r'\{\{#(\w+)\}\}(.*?)\{\{/\1\}\}'
-        
-        def replace_block(match):
-            condition = match.group(1)
-            content = match.group(2)
-            
-            # Check if condition exists and is truthy in data
-            if condition in data and data[condition]:
-                return content
-            return ''
-        
-        return re.sub(pattern, replace_block, text, flags=re.DOTALL)
+    # Create renderer with no HTML escaping (we want raw output for PDFs)
+    renderer = pystache.Renderer(
+        escape=lambda u: u,  # Disable HTML escaping
+        missing_tags='strict'  # Raise error on missing tags for debugging
+    )
     
-    # Handle {{^condition}} blocks (negated)
-    def handle_negated_blocks(text):
-        pattern = r'\{\{\^(\w+)\}\}(.*?)\{\{/\1\}\}'
-        
-        def replace_block(match):
-            condition = match.group(1)
-            content = match.group(2)
-            
-            # Check if condition doesn't exist or is falsy
-            if condition not in data or not data[condition]:
-                return content
-            return ''
-        
-        return re.sub(pattern, replace_block, text, flags=re.DOTALL)
-    
-    # Apply conditional rendering
-    rendered = handle_conditional_blocks(rendered)
-    rendered = handle_negated_blocks(rendered)
-    
-    # Handle simple variable substitution {{variable}}
-    def replace_var(match):
-        var_path = match.group(1)
-        # Support nested properties like property.addressLine
-        keys = var_path.split('.')
-        value = data
-        
-        try:
-            for key in keys:
-                value = value[key]
-            return str(value) if value is not None else ''
-        except (KeyError, TypeError):
-            return ''
-    
-    rendered = re.sub(r'\{\{([^#^/][^}]*)\}\}', replace_var, rendered)
-    
-    # Handle triple braces for HTML content {{{variable}}}
-    def replace_html_var(match):
-        var_path = match.group(1)
-        keys = var_path.split('.')
-        value = data
-        
-        try:
-            for key in keys:
-                value = value[key]
-            return str(value) if value is not None else ''
-        except (KeyError, TypeError):
-            return ''
-    
-    rendered = re.sub(r'\{\{\{([^}]*)\}\}\}', replace_html_var, rendered)
-    
-    return rendered
+    try:
+        rendered = renderer.render(template_content, data)
+        logger.info(f"Template rendered successfully using pystache, output length: {len(rendered)}")
+        return rendered
+    except Exception as e:
+        logger.error(f"Pystache template rendering error: {str(e)}")
+        # Log the data keys for debugging
+        logger.error(f"Available data keys: {list(data.keys())}")
+        raise
 
 async def prepare_affordability_report_data_generic(calculation_data: dict, property_data: dict, current_user=None) -> dict:
     """Prepare data for affordability report template"""
