@@ -561,12 +561,16 @@ class PDFBrandingTester:
         
         results = {}
         
-        # Step 1: Authenticate PRO user
+        # Step 1: Create test user if needed
+        user_creation_success = self.create_test_user()
+        results['user_creation'] = user_creation_success
+        
+        # Step 2: Authenticate user
         auth_success = self.authenticate_pro_user()
         results['authentication'] = auth_success
         
         if not auth_success:
-            print("\n❌ CRITICAL: Cannot proceed without PRO user authentication")
+            print("\n❌ CRITICAL: Cannot proceed without user authentication")
             return results
         
         # Step 2: Test branding data resolution
