@@ -467,19 +467,19 @@ const FreeCalculator = () => {
       return;
     }
 
+    // Get auth token from cookies
+    const token = document.cookie.split('; ')
+      .find(row => row.startsWith('access_token='))
+      ?.split('=')[1];
+    
+    if (!token) {
+      toast.error('Please log in to save calculations');
+      return;
+    }
+
     setIsSaving(true);
     try {
       const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
-      
-      // Get auth token from cookies
-      const token = document.cookie.split('; ')
-        .find(row => row.startsWith('access_token='))
-        ?.split('=')[1];
-      
-      if (!token) {
-        toast.error('Please log in to save calculations');
-        return;
-      }
 
       const response = await fetch(`${backendUrl}/api/investor/save`, {
         method: 'POST',
