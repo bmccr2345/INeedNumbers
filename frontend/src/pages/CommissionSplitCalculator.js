@@ -53,6 +53,7 @@ const CommissionSplitCalculator = () => {
   };
   
   const [inputs, setInputs] = useState({
+    address: '',
     salePrice: '',
     totalCommission: '',
     yourSide: 'listing', // 'listing', 'buyer', 'dual'
