@@ -966,6 +966,18 @@ const FreeCalculator = () => {
                   <FileText className="w-4 h-4" />
                   <span>Download PDF</span>
                 </Button>
+                
+                {user && ['STARTER', 'PRO'].includes(user.plan) && metrics && (
+                  <Button
+                    onClick={handleSaveCalculation}
+                    disabled={isSaving}
+                    variant="outline"
+                    className="flex items-center space-x-2"
+                  >
+                    <Save className="w-4 h-4" />
+                    <span>{isSaving ? 'Saving...' : 'Save Deal'}</span>
+                  </Button>
+                )}
               </div>
             </div>
 
