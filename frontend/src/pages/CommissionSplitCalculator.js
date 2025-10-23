@@ -74,6 +74,7 @@ const CommissionSplitCalculator = () => {
 
   const clearAllFields = () => {
     setInputs({
+      address: '',
       salePrice: '',
       totalCommission: '',
       yourSide: 'listing',
