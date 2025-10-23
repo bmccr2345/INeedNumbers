@@ -208,15 +208,9 @@ const HomepagePanel = () => {
 
   const loadCapProgress = async () => {
     try {
-      const token = Cookies.get('access_token');
-      if (!token) {
-        setCapProgress({ data: null, loading: false });
-        return;
-      }
-
       const response = await axios.get(`${backendUrl}/api/cap-tracker/progress`, {
+        withCredentials: true,
         headers: { 
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         }
       });
