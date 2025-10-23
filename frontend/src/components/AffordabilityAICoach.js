@@ -116,45 +116,22 @@ const AffordabilityAICoach = ({ isOpen, onClose, inputs, results }) => {
 
       const aiResponse = await response.json();
       
-      // Parse and format AI response
+      // Parse and format AI response - backend returns structured JSON
       let formattedAnalysis = '';
       
-      if (aiResponse.summary) {
-        // If summary is a string, check if it's JSON that needs parsing
-        if (typeof aiResponse.summary === 'string') {
-          // Try to parse if it looks like JSON (starts with { or [)
-          const trimmed = aiResponse.summary.trim();
-          if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
-            try {
-              const parsed = JSON.parse(aiResponse.summary);
-              formattedAnalysis = formatJsonAnalysis(parsed);
-            } catch {
-              // Not valid JSON, use as-is
-              formattedAnalysis = aiResponse.summary;
-            }
-          } else {
-            formattedAnalysis = aiResponse.summary;
-          }
-        }
-        // If summary is an object (JSON), parse and format it
-        else if (typeof aiResponse.summary === 'object') {
-          formattedAnalysis = formatJsonAnalysis(aiResponse.summary);
-        }
+      // If the response has summary, stats, actions, etc. structure, format it
+      if (aiResponse && typeof aiResponse === 'object' && (aiResponse.summary || aiResponse.stats)) {
+        // This is the standard structured response from backend
+        formattedAnalysis = formatJsonAnalysis(aiResponse);
       } else if (aiResponse.coaching_text) {
         // Fallback for legacy format
         formattedAnalysis = aiResponse.coaching_text;
       } else if (typeof aiResponse === 'string') {
-        // Sometimes the response itself is the analysis string
-        // Try to parse if it looks like JSON
-        try {
-          const parsed = JSON.parse(aiResponse);
-          formattedAnalysis = formatJsonAnalysis(parsed);
-        } catch {
-          formattedAnalysis = aiResponse;
-        }
+        // Sometimes the response itself is a string
+        formattedAnalysis = aiResponse;
       } else {
-        // If response is already an object, format it
-        formattedAnalysis = formatJsonAnalysis(aiResponse);
+        // Try to format whatever we got
+        formattedAnalysis = JSON.stringify(aiResponse, null, 2);
       }
       
       if (!formattedAnalysis) {
