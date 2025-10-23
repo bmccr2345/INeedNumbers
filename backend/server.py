@@ -1995,7 +1995,7 @@ def prepare_closing_date_report_data(calculation_data: dict, property_data: dict
         "purchaseType": "Cash Purchase" if is_cash else "Financed Purchase",
         
         # Timeline Summary
-        "timelineLength": str(timeline_length) if timeline_length > 0 else "TBD",
+        "timelineLength": str(timeline_length) if timeline_length >= 0 else "0",
         "milestoneCount": str(len(active_timeline)),
         "criticalCount": str(critical_count),
         "timelineStatus": "On Track" if timeline_length > 0 and timeline_length <= 45 else "Extended Timeline",
