@@ -1440,6 +1440,7 @@ async def prepare_affordability_report_data_generic(calculation_data: dict, prop
     report_data = {
         "title": "Home Affordability Analysis",
         "generatedAt": datetime.now().strftime("%B %d, %Y"),
+        "address": property_data.get('address', ''),
         "preparedBy": branding_data.get("agent", {}).get("name", "Real Estate Professional"),
         
         # Property Information
