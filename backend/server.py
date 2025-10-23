@@ -1561,7 +1561,7 @@ def prepare_investor_report_data(calculation_data: dict, property_data: dict, cu
     
     # Calculate key metrics
     total_monthly_expenses = (property_taxes + insurance + maintenance + vacancy_allowance + property_management) / 12
-    monthly_mortgage_payment = safe_float(calculation_data.get('monthlyPayment', 0))
+    monthly_mortgage_payment = safe_float(calculation_data.get('monthlyPayment') or calculation_data.get('monthlyMortgage', 0))
     monthly_noi = total_monthly_income - total_monthly_expenses
     monthly_cash_flow = monthly_noi - monthly_mortgage_payment
     annual_noi = monthly_noi * 12
