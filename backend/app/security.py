@@ -271,7 +271,12 @@ class CSRFMiddleware(BaseHTTPMiddleware):
             "/api/reflection-log", 
             "/api/reflection-logs",
             "/api/brand/test-pdf",
-            "/api/reports"  # Exempt all /api/reports/* endpoints (PDF generation)
+            "/api/reports",  # Exempt all /api/reports/* endpoints (PDF generation)
+            "/api/commission/save",
+            "/api/seller-net/save",
+            "/api/affordability/save",
+            "/api/investor/save",
+            "/api/closing-date/save"
         }
     
     async def dispatch(self, request: Request, call_next: Callable):
