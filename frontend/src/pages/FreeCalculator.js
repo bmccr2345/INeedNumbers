@@ -73,6 +73,8 @@ const FreeCalculator = () => {
   const [metrics, setMetrics] = useState(null);
   const [isCalculating, setIsCalculating] = useState(false);
 
+  const [isSaving, setIsSaving] = useState(false);
+
   // Load agent profile on component mount
   useEffect(() => {
     loadAgentProfile();
@@ -458,6 +460,54 @@ const FreeCalculator = () => {
       </Tooltip>
     </TooltipProvider>
   );
+
+  const handleSaveCalculation = async () => {
+    if (!user || !['STARTER', 'PRO'].includes(user.plan)) {
+      toast.error('Saving calculations requires a STARTER or PRO plan');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+      
+      // Get auth token from cookies
+      const token = document.cookie.split('; ')
+        .find(row => row.startsWith('access_token='))
+        ?.split('=')[1];
+      
+      if (!token) {
+        toast.error('Please log in to save calculations');
+        return;
+      }
+
+      const response = await fetch(`${backendUrl}/api/investor/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          title: propertyData.address || `Investment Deal - ${new Date().toLocaleDateString()}`,
+          inputs: propertyData,
+          results: metrics
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || 'Failed to save calculation');
+      }
+
+      const data = await response.json();
+      toast.success(data.message || 'Calculation saved successfully!');
+    } catch (error) {
+      console.error('Save error:', error);
+      toast.error(error.message || 'Failed to save calculation');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
