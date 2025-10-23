@@ -1850,6 +1850,7 @@ def prepare_seller_net_sheet_report_data(calculation_data: dict, property_data: 
     return {
         "title": "Seller Net Sheet Analysis",
         "generatedAt": datetime.now().strftime("%B %d, %Y"),
+        "address": property_data.get(\'address\', \'\'),
         "preparedBy": current_user.full_name if current_user else "Real Estate Professional",
         
         # Property and Sale Info
