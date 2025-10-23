@@ -41,6 +41,7 @@ function App() {
     <div className="App">
       <HelmetProvider>
         <PerformanceMonitor />
+        <Toaster position="top-right" richColors />
         <AuthProvider>
           <BrowserRouter future={{
           v7_relativeSplatPath: true,
