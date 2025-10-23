@@ -4340,6 +4340,242 @@ def generate_closing_date_timeline_html(inputs, timeline, is_branded=False, agen
     
     return html_template
 
+
+# ============================================================================
+# CALCULATOR SAVE ENDPOINTS
+# ============================================================================
+
+# Request Models for Saving Calculations
+class SaveCommissionSplitRequest(BaseModel):
+    title: str
+    inputs: dict
+    results: dict
+
+class SaveSellerNetSheetRequest(BaseModel):
+    title: str
+    inputs: dict
+    results: dict
+
+class SaveAffordabilityRequest(BaseModel):
+    title: str
+    inputs: dict
+    results: dict
+
+class SaveInvestorDealRequest(BaseModel):
+    title: str
+    inputs: dict
+    results: dict
+
+# Result Models for Saved Calculations
+class CommissionSplitResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    inputs: dict
+    results: dict
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user_id: Optional[str] = None
+
+class SellerNetSheetResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    inputs: dict
+    results: dict
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user_id: Optional[str] = None
+
+class AffordabilityResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    inputs: dict
+    results: dict
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user_id: Optional[str] = None
+
+class InvestorDealResult(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    inputs: dict
+    results: dict
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    user_id: Optional[str] = None
+
+# Commission Split Save Endpoint
+@api_router.post("/commission/save")
+async def save_commission_calculation(
+    request: SaveCommissionSplitRequest,
+    current_user: User = Depends(require_auth),
+    request_obj: Request = None
+):
+    """Save a commission split calculation"""
+    try:
+        # Check plan - only STARTER and PRO can save
+        if current_user.plan.value not in ["STARTER", "PRO"]:
+            raise HTTPException(
+                status_code=403,
+                detail="Saving calculations requires a STARTER or PRO plan. Please upgrade."
+            )
+
+        # Create calculation record
+        calculation = CommissionSplitResult(
+            title=request.title,
+            inputs=request.inputs,
+            results=request.results,
+            user_id=current_user.id
+        )
+
+        # Convert to dict for MongoDB
+        calculation_dict = calculation.dict()
+        calculation_dict['created_at'] = calculation_dict['created_at'].isoformat()
+        
+        # Save to database
+        await db.commission_calculations.insert_one(calculation_dict)
+        
+        await log_audit_event(current_user, AuditAction.CREATE, {
+            "resource_type": "commission_calculation",
+            "calculation_id": calculation.id
+        }, request_obj)
+        
+        return {"message": "Commission calculation saved successfully", "id": calculation.id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving commission calculation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Seller Net Sheet Save Endpoint
+@api_router.post("/seller-net/save")
+async def save_seller_net_calculation(
+    request: SaveSellerNetSheetRequest,
+    current_user: User = Depends(require_auth),
+    request_obj: Request = None
+):
+    """Save a seller net sheet calculation"""
+    try:
+        # Check plan - only STARTER and PRO can save
+        if current_user.plan.value not in ["STARTER", "PRO"]:
+            raise HTTPException(
+                status_code=403,
+                detail="Saving calculations requires a STARTER or PRO plan. Please upgrade."
+            )
+
+        # Create calculation record
+        calculation = SellerNetSheetResult(
+            title=request.title,
+            inputs=request.inputs,
+            results=request.results,
+            user_id=current_user.id
+        )
+
+        # Convert to dict for MongoDB
+        calculation_dict = calculation.dict()
+        calculation_dict['created_at'] = calculation_dict['created_at'].isoformat()
+        
+        # Save to database
+        await db.seller_net_calculations.insert_one(calculation_dict)
+        
+        await log_audit_event(current_user, AuditAction.CREATE, {
+            "resource_type": "seller_net_calculation",
+            "calculation_id": calculation.id
+        }, request_obj)
+        
+        return {"message": "Seller net sheet saved successfully", "id": calculation.id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving seller net sheet: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Affordability Save Endpoint
+@api_router.post("/affordability/save")
+async def save_affordability_calculation(
+    request: SaveAffordabilityRequest,
+    current_user: User = Depends(require_auth),
+    request_obj: Request = None
+):
+    """Save an affordability calculation"""
+    try:
+        # Check plan - only STARTER and PRO can save
+        if current_user.plan.value not in ["STARTER", "PRO"]:
+            raise HTTPException(
+                status_code=403,
+                detail="Saving calculations requires a STARTER or PRO plan. Please upgrade."
+            )
+
+        # Create calculation record
+        calculation = AffordabilityResult(
+            title=request.title,
+            inputs=request.inputs,
+            results=request.results,
+            user_id=current_user.id
+        )
+
+        # Convert to dict for MongoDB
+        calculation_dict = calculation.dict()
+        calculation_dict['created_at'] = calculation_dict['created_at'].isoformat()
+        
+        # Save to database
+        await db.affordability_calculations.insert_one(calculation_dict)
+        
+        await log_audit_event(current_user, AuditAction.CREATE, {
+            "resource_type": "affordability_calculation",
+            "calculation_id": calculation.id
+        }, request_obj)
+        
+        return {"message": "Affordability calculation saved successfully", "id": calculation.id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving affordability calculation: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Investor Deal Save Endpoint
+@api_router.post("/investor/save")
+async def save_investor_deal(
+    request: SaveInvestorDealRequest,
+    current_user: User = Depends(require_auth),
+    request_obj: Request = None
+):
+    """Save an investor deal calculation"""
+    try:
+        # Check plan - only STARTER and PRO can save
+        if current_user.plan.value not in ["STARTER", "PRO"]:
+            raise HTTPException(
+                status_code=403,
+                detail="Saving deals requires a STARTER or PRO plan. Please upgrade."
+            )
+
+        # Create calculation record
+        calculation = InvestorDealResult(
+            title=request.title,
+            inputs=request.inputs,
+            results=request.results,
+            user_id=current_user.id
+        )
+
+        # Convert to dict for MongoDB
+        calculation_dict = calculation.dict()
+        calculation_dict['created_at'] = calculation_dict['created_at'].isoformat()
+        
+        # Save to database
+        await db.investor_deals.insert_one(calculation_dict)
+        
+        await log_audit_event(current_user, AuditAction.CREATE, {
+            "resource_type": "investor_deal",
+            "calculation_id": calculation.id
+        }, request_obj)
+        
+        return {"message": "Investor deal saved successfully", "id": calculation.id}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error saving investor deal: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Action Tracker Models
 class TrackerSettings(BaseModel):
     userId: str
