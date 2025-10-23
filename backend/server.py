@@ -4693,13 +4693,31 @@ def calculate_tracker_summary(settings: TrackerSettings, daily_entry: TrackerDai
     earned_gci_to_date = settings.earnedGciToDate
     required_dollars_per_day = max(math.ceil((monthly_gci_target - earned_gci_to_date) / remaining_workdays), 0)
     
-    # Calculate activity progress (projected closings)
+    # Calculate activity progress (projected closings) - need to sum MTD completed activities
+    # Get all daily entries for this month to calculate actual MTD totals
+    try:
+        entries_cursor = db.tracker_daily_entries.find({
+            "user_id": current_user.id,
+            "month": settings.month
+        })
+        entries_list = await entries_cursor.to_list(length=None)
+        
+        # Calculate MTD totals for each activity
+        mtd_completed = {}
+        for activity in settings.activities:
+            mtd_total = sum(entry.get('completed', {}).get(activity, 0) for entry in entries_list)
+            mtd_completed[activity] = mtd_total
+    except Exception as e:
+        logger.warning(f"Could not calculate MTD activity totals: {e}")
+        mtd_completed = {activity: 0 for activity in settings.activities}
+    
+    # Calculate activity progress based on MTD totals
     activity_projection_closings = float('inf')
     for activity in settings.activities:
         required = settings.requiredPerClosing.get(activity, 1)
         if required > 0:
-            completed_mtd = daily_entry.completed.get(activity, 0) * workdays_elapsed  # Rough approximation
-            projection = math.floor(completed_mtd / required)
+            completed_mtd = mtd_completed.get(activity, 0)
+            projection = math.floor(completed_mtd / required) if required > 0 else 0
             activity_projection_closings = min(activity_projection_closings, projection)
     
     if activity_projection_closings == float('inf'):
