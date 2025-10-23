@@ -167,23 +167,15 @@ const DashboardPage = () => {
         }
       ]
     },
-    {
-      id: 'myBusiness',
-      type: 'category',
-      name: 'My Business',
-      icon: <Store className="w-5 h-5" />,
-      available: ['PRO'],
-      subTabs: [
-        // BRANDING DISABLED - Hidden for future work
-        // {
-        //   id: 'branding',
-        //   name: 'Branding & Profile',
-        //   icon: <Sparkles className="w-4 h-4" />,
-        //   available: ['PRO'],
-        //   proOnly: true
-        // }
-      ]
-    }
+    // MY BUSINESS CATEGORY REMOVED
+    // {
+    //   id: 'myBusiness',
+    //   type: 'category',
+    //   name: 'My Business',
+    //   icon: <Store className="w-5 h-5" />,
+    //   available: ['PRO'],
+    //   subTabs: []
+    // }
   ];
 
   const toggleCategory = (categoryId) => {
