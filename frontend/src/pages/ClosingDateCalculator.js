@@ -52,6 +52,7 @@ const ClosingDateCalculator = () => {
   };
   
   const [inputs, setInputs] = useState({
+    address: '',
     underContractDate: '',
     closingDate: '',
     pestInspectionDays: '',
