@@ -1756,6 +1756,7 @@ def prepare_commission_split_report_data(calculation_data: dict, property_data: 
         "title": "Commission Split Analysis",
         "generatedAt": datetime.now().strftime("%B %d, %Y"),
         "preparedBy": current_user.full_name if current_user else "Real Estate Professional",
+        "address": property_data.get('address', ''),
         
         # Property and Commission Info
         "salePrice": format_currency(sale_price),
