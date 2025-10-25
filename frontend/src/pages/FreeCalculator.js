@@ -536,13 +536,13 @@ const FreeCalculator = () => {
                 <span>Back to Home</span>
               </Button>
               <Separator orientation="vertical" className="h-6" />
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <img 
-                  src="https://customer-assets.emergentagent.com/job_reipro/artifacts/0kmyam6x_Logo-removebg-preview.png" 
-                  alt="DealPack Real Estate" 
-                  className="h-6 w-auto"
+                  src="https://customer-assets.emergentagent.com/job_agent-financials/artifacts/u7i6c8zh_Fairy_Holding_Wand.png" 
+                  alt="Fairy AI" 
+                  className="h-8 w-auto"
                 />
-                <h1 className="text-xl font-bold">Investment Deal Calculator</h1>
+                <h1 className="text-xl sm:text-2xl font-bold">Investor Deal Generator</h1>
               </div>
             </div>
             <div className="flex items-center space-x-4">
