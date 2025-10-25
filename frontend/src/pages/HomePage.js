@@ -98,7 +98,7 @@ const HomePage = () => {
       bullets: [
         "Itemizes payoff, fees, taxes, concessions—no spreadsheet required.",
         "Multiple offer scenarios (price vs. credits vs. closing dates).",
-        "Print or share a clean, branded summary."
+        "Print or share a clean summary."
       ],
       microProof: "Speeds listing decisions at the kitchen table.",
       type: "Free",
