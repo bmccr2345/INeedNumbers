@@ -5,9 +5,40 @@ import { cn } from "../../lib/utils"
 
 const TooltipProvider = TooltipPrimitive.Provider
 
-const Tooltip = TooltipPrimitive.Root
+// Enhanced Tooltip that works on both hover and click (mobile-friendly)
+const Tooltip = ({ children, ...props }) => {
+  return (
+    <TooltipPrimitive.Root delayDuration={0} {...props}>
+      {children}
+    </TooltipPrimitive.Root>
+  )
+}
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+// Enhanced Trigger that responds to both hover and click/tap
+const TooltipTrigger = React.forwardRef(({ onClick, ...props }, ref) => {
+  const [open, setOpen] = React.useState(false)
+  
+  const handleClick = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpen(!open)
+    if (onClick) onClick(e)
+  }
+
+  return (
+    <TooltipPrimitive.Trigger
+      ref={ref}
+      onClick={handleClick}
+      onPointerDown={(e) => {
+        // Prevent default to avoid focus issues on mobile
+        if (e.pointerType === 'touch') {
+          e.preventDefault()
+        }
+      }}
+      {...props}
+    />
+  )
+})
 
 const TooltipContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
   <TooltipPrimitive.Portal>
