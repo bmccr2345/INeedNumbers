@@ -3,16 +3,36 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "../../lib/utils"
 
-// Mobile-friendly TooltipProvider with proper configuration
+// Mobile-friendly TooltipProvider - instant display, no delay
 const TooltipProvider = ({ children, ...props }) => (
-  <TooltipPrimitive.Provider delayDuration={0} skipDelayDuration={0} {...props}>
+  <TooltipPrimitive.Provider 
+    delayDuration={0} 
+    skipDelayDuration={0} 
+    disableHoverableContent={false}
+    {...props}
+  >
     {children}
   </TooltipPrimitive.Provider>
 )
 
-// Mobile-friendly Tooltip Root - works on both hover and click
+// Mobile-friendly Tooltip Root - controlled state for tap functionality
 const Tooltip = ({ children, ...props }) => {
   const [open, setOpen] = React.useState(false)
+  const timeoutRef = React.useRef(null)
+
+  // Auto-close tooltip after 3 seconds on mobile tap
+  React.useEffect(() => {
+    if (open) {
+      timeoutRef.current = setTimeout(() => {
+        setOpen(false)
+      }, 3000)
+    }
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [open])
   
   return (
     <TooltipPrimitive.Root 
@@ -26,12 +46,19 @@ const Tooltip = ({ children, ...props }) => {
   )
 }
 
-// Enhanced Trigger for mobile - responds to both hover and tap
-const TooltipTrigger = React.forwardRef((props, ref) => {
+// Enhanced Trigger - tap to open on mobile, hover on desktop
+const TooltipTrigger = React.forwardRef(({ asChild, ...props }, ref) => {
   return (
     <TooltipPrimitive.Trigger
       ref={ref}
-      onPointerDown={(e) => e.stopPropagation()}
+      asChild={asChild}
+      onClick={(e) => {
+        // On touch devices, toggle tooltip on tap
+        if (window.matchMedia('(hover: none)').matches) {
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }}
       {...props}
     />
   )
