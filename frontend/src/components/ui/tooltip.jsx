@@ -3,38 +3,35 @@ import * as TooltipPrimitive from "@radix-ui/react-tooltip"
 
 import { cn } from "../../lib/utils"
 
-const TooltipProvider = TooltipPrimitive.Provider
+// Mobile-friendly TooltipProvider with proper configuration
+const TooltipProvider = ({ children, ...props }) => (
+  <TooltipPrimitive.Provider delayDuration={0} skipDelayDuration={0} {...props}>
+    {children}
+  </TooltipPrimitive.Provider>
+)
 
-// Enhanced Tooltip that works on both hover and click (mobile-friendly)
+// Mobile-friendly Tooltip Root - works on both hover and click
 const Tooltip = ({ children, ...props }) => {
+  const [open, setOpen] = React.useState(false)
+  
   return (
-    <TooltipPrimitive.Root delayDuration={0} {...props}>
+    <TooltipPrimitive.Root 
+      open={open} 
+      onOpenChange={setOpen}
+      delayDuration={0}
+      {...props}
+    >
       {children}
     </TooltipPrimitive.Root>
   )
 }
 
-// Enhanced Trigger that responds to both hover and click/tap
-const TooltipTrigger = React.forwardRef(({ onClick, ...props }, ref) => {
-  const [open, setOpen] = React.useState(false)
-  
-  const handleClick = (e) => {
-    e.preventDefault()
-    e.stopPropagation()
-    setOpen(!open)
-    if (onClick) onClick(e)
-  }
-
+// Enhanced Trigger for mobile - responds to both hover and tap
+const TooltipTrigger = React.forwardRef((props, ref) => {
   return (
     <TooltipPrimitive.Trigger
       ref={ref}
-      onClick={handleClick}
-      onPointerDown={(e) => {
-        // Prevent default to avoid focus issues on mobile
-        if (e.pointerType === 'touch') {
-          e.preventDefault()
-        }
-      }}
+      onPointerDown={(e) => e.stopPropagation()}
       {...props}
     />
   )
