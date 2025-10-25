@@ -5,8 +5,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 
 # Get database connection
 def get_db():
-    client = AsyncIOMotorClient(os.environ.get('MONGO_URL', 'mongodb://localhost:27017'))
-    return client[os.environ.get('DB_NAME', 'test_database')]
+    client = AsyncIOMotorClient(os.environ['MONGO_URL'])
+    return client[os.environ['DB_NAME']]
 
 async def fetch_goal_settings(user_id: str) -> Dict[str, Any]:
     """Fetch user's goal settings from goal_settings collection"""
