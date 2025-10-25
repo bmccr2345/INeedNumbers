@@ -46,7 +46,7 @@ const HomePage = () => {
       tagline: "Turn property numbers into polished investor packets—fast.",
       bullets: [
         "Auto-calculates cap rate, cash-on-cash, DSCR & annual cash flow.",
-        "One click → branded, client-ready PDF you can text or email.",
+        "One click → client-ready PDF you can text or email.",
         "Save versions, duplicate deals, and compare side-by-side."
       ],
       microProof: "Agents report < 5 min per packet after setup.",
