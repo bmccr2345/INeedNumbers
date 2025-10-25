@@ -544,12 +544,6 @@ const HomePage = () => {
                     </ul>
                     <p className="text-xs text-gray-600 italic">10-minute weekly habit → fewer end-of-year surprises.</p>
                   </div>
-                  <Button 
-                    onClick={() => navigate('/tools/agent-pl-tracker')}
-                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800"
-                  >
-                    Open P&L
-                  </Button>
                 </CardContent>
               </Card>
 
