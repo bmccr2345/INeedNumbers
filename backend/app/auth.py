@@ -32,8 +32,8 @@ async def get_current_user(request: Request) -> User:
             raise HTTPException(status_code=401, detail="Invalid token")
         
         # Get user from database
-        client = AsyncIOMotorClient(os.environ.get('MONGO_URL', 'mongodb://localhost:27017'))
-        db = client[os.environ.get('DB_NAME', 'test_database')]
+        client = AsyncIOMotorClient(os.environ['MONGO_URL'])
+        db = client[os.environ['DB_NAME']]
         
         user_data = await db.users.find_one({"id": user_id})
         if not user_data:
@@ -96,8 +96,8 @@ async def get_current_user_unified(request: Request) -> User:
             raise HTTPException(status_code=401, detail="Invalid token")
         
         # Get user from database
-        client = AsyncIOMotorClient(os.environ.get('MONGO_URL', 'mongodb://localhost:27017'))
-        db = client[os.environ.get('DB_NAME', 'test_database')]
+        client = AsyncIOMotorClient(os.environ['MONGO_URL'])
+        db = client[os.environ['DB_NAME']]
         
         user_data = await db.users.find_one({"id": user_id})
         if not user_data:
