@@ -507,12 +507,6 @@ const HomePage = () => {
                     </ul>
                     <p className="text-xs text-gray-600 italic">Users add ~2 extra appointments/week on average.</p>
                   </div>
-                  <Button 
-                    onClick={() => navigate('/dashboard?tab=actiontracker')}
-                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800"
-                  >
-                    Track Today
-                  </Button>
                 </CardContent>
               </Card>
 
