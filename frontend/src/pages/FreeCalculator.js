@@ -444,22 +444,36 @@ const FreeCalculator = () => {
     return `${value.toFixed(2)}%`;
   };
 
-  // Tooltip component for explanations
-  const InfoTooltip = ({ children, tooltipKey, content }) => (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className="flex items-center space-x-1 cursor-help">
-            {children}
-            <HelpCircle className="w-4 h-4 text-gray-400" />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          <p className="text-sm">{content || tooltips[tooltipKey] || "Additional information available"}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
+  // Tooltip component for explanations - mobile-friendly with click support
+  const InfoTooltip = ({ children, tooltipKey, content }) => {
+    const [open, setOpen] = React.useState(false);
+    
+    return (
+      <TooltipProvider>
+        <Tooltip open={open} onOpenChange={setOpen}>
+          <TooltipTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center space-x-1 cursor-help hover:opacity-70 transition-opacity"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setOpen(!open);
+              }}
+              onMouseEnter={() => setOpen(true)}
+              onMouseLeave={() => setOpen(false)}
+            >
+              {children}
+              <HelpCircle className="w-4 h-4 text-gray-400" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent className="max-w-xs">
+            <p className="text-sm">{content || tooltips[tooltipKey] || "Additional information available"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    );
+  };
 
   const handleSaveCalculation = async () => {
     if (!user || !['STARTER', 'PRO'].includes(user.plan)) {
