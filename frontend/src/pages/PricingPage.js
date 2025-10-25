@@ -68,7 +68,6 @@ const PricingPage = () => {
       features: [
         "All Free tools included",
         "Save up to 10 deals",
-        "Branded PDFs with your logo & contact",
         "Share links with clients",
         "Portfolio basics"
       ],
