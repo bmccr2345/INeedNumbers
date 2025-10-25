@@ -77,8 +77,9 @@ const AdminUsers = ({ globalSearch = '' }) => {
       }
       
       const response = await axios.get(`${backendUrl}/api/admin/users?${params}`, {
+        withCredentials: true,
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token') || document.cookie.split(';').find(c => c.trim().startsWith('access_token='))?.split('=')[1]}`
+          'Content-Type': 'application/json'
         }
       });
       
