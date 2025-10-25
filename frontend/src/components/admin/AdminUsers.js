@@ -198,8 +198,9 @@ const AdminUsers = ({ globalSearch = '' }) => {
         `${backendUrl}/api/admin/users/${userId}/status?status=${newStatus}`,
         {},
         {
+          withCredentials: true,
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('access_token') || document.cookie.split(';').find(c => c.trim().startsWith('access_token='))?.split('=')[1]}`
+            'Content-Type': 'application/json'
           }
         }
       );
