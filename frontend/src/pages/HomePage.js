@@ -581,12 +581,6 @@ const HomePage = () => {
                     </ul>
                     <p className="text-xs text-gray-600 italic">Never miss opportunities with AI-powered guidance.</p>
                   </div>
-                  <Button 
-                    onClick={() => navigate('/dashboard')}
-                    className="w-full bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800"
-                  >
-                    Try AI Coach
-                  </Button>
                 </CardContent>
               </Card>
             </div>
