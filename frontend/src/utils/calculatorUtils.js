@@ -37,7 +37,7 @@ export const handleNumberInputChange = (value, setter) => {
 
 // Get auth token
 const getAuthToken = () => {
-  return localStorage.getItem('access_token') || 
+  return safeLocalStorage.getItem('access_token') || 
          document.cookie.split(';')
            .find(c => c.trim().startsWith('access_token='))
            ?.split('=')[1];
