@@ -439,7 +439,14 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 p-4"
-      onClick={() => setIsMinimized(true)} // Click backdrop to minimize
+      onClick={() => {
+        // On mobile, clicking backdrop closes completely
+        if (isMobile) {
+          onClose();
+        } else {
+          setIsMinimized(true);
+        }
+      }}
     >
       <Card 
         className="w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col bg-white shadow-2xl"
