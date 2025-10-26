@@ -9,10 +9,10 @@ import {
   TrendingUp,
   AlertCircle
 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
-import MobileCard from '../mobile/MobileCard';
-import QuickActionButton from '../mobile/QuickActionButton';
-import { Button } from '../ui/button';
+import { useAuth } from '../contexts/AuthContext';
+import MobileCard from '../components/mobile/MobileCard';
+import QuickActionButton from '../components/mobile/QuickActionButton';
+import { Button } from '../components/ui/button';
 
 /**
  * Mobile Dashboard Component
