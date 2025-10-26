@@ -278,7 +278,7 @@ const MobileDashboard = () => {
         <MobileCard
           title="AI Coach"
           icon={Sparkles}
-          onClick={() => navigate('/dashboard')} // Open AI Coach
+          onClick={handleViewCoach}
           className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20"
         >
           <div className="space-y-3">
