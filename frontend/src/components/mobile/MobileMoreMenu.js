@@ -24,6 +24,16 @@ const MobileMoreMenu = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  // Debug logging for user object
+  console.log('[MobileMoreMenu] User object:', {
+    exists: !!user,
+    email: user?.email,
+    name: user?.name,
+    plan: user?.plan,
+    role: user?.role,
+    id: user?.id
+  });
+
   const handleLogout = async () => {
     await logout();
     navigate('/auth/login');
