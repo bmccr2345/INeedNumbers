@@ -282,17 +282,6 @@ const DashboardPage = () => {
       'coach': 'coach'
     };
     
-    // Debug logging for mobile panel navigation
-    if (panelFromUrl) {
-      console.log('[Dashboard] Panel navigation:', {
-        panelFromUrl,
-        mappedTab: panelToTabMap[panelFromUrl],
-        userPlan: user?.plan,
-        availableTabIds: availableTabs.map(t => t.id),
-        willSetTab: !!availableTabs.find(tab => tab.id === panelToTabMap[panelFromUrl])
-      });
-    }
-    
     if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
       setActiveTab(tabFromUrl);
     } else if (panelFromUrl && panelToTabMap[panelFromUrl]) {
