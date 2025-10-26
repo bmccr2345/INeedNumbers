@@ -463,11 +463,18 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
           </div>
           <div className="flex items-center space-x-2">
             <button 
-              onClick={() => setIsMinimized(true)}
+              onClick={() => {
+                // On mobile, minimize closes completely
+                if (isMobile) {
+                  onClose();
+                } else {
+                  setIsMinimized(true);
+                }
+              }}
               className="flex items-center space-x-2 text-white hover:text-emerald-100 transition-colors px-3 py-2 hover:bg-emerald-600 rounded-lg group"
-              title="Minimize to continue working"
+              title={isMobile ? "Close and access later from + menu" : "Minimize to continue working"}
             >
-              <span className="text-sm font-medium">Minimize</span>
+              <span className="text-sm font-medium">{isMobile ? "Close" : "Minimize"}</span>
               <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button 
