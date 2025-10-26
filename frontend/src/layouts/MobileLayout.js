@@ -4,6 +4,8 @@ import { User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileDashboard from '../pages/MobileDashboard';
 import MobileTabBar from '../components/mobile/MobileTabBar';
+import MobileMoreMenu from '../components/mobile/MobileMoreMenu';
+import MobileCalculatorMenu from '../components/mobile/MobileCalculatorMenu';
 
 /**
  * Mobile Layout Component
