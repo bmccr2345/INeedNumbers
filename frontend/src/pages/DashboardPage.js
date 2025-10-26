@@ -27,6 +27,7 @@ import {
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Footer from '../components/Footer';
+import { safeLocalStorage } from '../utils/safeStorage';
 
 // Tab panels
 import HomepagePanel from '../components/dashboard/HomepagePanel';
