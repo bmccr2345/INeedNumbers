@@ -126,7 +126,7 @@ const MobileMoreMenu = ({ isOpen, onClose }) => {
             <User className="w-8 h-8 text-primary" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-gray-900">{user?.name || 'User'}</h3>
+            <h3 className="font-semibold text-gray-900">{user?.name || user?.full_name || 'User'}</h3>
             <div className="flex items-center space-x-2 mt-1">
               <Badge variant="secondary" className="text-xs">
                 {user?.plan || 'FREE'}
