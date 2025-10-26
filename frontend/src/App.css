@@ -107,6 +107,10 @@ body {
   animation: fadeIn 0.2s ease-out;
 }
 
+.animate-slide-up {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
 /* Touch feedback */
 .touch-feedback:active {
   transform: scale(0.98);
