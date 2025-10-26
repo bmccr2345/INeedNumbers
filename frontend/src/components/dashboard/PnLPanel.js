@@ -64,6 +64,9 @@ const PnLPanel = () => {
     split_percent: '',
     team_brokerage_split_percent: '',
     lead_source: '',
+    contract_signed: '',
+    due_diligence_start: '',
+    due_diligence_over: '',
     closing_date: ''
   });
 
