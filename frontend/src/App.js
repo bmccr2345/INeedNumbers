@@ -37,6 +37,31 @@ import AdminConsolePage from "./pages/AdminConsolePage";
 import BrandingProfilePage from "./pages/BrandingProfilePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import MobileLayout from "./layouts/MobileLayout";
+
+/**
+ * Dashboard Route Wrapper
+ * Conditionally renders mobile or desktop layout based on viewport
+ */
+function DashboardRoute() {
+  const isMobile = useIsMobile();
+  
+  if (isMobile) {
+    return (
+      <ErrorBoundary>
+        <MobileLayout>
+          <DashboardPage />
+        </MobileLayout>
+      </ErrorBoundary>
+    );
+  }
+  
+  return (
+    <ErrorBoundary>
+      <DashboardPage />
+    </ErrorBoundary>
+  );
+}
 
 function App() {
   return (
