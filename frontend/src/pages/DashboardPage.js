@@ -355,6 +355,8 @@ const DashboardPage = () => {
   };
 
   const renderActivePanel = () => {
+    console.log('[Dashboard] Rendering panel for activeTab:', activeTab);
+    
     switch (activeTab) {
       case 'homepage':
         return <HomepagePanel />;
@@ -371,6 +373,7 @@ const DashboardPage = () => {
       case 'closingdate':
         return <ClosingDatePanel />;
       case 'pnl':
+        console.log('[Dashboard] Rendering PnLPanel');
         return <PnLPanel />;
       case 'captracker':
         return <CapTrackerPanel />;
