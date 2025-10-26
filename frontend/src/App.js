@@ -46,14 +46,19 @@ import MobileLayout from "./layouts/MobileLayout";
 function DashboardRoute() {
   const isMobile = useIsMobile();
   
+  // On mobile, render MobileLayout with DashboardPage
+  // MobileLayout will decide whether to show MobileDashboard or DashboardPage
   if (isMobile) {
     return (
       <ErrorBoundary>
-        <MobileLayout />
+        <MobileLayout>
+          <DashboardPage />
+        </MobileLayout>
       </ErrorBoundary>
     );
   }
   
+  // On desktop, render DashboardPage directly
   return (
     <ErrorBoundary>
       <DashboardPage />
