@@ -72,6 +72,10 @@ const PnLPanel = () => {
     closing_date: ''
   });
 
+  // Edit deal state
+  const [editingDeal, setEditingDeal] = useState(null);
+  const [showEditDeal, setShowEditDeal] = useState(false);
+
   // Expense form state
   const [newExpense, setNewExpense] = useState({
     date: new Date().toISOString().split('T')[0],
