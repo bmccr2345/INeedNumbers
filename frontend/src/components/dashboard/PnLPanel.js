@@ -266,7 +266,7 @@ const PnLPanel = () => {
 
   // Calculate DD days remaining
   const calculateDDDaysRemaining = (ddStart, ddOver) => {
-    if (!ddStart || !ddOver) return { status: 'no-dates', text: 'No DD dates' };
+    if (!ddStart || !ddOver || ddStart === "" || ddOver === "") return { status: 'no-dates', text: 'No DD dates' };
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
