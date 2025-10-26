@@ -118,11 +118,11 @@ const MobileLayout = ({ children }) => {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto">
-        {/* Show MobileDashboard for overview tab, otherwise pass through to DashboardPage */}
+        {/* Show MobileDashboard for overview tab, otherwise show passed children (DashboardPage) */}
         {shouldShowMobileDashboard ? (
           <MobileDashboard />
         ) : (
-          <Outlet />
+          children
         )}
       </main>
 
