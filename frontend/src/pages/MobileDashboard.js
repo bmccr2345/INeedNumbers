@@ -236,6 +236,78 @@ const MobileDashboard = () => {
         </div>
       </MobileCard>
 
+      {/* Total Income Card */}
+      <MobileCard
+        title="Total Income"
+        icon={TrendingUp}
+      >
+        <div className="space-y-2">
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-bold text-green-700">
+              {formatCurrency(dashboardData.totalIncome)}
+            </span>
+            <span className="text-sm text-gray-500">MTD</span>
+          </div>
+          <p className="text-sm text-gray-600">
+            All commission income this month
+          </p>
+        </div>
+      </MobileCard>
+
+      {/* Total Expenses Card */}
+      <MobileCard
+        title="Total Expenses"
+        icon={TrendingDown}
+      >
+        <div className="space-y-2">
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-bold text-red-700">
+              {formatCurrency(dashboardData.totalExpenses)}
+            </span>
+            <span className="text-sm text-gray-500">MTD</span>
+          </div>
+          <p className="text-sm text-gray-600">
+            All business expenses this month
+          </p>
+        </div>
+      </MobileCard>
+
+      {/* Budget Utilization Card */}
+      <MobileCard
+        title="Budget Utilization"
+        icon={PieChart}
+      >
+        <div className="space-y-3">
+          <div className="flex items-baseline space-x-2">
+            <span className="text-3xl font-bold text-gray-900">
+              {Math.round(dashboardData.budgetUtilization)}%
+            </span>
+            <span className="text-sm text-gray-500">Used</span>
+          </div>
+          
+          <div className="w-full bg-gray-200 rounded-full h-3">
+            <div
+              className={`h-3 rounded-full transition-all duration-500 ${
+                dashboardData.budgetUtilization > 90 
+                  ? 'bg-red-500' 
+                  : dashboardData.budgetUtilization > 75 
+                  ? 'bg-yellow-500' 
+                  : 'bg-green-500'
+              }`}
+              style={{ width: `${Math.min(dashboardData.budgetUtilization, 100)}%` }}
+            />
+          </div>
+          
+          <p className="text-sm text-gray-600">
+            {dashboardData.budgetUtilization > 90 
+              ? '⚠️ Approaching budget limit' 
+              : dashboardData.budgetUtilization > 75 
+              ? '📊 Monitor spending closely'
+              : '✅ Within budget'}
+          </p>
+        </div>
+      </MobileCard>
+
       {/* Commission Cap Progress Card */}
       <MobileCard
         title="Commission Cap"
