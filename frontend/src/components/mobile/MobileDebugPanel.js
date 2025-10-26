@@ -76,10 +76,15 @@ const MobileDebugPanel = () => {
               </div>
 
               <div className="bg-purple-50 p-3 rounded">
-                <div className="font-semibold text-sm text-gray-700 mb-2">Name:</div>
+                <div className="font-semibold text-sm text-gray-700 mb-2">Name / Full Name:</div>
                 <div className="text-sm font-mono break-all">
-                  {user.name || '❌ MISSING'}
+                  {user.name || user.full_name || '❌ MISSING'}
                 </div>
+                {user.name && user.full_name && (
+                  <div className="text-xs text-gray-500 mt-1">
+                    (Has both name and full_name fields)
+                  </div>
+                )}
               </div>
 
               <div className="bg-yellow-50 p-3 rounded">
