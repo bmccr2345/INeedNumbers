@@ -16,6 +16,8 @@ import QuickActionButton from '../components/mobile/QuickActionButton';
 import { Button } from '../components/ui/button';
 import MobileActivityModal from '../components/mobile/MobileActivityModal';
 import MobileReflectionModal from '../components/mobile/MobileReflectionModal';
+import MobileAddDealModal from '../components/mobile/MobileAddDealModal';
+import MobileAddExpenseModal from '../components/mobile/MobileAddExpenseModal';
 
 /**
  * Mobile Dashboard Component
