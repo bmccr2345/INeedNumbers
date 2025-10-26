@@ -187,6 +187,7 @@ const PnLPanel = () => {
       
       // Reload data
       await loadPnLData();
+      await loadActiveDeals(); // Refresh active deals
     } catch (error) {
       console.error('Failed to add deal:', error);
       if (error.response?.status === 401) {
