@@ -39,11 +39,31 @@ const MobileLayout = () => {
       return;
     }
     
+    // Handle coach and actions tabs
+    if (tabId === 'coach') {
+      navigate('/dashboard?panel=coach');
+      return;
+    }
+    
+    if (tabId === 'actions') {
+      navigate('/dashboard?panel=actiontracker');
+      return;
+    }
+    
     // Navigate to route
     if (route) {
       navigate(route);
     }
   };
+
+  // Determine what to render based on URL params
+  const searchParams = new URLSearchParams(location.search);
+  const panelParam = searchParams.get('panel');
+  
+  const shouldShowMobileDashboard = 
+    location.pathname === '/dashboard' && 
+    !panelParam && 
+    activeTab === 'overview';
 
   return (
     <div className="mobile-layout h-screen flex flex-col bg-gray-50">
