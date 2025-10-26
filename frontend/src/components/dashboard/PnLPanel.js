@@ -499,22 +499,27 @@ const PnLPanel = () => {
                 <Sparkles className="w-4 h-4 mr-2 text-white" />
                 Fairy AI Coach
               </Button>
-              <Button
-                onClick={() => handleExport('month')}
-                variant="outline"
-                className="text-sm"
-              >
-                <FileSpreadsheet className="w-4 h-4 mr-2" />
-                Export Month
-              </Button>
-              <Button
-                onClick={() => handleExport('year')}
-                variant="outline"
-                className="text-sm"
-              >
-                <FileSpreadsheet className="w-4 h-4 mr-2" />
-                Export Year
-              </Button>
+              {/* Hide export buttons on mobile */}
+              {!isMobile && (
+                <>
+                  <Button
+                    onClick={() => handleExport('month')}
+                    variant="outline"
+                    className="text-sm"
+                  >
+                    <FileSpreadsheet className="w-4 h-4 mr-2" />
+                    Export Month
+                  </Button>
+                  <Button
+                    onClick={() => handleExport('year')}
+                    variant="outline"
+                    className="text-sm"
+                  >
+                    <FileSpreadsheet className="w-4 h-4 mr-2" />
+                    Export Year
+                  </Button>
+                </>
+              )}
             </div>
           )}
         </div>
