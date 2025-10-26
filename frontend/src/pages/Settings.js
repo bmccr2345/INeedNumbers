@@ -9,6 +9,7 @@ import { Badge } from '../components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { ArrowLeft, User, Settings as SettingsIcon, Upload, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { safeLocalStorage } from '../utils/safeStorage';
 
 const Settings = () => {
   const navigate = useNavigate();
