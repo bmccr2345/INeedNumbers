@@ -3,8 +3,10 @@ import { X, CheckCircle2, Circle, ChevronRight, Sparkles, TrendingUp, Target, Ca
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { safeLocalStorage } from '../utils/safeStorage';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
+  const isMobile = useIsMobile();
   const [currentDay, setCurrentDay] = useState(1);
   const [isMinimized, setIsMinimized] = useState(false);
   const [checklist, setChecklist] = useState({
