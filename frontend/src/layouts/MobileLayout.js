@@ -20,6 +20,16 @@ const MobileLayout = () => {
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showCalculatorMenu, setShowCalculatorMenu] = useState(false);
 
+  // Debug logging for user in MobileLayout
+  console.log('[MobileLayout] User object:', {
+    exists: !!user,
+    userId: user?.id,
+    email: user?.email,
+    name: user?.name,
+    plan: user?.plan,
+    pathname: location.pathname
+  });
+
   const handleLogout = async () => {
     await logout();
     navigate('/auth/login');
