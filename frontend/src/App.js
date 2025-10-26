@@ -49,9 +49,7 @@ function DashboardRoute() {
   if (isMobile) {
     return (
       <ErrorBoundary>
-        <MobileLayout>
-          <DashboardPage />
-        </MobileLayout>
+        <MobileLayout />
       </ErrorBoundary>
     );
   }
