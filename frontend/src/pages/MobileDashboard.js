@@ -307,62 +307,6 @@ const MobileDashboard = () => {
         </div>
       </MobileCard>
 
-      {/* AI Coach Snapshot Card - PRO only */}
-      {user?.plan === 'PRO' && (
-        <MobileCard
-          title="AI Coach"
-          icon={Sparkles}
-          onClick={handleViewCoach}
-          className="bg-gradient-to-br from-primary/5 to-secondary/5 border-primary/20"
-        >
-          <div className="space-y-3">
-            {dashboardData.aiCoachMessage ? (
-              <>
-                <p className="text-sm text-gray-700 italic">
-                  "{dashboardData.aiCoachMessage}"
-                </p>
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  className="w-full mt-2 bg-primary hover:bg-primary/90"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewCoach();
-                  }}
-                >
-                  Get More Insights
-                </Button>
-              </>
-            ) : (
-              <>
-                <div className="flex items-start space-x-3">
-                  <Sparkles className="w-8 h-8 text-primary mt-1" />
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      Your AI Sales Coach is ready
-                    </p>
-                    <p className="text-xs text-gray-600 mt-1">
-                      Get personalized insights and daily action plans
-                    </p>
-                  </div>
-                </div>
-                <Button 
-                  variant="default" 
-                  size="sm" 
-                  className="w-full mt-2 bg-primary hover:bg-primary/90"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleViewCoach();
-                  }}
-                >
-                  Talk to Coach
-                </Button>
-              </>
-            )}
-          </div>
-        </MobileCard>
-      )}
-
       {/* Quick Calculator Access - FREE/STARTER users */}
       {user?.plan !== 'PRO' && (
         <MobileCard
