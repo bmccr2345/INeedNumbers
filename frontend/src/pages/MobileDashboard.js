@@ -132,11 +132,11 @@ const MobileDashboard = () => {
 
   const handleQuickAction = (actionType) => {
     if (actionType === 'activity') {
-      // Navigate to dashboard action tracker with activity modal
-      navigate('/dashboard?panel=actiontracker&action=activity');
+      // Show activity modal
+      setShowActivityModal(true);
     } else if (actionType === 'reflection') {
-      // Navigate to dashboard action tracker with reflection modal
-      navigate('/dashboard?panel=actiontracker&action=reflection');
+      // Show reflection modal
+      setShowReflectionModal(true);
     } else {
       // Default: just open action tracker
       navigate('/dashboard?openAction=true');
