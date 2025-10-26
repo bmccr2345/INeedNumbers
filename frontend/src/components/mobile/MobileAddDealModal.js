@@ -238,6 +238,45 @@ const MobileAddDealModal = ({ isOpen, onClose, onSuccess }) => {
             </div>
 
             <div>
+              <Label htmlFor="contract_signed" className="text-sm font-medium text-gray-700">
+                Contract Signed *
+              </Label>
+              <Input
+                id="contract_signed"
+                type="date"
+                value={formData.contract_signed}
+                onChange={(e) => handleChange('contract_signed', e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="due_diligence_start" className="text-sm font-medium text-gray-700">
+                Due Diligence Start *
+              </Label>
+              <Input
+                id="due_diligence_start"
+                type="date"
+                value={formData.due_diligence_start}
+                onChange={(e) => handleChange('due_diligence_start', e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="due_diligence_over" className="text-sm font-medium text-gray-700">
+                Due Diligence Over *
+              </Label>
+              <Input
+                id="due_diligence_over"
+                type="date"
+                value={formData.due_diligence_over}
+                onChange={(e) => handleChange('due_diligence_over', e.target.value)}
+                className="mt-1"
+              />
+            </div>
+
+            <div>
               <Label htmlFor="closing_date" className="text-sm font-medium text-gray-700">
                 Closing Date
               </Label>
