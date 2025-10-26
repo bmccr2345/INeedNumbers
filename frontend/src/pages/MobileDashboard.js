@@ -17,6 +17,8 @@ import QuickActionButton from '../components/mobile/QuickActionButton';
 import { Button } from '../components/ui/button';
 import AICoachBanner from '../components/dashboard/AICoachBanner';
 import { Card } from '../components/ui/card';
+import MobileActivityModal from '../components/mobile/MobileActivityModal';
+import MobileReflectionModal from '../components/mobile/MobileReflectionModal';
 
 /**
  * Mobile Dashboard Component
