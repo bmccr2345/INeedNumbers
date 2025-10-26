@@ -134,7 +134,14 @@ export function parseActionsWithCompletion(actions, userId) {
   if (!actions || !Array.isArray(actions)) return [];
   
   const storageKey = `coach_actions_${userId}`;
-  const completedActions = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  const completedActionsStr = safeLocalStorage.getItem(storageKey, '{}');
+  let completedActions = {};
+  
+  try {
+    completedActions = JSON.parse(completedActionsStr);
+  } catch (e) {
+    console.warn('[Coach] Failed to parse completed actions:', e);
+  }
   
   return actions.slice(0, 3).map((action, index) => ({
     id: `${userId}_${index}`,
@@ -151,7 +158,14 @@ export function parseActionsWithCompletion(actions, userId) {
  */
 export function toggleActionCompletion(actionId, completed, userId) {
   const storageKey = `coach_actions_${userId}`;
-  const completedActions = JSON.parse(localStorage.getItem(storageKey) || '{}');
+  const completedActionsStr = safeLocalStorage.getItem(storageKey, '{}');
+  let completedActions = {};
+  
+  try {
+    completedActions = JSON.parse(completedActionsStr);
+  } catch (e) {
+    console.warn('[Coach] Failed to parse completed actions:', e);
+  }
   
   if (completed) {
     completedActions[actionId] = true;
@@ -159,5 +173,5 @@ export function toggleActionCompletion(actionId, completed, userId) {
     delete completedActions[actionId];
   }
   
-  localStorage.setItem(storageKey, JSON.stringify(completedActions));
+  safeLocalStorage.setItem(storageKey, JSON.stringify(completedActions));
 }
