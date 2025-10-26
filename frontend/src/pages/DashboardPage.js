@@ -28,6 +28,8 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import Footer from '../components/Footer';
 import { safeLocalStorage } from '../utils/safeStorage';
+import MobileBackButton from '../components/mobile/MobileBackButton';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 // Tab panels
 import HomepagePanel from '../components/dashboard/HomepagePanel';
