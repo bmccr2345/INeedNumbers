@@ -78,7 +78,7 @@ function App() {
             <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/landing" element={<LandingPage />} />
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard" element={<DashboardRoute />} />
             <Route path="/calculator" element={<FreeCalculator />} />
             <Route path="/glossary" element={<Glossary />} />
             <Route path="/sample-pdf" element={<SamplePDF />} />
