@@ -33,6 +33,14 @@ const MobileDashboard = () => {
 
   // Fetch dashboard data on mount
   useEffect(() => {
+    console.log('[MobileDashboard] User object on mount:', {
+      exists: !!user,
+      userId: user?.id,
+      email: user?.email,
+      name: user?.name,
+      plan: user?.plan
+    });
+    
     if (user?.id) {
       fetchDashboardData();
     }
