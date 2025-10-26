@@ -174,6 +174,9 @@ const MobileDashboard = () => {
     } else if (actionType === 'expense') {
       // Show add expense modal
       setShowAddExpenseModal(true);
+    } else if (actionType === 'onboarding') {
+      // Show onboarding wizard
+      setShowOnboardingWizard(true);
     } else {
       // Default: just open action tracker
       navigate('/dashboard?openAction=true');
