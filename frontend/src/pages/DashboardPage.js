@@ -496,7 +496,7 @@ const DashboardPage = () => {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 md:flex">
+      <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
         {/* Sidebar Tabs (Desktop only - hidden on mobile) */}
         <nav className="hidden lg:block w-64 bg-white border-r border-gray-200 sticky top-16 h-screen overflow-y-auto">
           <div className="p-6">
