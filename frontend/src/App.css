@@ -66,6 +66,53 @@ body {
   }
 }
 
+/* Mobile transition animations */
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Mobile modal entrance animations */
+.mobile-modal-enter {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+.mobile-dashboard-enter {
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* Touch feedback */
+.touch-feedback:active {
+  transform: scale(0.98);
+  opacity: 0.8;
+}
+
 .App {
   min-height: 100vh;
 }
