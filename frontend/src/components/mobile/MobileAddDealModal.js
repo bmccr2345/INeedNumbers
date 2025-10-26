@@ -18,6 +18,9 @@ const MobileAddDealModal = ({ isOpen, onClose, onSuccess }) => {
     split_percent: '50',
     team_brokerage_split_percent: '0',
     lead_source: '',
+    contract_signed: new Date().toISOString().slice(0, 10),
+    due_diligence_start: new Date().toISOString().slice(0, 10),
+    due_diligence_over: new Date().toISOString().slice(0, 10),
     closing_date: new Date().toISOString().slice(0, 10)
   });
   const [isSaving, setIsSaving] = useState(false);
