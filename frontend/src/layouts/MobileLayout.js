@@ -13,7 +13,7 @@ import MobileDebugPanel from '../components/mobile/MobileDebugPanel';
  * Provides bottom tab navigation and mobile-optimized layout for dashboard
  * Phase 4: Full implementation with tab switching and modals
  */
-const MobileLayout = () => {
+const MobileLayout = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
