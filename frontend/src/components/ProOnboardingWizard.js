@@ -565,7 +565,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
               I'll do this later
             </button>
             <span className="text-xs text-gray-500 italic">
-              💡 Tip: Click outside or "Minimize" to continue working
+              💡 Tip: {isMobile ? "Close and reopen anytime from + button" : "Click outside or 'Minimize' to continue working"}
             </span>
           </div>
           <div className="flex items-center space-x-3">
