@@ -77,11 +77,17 @@ const QuickActionButton = ({ onClick, showOnboarding = false }) => {
               <button
                 key={item.id}
                 onClick={item.action}
-                className="flex items-center space-x-3 bg-white text-gray-900 px-4 py-3 rounded-full shadow-lg hover:bg-gray-50 transition-all"
+                className={`flex items-center space-x-3 px-4 py-3 rounded-full shadow-lg transition-all ${
+                  item.highlight 
+                    ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white hover:from-emerald-600 hover:to-emerald-700' 
+                    : 'bg-white text-gray-900 hover:bg-gray-50'
+                }`}
                 style={{ minWidth: '200px', minHeight: '56px' }}
               >
-                <Icon className="w-5 h-5 text-primary" />
-                <span className="font-medium">{item.label}</span>
+                <Icon className={`w-5 h-5 ${item.highlight ? 'text-white' : 'text-primary'}`} />
+                <span className={`font-medium ${item.highlight ? 'text-white' : ''}`}>
+                  {item.label}
+                </span>
               </button>
             );
           })}
