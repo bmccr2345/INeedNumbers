@@ -236,7 +236,7 @@ const MobileDashboard = () => {
         title="Open Actions"
         icon={CheckSquare}
         badge={dashboardData.openActions > 0 ? dashboardData.openActions.toString() : null}
-        onClick={() => navigate('/dashboard')} // Open action tracker
+        onClick={handleViewActions}
       >
         <div className="space-y-3">
           {dashboardData.openActions > 0 ? (
