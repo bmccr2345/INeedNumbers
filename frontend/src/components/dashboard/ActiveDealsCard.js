@@ -38,6 +38,15 @@ const ActiveDealsCard = ({ onDealClick }) => {
   };
 
   const calculateDDDaysRemaining = (ddStart, ddOver) => {
+    // If no due diligence dates, return null
+    if (!ddStart || !ddOver) {
+      return {
+        status: 'no-dates',
+        days: null,
+        text: 'No DD dates'
+      };
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
