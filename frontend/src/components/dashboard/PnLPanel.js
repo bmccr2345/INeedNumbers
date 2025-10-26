@@ -202,6 +202,45 @@ const PnLPanel = () => {
       }
     }
   };
+  // Handle opening edit deal modal
+  const handleEditDeal = (deal) => {
+    setEditingDeal({
+      id: deal.id,
+      house_address: deal.house_address,
+      amount_sold_for: deal.amount_sold_for.toString(),
+      commission_percent: deal.commission_percent.toString(),
+      split_percent: deal.split_percent.toString(),
+      team_brokerage_split_percent: deal.team_brokerage_split_percent.toString(),
+      lead_source: deal.lead_source,
+      contract_signed: deal.contract_signed || '',
+      due_diligence_start: deal.due_diligence_start || '',
+      due_diligence_over: deal.due_diligence_over || '',
+      closing_date: deal.closing_date
+    });
+    setShowEditDeal(true);
+  };
+
+  // Handle update deal form submission
+  const handleUpdateDeal = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.put(`${backendUrl}/api/pnl/deals/${editingDeal.id}`, editingDeal);
+      
+      setEditingDeal(null);
+      setShowEditDeal(false);
+      await loadPnLData();
+      await loadActiveDeals(); // Refresh active deals
+    } catch (error) {
+      console.error('Failed to update deal:', error);
+      if (error.response?.status === 401) {
+        setError('Authentication required');
+      } else if (error.response?.status === 402) {
+        setError('P&L Tracker requires a Pro plan. Please upgrade to access this feature.');
+      } else {
+        setError('Failed to update deal');
+      }
+    }
+  };
 
   // Handle add expense
   const handleAddExpense = async (e) => {
