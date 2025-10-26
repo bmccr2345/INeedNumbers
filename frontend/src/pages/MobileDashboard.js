@@ -18,6 +18,7 @@ import MobileActivityModal from '../components/mobile/MobileActivityModal';
 import MobileReflectionModal from '../components/mobile/MobileReflectionModal';
 import MobileAddDealModal from '../components/mobile/MobileAddDealModal';
 import MobileAddExpenseModal from '../components/mobile/MobileAddExpenseModal';
+import ActiveDealsCard from '../components/dashboard/ActiveDealsCard';
 import ProOnboardingWizard from '../components/ProOnboardingWizard';
 import { safeLocalStorage } from '../utils/safeStorage';
 
