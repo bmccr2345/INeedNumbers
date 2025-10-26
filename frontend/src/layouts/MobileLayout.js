@@ -81,6 +81,17 @@ const MobileLayout = () => {
       {/* Bottom Tab Navigation */}
       <MobileTabBar activeTab={activeTab} onTabClick={handleTabClick} />
 
+      {/* Modals */}
+      <MobileMoreMenu 
+        isOpen={showMoreMenu} 
+        onClose={() => setShowMoreMenu(false)} 
+      />
+      
+      <MobileCalculatorMenu 
+        isOpen={showCalculatorMenu} 
+        onClose={() => setShowCalculatorMenu(false)} 
+      />
+
       {/* Safe area for iOS home indicator */}
       <style jsx>{`
         .safe-area-inset-bottom {
