@@ -33,46 +33,72 @@ const MobileDashboard = () => {
 
   // Fetch dashboard data on mount
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    if (user?.id) {
+      fetchDashboardData();
+    }
+  }, [user?.id]);
 
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
       
+      const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
+      
       // Fetch monthly financial summary
-      const financialResponse = await axios.get(
-        `${backendUrl}/api/pnl/monthly-summary?month=${new Date().getMonth() + 1}&year=${new Date().getFullYear()}`,
-        { withCredentials: true }
-      );
+      try {
+        const financialResponse = await axios.get(
+          `${backendUrl}/api/pnl/summary?month=${currentMonth}&ytd=true`,
+          { withCredentials: true }
+        );
+        setDashboardData(prev => ({
+          ...prev,
+          monthlyNet: financialResponse.data?.month?.net_income || financialResponse.data?.net_income || 0
+        }));
+      } catch (error) {
+        console.error('[MobileDashboard] Financial data error:', error);
+      }
       
       // Fetch cap tracker progress
-      const capResponse = await axios.get(
-        `${backendUrl}/api/cap-tracker/progress`,
-        { withCredentials: true }
-      );
+      try {
+        const capResponse = await axios.get(
+          `${backendUrl}/api/cap-tracker/progress`,
+          { withCredentials: true }
+        );
+        setDashboardData(prev => ({
+          ...prev,
+          capProgress: capResponse.data?.progress_percentage || capResponse.data?.progress || 0
+        }));
+      } catch (error) {
+        console.error('[MobileDashboard] Cap tracker error:', error);
+        // Cap might not be configured, that's okay
+      }
       
-      // Fetch action tracker count
-      const actionsResponse = await axios.get(
-        `${backendUrl}/api/users/${user?.id}/actions`,
-        { withCredentials: true }
-      );
+      // Fetch action tracker count - use today's date
+      try {
+        const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+        const actionsResponse = await axios.get(
+          `${backendUrl}/api/tracker/daily?date=${today}`,
+          { withCredentials: true }
+        );
+        
+        // Count incomplete actions from completed object
+        const completed = actionsResponse.data?.completed || {};
+        const openCount = Object.values(completed).filter(val => !val).length;
+        
+        setDashboardData(prev => ({
+          ...prev,
+          openActions: openCount
+        }));
+      } catch (error) {
+        console.error('[MobileDashboard] Actions error:', error);
+      }
 
-      setDashboardData({
-        monthlyNet: financialResponse.data?.netIncome || 0,
-        capProgress: capResponse.data?.progress || 0,
-        openActions: actionsResponse.data?.filter(a => !a.completed).length || 0,
+      setDashboardData(prev => ({
+        ...prev,
         aiCoachMessage: null // Will be implemented with AI Coach integration
-      });
+      }));
     } catch (error) {
       console.error('[MobileDashboard] Error fetching data:', error);
-      // Set default values on error
-      setDashboardData({
-        monthlyNet: 0,
-        capProgress: 0,
-        openActions: 0,
-        aiCoachMessage: null
-      });
     } finally {
       setLoading(false);
     }
