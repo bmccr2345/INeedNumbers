@@ -39,7 +39,7 @@ const MobileLayout = ({ children }) => {
       return;
     }
     
-    // Handle coach and actions tabs
+    // Handle coach, actions, and finances tabs
     if (tabId === 'coach') {
       navigate('/dashboard?panel=coach');
       return;
@@ -47,6 +47,11 @@ const MobileLayout = ({ children }) => {
     
     if (tabId === 'actions') {
       navigate('/dashboard?panel=actiontracker');
+      return;
+    }
+
+    if (tabId === 'finances') {
+      navigate('/dashboard?panel=pnl');
       return;
     }
     
