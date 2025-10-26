@@ -50,6 +50,7 @@ const DashboardPage = () => {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const { user, logout, loading } = useAuth();
+  const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState('homepage'); // Default to homepage
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
