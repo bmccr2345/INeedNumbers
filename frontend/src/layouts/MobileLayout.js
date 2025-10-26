@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, 
   Calculator, 
@@ -10,6 +10,7 @@ import {
   LogOut
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import MobileDashboard from '../pages/MobileDashboard';
 
 /**
  * Mobile Layout Component
