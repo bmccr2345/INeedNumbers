@@ -1642,7 +1642,15 @@ const ActionTrackerPanel = () => {
               { id: 'dashboard', name: 'Dashboard (Today)', icon: <Activity className="w-4 h-4" /> },
               { id: 'log', name: 'Log', icon: <Target className="w-4 h-4" /> },
               { id: 'reports', name: 'Action Tracker Explained', icon: <HelpCircle className="w-4 h-4" />, pro: false }
-            ].map(tab => (
+            ]
+              .filter(tab => {
+                // On mobile, only show Dashboard and Log tabs (hide reports/explained)
+                if (isMobile) {
+                  return tab.id === 'dashboard' || tab.id === 'log';
+                }
+                return true;
+              })
+              .map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveSubTab(tab.id)}
