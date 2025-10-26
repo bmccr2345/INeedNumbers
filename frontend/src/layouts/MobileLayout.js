@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  Calculator, 
-  Sparkles, 
-  CheckSquare, 
-  Menu,
-  User,
-  LogOut
-} from 'lucide-react';
+import { User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileDashboard from '../pages/MobileDashboard';
+import MobileTabBar from '../components/mobile/MobileTabBar';
 
 /**
  * Mobile Layout Component
