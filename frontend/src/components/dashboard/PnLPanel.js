@@ -706,7 +706,11 @@ const PnLPanel = () => {
                         {activeDeals.map((deal) => {
                           const ddInfo = calculateDDDaysRemaining(deal.due_diligence_start, deal.due_diligence_over);
                           return (
-                            <tr key={deal.id} className="border-b hover:bg-gray-50">
+                            <tr 
+                              key={deal.id} 
+                              onClick={() => handleEditDeal(deal)}
+                              className="border-b hover:bg-blue-50 cursor-pointer transition-colors"
+                            >
                               <td className="py-3 text-sm font-medium">{deal.house_address}</td>
                               <td className="py-3 text-sm">
                                 {deal.contract_signed ? new Date(deal.contract_signed).toLocaleDateString() : '—'}
