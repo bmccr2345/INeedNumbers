@@ -101,7 +101,7 @@ const MobileMoreMenu = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-white">
+    <div className="fixed inset-0 z-40 bg-white flex flex-col" style={{ paddingBottom: '64px' }}>
       {/* Header */}
       <div className="bg-primary text-white p-4 flex items-center justify-between">
         <div>
@@ -175,7 +175,7 @@ const MobileMoreMenu = ({ isOpen, onClose }) => {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-red-50 transition-colors text-left text-red-600"
+          className="w-full flex items-center space-x-4 p-4 rounded-lg hover:bg-red-50 transition-colors text-left text-red-600 mb-6"
           style={{ minHeight: '56px' }}
         >
           <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
@@ -183,41 +183,41 @@ const MobileMoreMenu = ({ isOpen, onClose }) => {
           </div>
           <span className="font-medium">Logout</span>
         </button>
-      </div>
 
-      {/* Footer Info */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
-        <p className="text-xs text-gray-500 text-center">
-          I Need Numbers v1.0
-        </p>
-        <div className="flex justify-center space-x-4 mt-2">
-          <button 
-            onClick={() => {
-              navigate('/terms');
-              onClose();
-            }}
-            className="text-xs text-gray-600 hover:text-primary"
-          >
-            Terms
-          </button>
-          <button 
-            onClick={() => {
-              navigate('/privacy');
-              onClose();
-            }}
-            className="text-xs text-gray-600 hover:text-primary"
-          >
-            Privacy
-          </button>
-          <button 
-            onClick={() => {
-              navigate('/support');
-              onClose();
-            }}
-            className="text-xs text-gray-600 hover:text-primary"
-          >
-            Support
-          </button>
+        {/* Footer Info */}
+        <div className="pb-4 border-t border-gray-200 pt-4 bg-gray-50">
+          <p className="text-xs text-gray-500 text-center">
+            I Need Numbers v1.0
+          </p>
+          <div className="flex justify-center space-x-4 mt-2">
+            <button 
+              onClick={() => {
+                navigate('/terms');
+                onClose();
+              }}
+              className="text-xs text-gray-600 hover:text-primary"
+            >
+              Terms
+            </button>
+            <button 
+              onClick={() => {
+                navigate('/privacy');
+                onClose();
+              }}
+              className="text-xs text-gray-600 hover:text-primary"
+            >
+              Privacy
+            </button>
+            <button 
+              onClick={() => {
+                navigate('/support');
+                onClose();
+              }}
+              className="text-xs text-gray-600 hover:text-primary"
+            >
+              Support
+            </button>
+          </div>
         </div>
       </div>
     </div>
