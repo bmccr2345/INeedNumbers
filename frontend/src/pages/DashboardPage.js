@@ -290,10 +290,8 @@ const DashboardPage = () => {
       const hasAccess = availableTabs.find(tab => tab.id === mappedTab);
       
       if (hasAccess) {
-        console.log('[Dashboard] Setting activeTab to:', mappedTab);
         setActiveTab(mappedTab);
       } else {
-        console.warn('[Dashboard] User does not have access to panel:', mappedTab, 'Plan:', user?.plan);
         // Redirect to homepage if no access
         setActiveTab('homepage');
       }
