@@ -147,6 +147,12 @@ const MobileDashboard = () => {
     } else if (actionType === 'reflection') {
       // Show reflection modal
       setShowReflectionModal(true);
+    } else if (actionType === 'deal') {
+      // Show add deal modal
+      setShowAddDealModal(true);
+    } else if (actionType === 'expense') {
+      // Show add expense modal
+      setShowAddExpenseModal(true);
     } else {
       // Default: just open action tracker
       navigate('/dashboard?openAction=true');
