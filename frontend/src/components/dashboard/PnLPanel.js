@@ -137,6 +137,18 @@ const PnLPanel = () => {
     }
   };
 
+  const loadActiveDeals = async () => {
+    try {
+      const response = await axios.get(`${backendUrl}/api/pnl/active-deals`, {
+        withCredentials: true
+      });
+      setActiveDeals(response.data || []);
+    } catch (error) {
+      console.error('Failed to load active deals:', error);
+      setActiveDeals([]);
+    }
+  };
+
   // Format currency
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
