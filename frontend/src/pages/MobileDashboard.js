@@ -83,8 +83,6 @@ const MobileDashboard = () => {
           { withCredentials: true }
         );
         
-        console.log('[MobileDashboard] Cap response:', capResponse.data);
-        
         // Try different field names
         const capValue = capResponse.data?.progress_percentage || 
                         capResponse.data?.progress || 
