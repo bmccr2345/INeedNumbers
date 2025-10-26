@@ -36,6 +36,7 @@ const PnLPanel = () => {
   const isMobile = useIsMobile();
   const [isLoading, setIsLoading] = useState(true);
   const [pnlSummary, setPnlSummary] = useState(null);
+  const [activeDeals, setActiveDeals] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(() => {
     const now = new Date();
     return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
