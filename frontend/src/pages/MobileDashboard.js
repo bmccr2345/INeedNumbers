@@ -465,7 +465,10 @@ const MobileDashboard = () => {
       )}
 
       {/* Floating Action Button */}
-      <QuickActionButton onClick={handleQuickAction} />
+      <QuickActionButton 
+        onClick={handleQuickAction} 
+        showOnboarding={user?.plan === 'PRO'}
+      />
 
       {/* Activity Modal */}
       <MobileActivityModal 
