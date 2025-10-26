@@ -107,7 +107,7 @@ async def verify_fix():
     try:
         import requests
         
-        base_url = "https://ineed-fix.preview.emergentagent.com"
+        base_url = "https://mobile-dash-fix-1.preview.emergentagent.com"
         
         # Login and check role
         login_data = {
