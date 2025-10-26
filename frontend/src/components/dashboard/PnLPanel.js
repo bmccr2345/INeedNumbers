@@ -1638,6 +1638,21 @@ const PnLPanel = () => {
                     >
                       Cancel
                     </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (window.confirm(`Are you sure you want to delete the deal for ${editingDeal.house_address}?`)) {
+                          deleteDeal(editingDeal.id);
+                          setShowEditDeal(false);
+                          setEditingDeal(null);
+                        }
+                      }}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete
+                    </Button>
                   </div>
                 </form>
               </CardContent>
