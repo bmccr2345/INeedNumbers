@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileDashboard from '../pages/MobileDashboard';
