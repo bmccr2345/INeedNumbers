@@ -10,7 +10,7 @@ import {
 
 /**
  * Mobile Tab Bar Component
- * Bottom navigation with 5 primary tabs
+ * Bottom navigation with 4 primary tabs (Coach removed for mobile)
  * Touch-optimized with 44x44px minimum tap targets
  * Phase 4: Full implementation with route awareness
  */
@@ -29,13 +29,6 @@ const MobileTabBar = ({ activeTab, onTabClick }) => {
       label: 'Calculators',
       icon: Calculator,
       route: null // Opens calculator menu
-    },
-    {
-      id: 'coach',
-      label: 'Coach',
-      icon: Sparkles,
-      route: '/dashboard',
-      proOnly: true
     },
     {
       id: 'actions',
