@@ -76,8 +76,25 @@ const MobileLayout = () => {
     !panelParam && 
     activeTab === 'overview';
 
+  // Debug logging
+  console.log('[MobileLayout] Render decision:', {
+    pathname: location.pathname,
+    panelParam,
+    activeTab,
+    shouldShowMobileDashboard
+  });
+
   return (
     <div className="mobile-layout h-screen flex flex-col bg-gray-50">
+      {/* Debug banner for mobile layout */}
+      <div className="md:hidden bg-blue-100 border-2 border-blue-600 p-2 text-xs">
+        <strong>MOBILE LAYOUT DEBUG:</strong><br/>
+        pathname: {location.pathname}<br/>
+        panelParam: {panelParam || 'none'}<br/>
+        activeTab: {activeTab}<br/>
+        rendering: {shouldShowMobileDashboard ? 'MobileDashboard' : 'Outlet (DashboardPage)'}
+      </div>
+      
       {/* Mobile Header */}
       <header className="bg-primary text-white p-4 flex items-center justify-between shadow-md">
         <div className="flex items-center space-x-2">
