@@ -105,8 +105,28 @@ const MobileDashboard = () => {
   };
 
   const handleQuickAction = () => {
-    // Navigate to action tracker with add modal
-    navigate('/dashboard', { state: { openAddAction: true } });
+    // Navigate to dashboard and trigger action add
+    navigate('/dashboard?openAction=true');
+  };
+
+  const handleViewPnL = () => {
+    // Navigate to dashboard P&L panel
+    navigate('/dashboard?panel=pnl');
+  };
+
+  const handleViewCapTracker = () => {
+    // Navigate to dashboard cap tracker panel
+    navigate('/dashboard?panel=captracker');
+  };
+
+  const handleViewActions = () => {
+    // Navigate to dashboard action tracker panel
+    navigate('/dashboard?panel=actiontracker');
+  };
+
+  const handleViewCoach = () => {
+    // Navigate to dashboard AI coach
+    navigate('/dashboard?panel=coach');
   };
 
   const formatCurrency = (value) => {
