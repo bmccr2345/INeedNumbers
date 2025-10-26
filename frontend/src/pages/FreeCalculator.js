@@ -84,7 +84,7 @@ const FreeCalculator = () => {
   const loadAgentProfile = () => {
     try {
       // Load from localStorage (in real app, this would be from API based on auth)
-      const savedProfile = localStorage.getItem('dealpack_agent_profile');
+      const savedProfile = safeLocalStorage.getItem('dealpack_agent_profile');
       if (savedProfile) {
         setAgentData(JSON.parse(savedProfile));
       }
