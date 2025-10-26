@@ -634,6 +634,72 @@ const PnLPanel = () => {
               </CardContent>
             </Card>
 
+            {/* Active Deals Table */}
+            {activeDeals && activeDeals.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center space-x-2">
+                    <TrendingUp className="w-5 h-5" />
+                    <span>Active Deals - Due Diligence Tracker</span>
+                    <Badge variant="secondary">{activeDeals.length}</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full">
+                      <thead>
+                        <tr className="text-left text-sm text-gray-500 border-b">
+                          <th className="pb-2">Property Address</th>
+                          <th className="pb-2">Contract Signed</th>
+                          <th className="pb-2">DD Start</th>
+                          <th className="pb-2">DD Over</th>
+                          <th className="pb-2">DD Status</th>
+                          <th className="pb-2">Closing Date</th>
+                          <th className="pb-2">Final Income</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {activeDeals.map((deal) => {
+                          const ddInfo = calculateDDDaysRemaining(deal.due_diligence_start, deal.due_diligence_over);
+                          return (
+                            <tr key={deal.id} className="border-b hover:bg-gray-50">
+                              <td className="py-3 text-sm font-medium">{deal.house_address}</td>
+                              <td className="py-3 text-sm">
+                                {deal.contract_signed ? new Date(deal.contract_signed).toLocaleDateString() : '—'}
+                              </td>
+                              <td className="py-3 text-sm">
+                                {deal.due_diligence_start ? new Date(deal.due_diligence_start).toLocaleDateString() : '—'}
+                              </td>
+                              <td className="py-3 text-sm">
+                                {deal.due_diligence_over ? new Date(deal.due_diligence_over).toLocaleDateString() : '—'}
+                              </td>
+                              <td className="py-3">
+                                <span className={`px-2 py-1 text-xs font-medium rounded-md ${
+                                  ddInfo.status === 'no-dates' ? 'bg-gray-100 text-gray-600' :
+                                  ddInfo.status === 'ended' ? 'bg-red-50 text-red-600' :
+                                  ddInfo.status === 'upcoming' ? 'bg-blue-50 text-blue-600' :
+                                  ddInfo.days <= 3 ? 'bg-orange-50 text-orange-600' :
+                                  'bg-green-50 text-green-600'
+                                }`}>
+                                  {ddInfo.text}
+                                </span>
+                              </td>
+                              <td className="py-3 text-sm">
+                                {new Date(deal.closing_date).toLocaleDateString()}
+                              </td>
+                              <td className="py-3 text-sm font-bold text-green-600">
+                                {formatCurrency(deal.final_income)}
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Error Display */}
             {error && (
               <Card className="border-red-200 bg-red-50">
