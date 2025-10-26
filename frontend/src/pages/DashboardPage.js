@@ -656,6 +656,11 @@ const DashboardPage = () => {
 
         {/* Tab Content - Mobile: full width with proper overflow, Desktop: with sidebar */}
         <main className="flex-1 overflow-auto w-full">
+          {/* Mobile Back Button - show when viewing a panel (not homepage) */}
+          {isMobile && activeTab !== 'homepage' && (
+            <MobileBackButton title="Back to Overview" />
+          )}
+          
           <div 
             id={`panel-${activeTab}`}
             role="tabpanel"
