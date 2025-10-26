@@ -268,7 +268,7 @@ const DashboardPage = () => {
   // Load last selected tab from localStorage or URL params
   useEffect(() => {
     const tabFromUrl = searchParams.get('tab');
-    const savedTab = localStorage.getItem('INN:lastTab');
+    const savedTab = safeLocalStorage.getItem('INN:lastTab');
     
     if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
       setActiveTab(tabFromUrl);
@@ -282,7 +282,7 @@ const DashboardPage = () => {
   // Save active tab to localStorage
   useEffect(() => {
     if (activeTab) {
-      localStorage.setItem('INN:lastTab', activeTab);
+      safeLocalStorage.setItem('INN:lastTab', activeTab);
       
       // Analytics event
       if (window.gtag) {
