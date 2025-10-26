@@ -94,6 +94,7 @@ const ActiveDealsCard = ({ onDealClick }) => {
   };
 
   const getDDStatusColor = (status, days) => {
+    if (status === 'no-dates') return 'text-gray-600 bg-gray-100';
     if (status === 'ended') return 'text-red-600 bg-red-50';
     if (status === 'upcoming') return 'text-blue-600 bg-blue-50';
     if (days <= 3) return 'text-orange-600 bg-orange-50';
