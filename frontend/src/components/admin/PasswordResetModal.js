@@ -56,8 +56,8 @@ const PasswordResetModal = ({ isOpen, onClose, isRequired = false }) => {
       // If this was a required password reset, we might need to update the user's status
       if (isRequired) {
         // Mark that admin password has been changed with timestamp (365 day expiry)
-        localStorage.setItem('admin_password_changed_time', Date.now().toString());
-        localStorage.setItem('admin_new_password', newPassword);
+        safeLocalStorage.setItem('admin_password_changed_time', Date.now().toString());
+        safeLocalStorage.setItem('admin_new_password', newPassword);
         setTimeout(() => {
           window.location.reload(); // Refresh to update auth context
         }, 2000);
