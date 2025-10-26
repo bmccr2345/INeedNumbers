@@ -53,6 +53,21 @@ const MobileDashboard = () => {
     }
   }, [user?.id]);
 
+  // Check if PRO user needs onboarding wizard
+  useEffect(() => {
+    if (user?.plan === 'PRO') {
+      const hasCompletedOnboarding = safeLocalStorage.getItem('pro_onboarding_completed');
+      const hasDismissed = safeLocalStorage.getItem('pro_onboarding_dismissed');
+      
+      if (!hasCompletedOnboarding && !hasDismissed) {
+        // Show wizard after a brief delay to let dashboard load
+        setTimeout(() => {
+          setShowOnboardingWizard(true);
+        }, 1000);
+      }
+    }
+  }, [user]);
+
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
