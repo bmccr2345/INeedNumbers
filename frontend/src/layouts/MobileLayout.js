@@ -97,29 +97,7 @@ const MobileLayout = () => {
       </main>
 
       {/* Bottom Tab Navigation */}
-      <nav className="bg-white border-t border-gray-200 safe-area-inset-bottom">
-        <div className="flex justify-around items-center h-16 px-2">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => handleTabClick(tab.id, tab.route)}
-              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
-                activeTab === tab.id
-                  ? 'text-primary'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-              style={{ minWidth: '44px', minHeight: '44px' }} // Touch target minimum
-            >
-              <div className="mb-1">
-                {tab.icon}
-              </div>
-              <span className="text-xs font-medium">
-                {tab.label}
-              </span>
-            </button>
-          ))}
-        </div>
-      </nav>
+      <MobileTabBar activeTab={activeTab} onTabClick={handleTabClick} />
 
       {/* Safe area for iOS home indicator */}
       <style jsx>{`
