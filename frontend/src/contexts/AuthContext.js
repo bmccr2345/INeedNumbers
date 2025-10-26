@@ -80,12 +80,15 @@ export const AuthProvider = ({ children }) => {
       }
       
       setUser(user);
+      console.log('[AuthContext] User set in state');
     } catch (error) {
-      console.error('Auth check failed:', error);
+      console.error('[AuthContext] Auth check failed:', error);
+      console.error('[AuthContext] Error response:', error.response?.data);
       // User is not authenticated
       setUser(null);
     } finally {
       setLoading(false);
+      console.log('[AuthContext] Auth check complete, loading=false');
     }
   };
 
