@@ -15,11 +15,11 @@ import MobileDashboard from '../pages/MobileDashboard';
 /**
  * Mobile Layout Component
  * Provides bottom tab navigation and mobile-optimized layout for dashboard
- * Phase 2: Placeholder implementation
- * Phase 3: Full implementation with tab switching
+ * Phase 3: Full implementation with MobileDashboard
  */
 const MobileLayout = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
