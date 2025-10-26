@@ -282,13 +282,32 @@ const DashboardPage = () => {
       'coach': 'coach'
     };
     
+    // Debug logging for mobile panel navigation
+    if (panelFromUrl) {
+      console.log('[Dashboard] Panel navigation:', {
+        panelFromUrl,
+        mappedTab: panelToTabMap[panelFromUrl],
+        userPlan: user?.plan,
+        availableTabIds: availableTabs.map(t => t.id),
+        willSetTab: !!availableTabs.find(tab => tab.id === panelToTabMap[panelFromUrl])
+      });
+    }
+    
     if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
       setActiveTab(tabFromUrl);
     } else if (panelFromUrl && panelToTabMap[panelFromUrl]) {
-      // Mobile panel navigation - allow direct access bypassing plan check
-      // This enables mobile users to view panels even if they're PRO-only on desktop
+      // Mobile panel navigation - check if user has access
       const mappedTab = panelToTabMap[panelFromUrl];
-      setActiveTab(mappedTab);
+      const hasAccess = availableTabs.find(tab => tab.id === mappedTab);
+      
+      if (hasAccess) {
+        console.log('[Dashboard] Setting activeTab to:', mappedTab);
+        setActiveTab(mappedTab);
+      } else {
+        console.warn('[Dashboard] User does not have access to panel:', mappedTab, 'Plan:', user?.plan);
+        // Redirect to homepage if no access
+        setActiveTab('homepage');
+      }
     } else if (savedTab && availableTabs.find(tab => tab.id === savedTab)) {
       setActiveTab(savedTab);
     } else if (availableTabs.length > 0) {
