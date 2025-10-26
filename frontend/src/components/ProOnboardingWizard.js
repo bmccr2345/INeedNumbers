@@ -537,7 +537,7 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
             <button
               onClick={() => {
                 onClose();
-                localStorage.setItem('pro_onboarding_dismissed', 'true');
+                safeLocalStorage.setItem('pro_onboarding_dismissed', 'true');
               }}
               className="text-sm text-gray-600 hover:text-gray-800"
             >
