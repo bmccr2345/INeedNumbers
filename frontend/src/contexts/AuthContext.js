@@ -92,25 +92,34 @@ export const AuthProvider = ({ children }) => {
         // Authentication cookies are set by the server as HttpOnly
         
         // For master admin, check security setup status
+        // Use safe localStorage to prevent Safari blocking
         if (user.role === 'master_admin') {
-          // Check if password was changed in the last 365 days
-          const passwordChangedTimestamp = localStorage.getItem('admin_password_changed_time') || Date.now().toString();
-          const oneYear = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
-          const now = Date.now();
-          
-          // Set default timestamp if none exists, then check if still valid
-          if (!localStorage.getItem('admin_password_changed_time')) {
-            localStorage.setItem('admin_password_changed_time', passwordChangedTimestamp);
-          }
-          
-          const hasChangedPassword = (now - parseInt(passwordChangedTimestamp)) < oneYear;
+          try {
+            // Check if password was changed in the last 365 days
+            const passwordChangedTimestamp = safeLocalStorage.getItem('admin_password_changed_time', Date.now().toString());
+            const oneYear = 365 * 24 * 60 * 60 * 1000; // 365 days in milliseconds
+            const now = Date.now();
             
-          const hasSetup2FA = localStorage.getItem('admin_2fa_setup') === 'true';
-          
-          // Only require password reset if it's been more than 365 days
-          user.requiresPasswordReset = !hasChangedPassword;
-          user.requires2FA = !hasSetup2FA;
-          user.firstLogin = !hasChangedPassword || !hasSetup2FA;
+            // Set default timestamp if none exists, then check if still valid
+            if (!safeLocalStorage.getItem('admin_password_changed_time')) {
+              safeLocalStorage.setItem('admin_password_changed_time', passwordChangedTimestamp);
+            }
+            
+            const hasChangedPassword = (now - parseInt(passwordChangedTimestamp)) < oneYear;
+              
+            const hasSetup2FA = safeLocalStorage.getItem('admin_2fa_setup', 'false') === 'true';
+            
+            // Only require password reset if it's been more than 365 days
+            user.requiresPasswordReset = !hasChangedPassword;
+            user.requires2FA = !hasSetup2FA;
+            user.firstLogin = !hasChangedPassword || !hasSetup2FA;
+          } catch (error) {
+            // If localStorage fails in Safari, use safe defaults
+            console.warn('Failed to check admin security status during login:', error);
+            user.requiresPasswordReset = false;
+            user.requires2FA = false;
+            user.firstLogin = false;
+          }
         }
         
         setUser(user);
