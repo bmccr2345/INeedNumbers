@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useIsMobile } from '../../hooks/useMediaQuery';
 import { 
   Target, 
   TrendingUp, 
@@ -30,6 +31,7 @@ import Cookies from 'js-cookie';
 
 const ActionTrackerPanel = () => {
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [activeSubTab, setActiveSubTab] = useState('dashboard');
   const [isLoading, setIsLoading] = useState(true);
   const [settings, setSettings] = useState(null);
