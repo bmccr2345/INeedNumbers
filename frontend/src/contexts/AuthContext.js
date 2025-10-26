@@ -33,9 +33,20 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
+      console.log('[AuthContext] Checking authentication...');
+      
       // Use cookie-based authentication - no token needed in JS
       const response = await axios.get(`${backendUrl}/api/auth/me`);
       const user = response.data;
+      
+      console.log('[AuthContext] User fetched:', {
+        exists: !!user,
+        id: user?.id,
+        email: user?.email,
+        name: user?.name,
+        plan: user?.plan,
+        role: user?.role
+      });
       
       // For master admin, check security setup status (keep in localStorage for UI state only)
       // Use safe localStorage to prevent Safari blocking
