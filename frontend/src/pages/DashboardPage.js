@@ -636,8 +636,8 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Tab Content */}
-        <main className="flex-1 overflow-hidden">
+        {/* Tab Content - Mobile: full width, Desktop: with sidebar */}
+        <main className="flex-1 overflow-hidden w-full">
           <div 
             id={`panel-${activeTab}`}
             role="tabpanel"
@@ -649,8 +649,10 @@ const DashboardPage = () => {
         </main>
       </div>
 
-      {/* Footer */}
-      <Footer />
+      {/* Footer - Hidden on mobile (MobileLayout handles footer space) */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
 
       {/* Upgrade Modal */}
       {showUpgradeModal && (
