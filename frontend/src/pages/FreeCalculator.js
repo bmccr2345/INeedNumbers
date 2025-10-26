@@ -187,7 +187,7 @@ const FreeCalculator = () => {
       };
 
       // Save to localStorage (in real app, this would be API call)
-      localStorage.setItem('dealpack_agent_profile', JSON.stringify(formattedProfile));
+      safeLocalStorage.setItem('dealpack_agent_profile', JSON.stringify(formattedProfile));
       
       setAgentData(formattedProfile);
       setHasAgentChanges(false);
