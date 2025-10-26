@@ -4,12 +4,9 @@ import axios from 'axios';
 import { 
   DollarSign, 
   Target, 
-  CheckSquare, 
-  Sparkles,
+  CheckSquare,
   TrendingUp,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileCard from '../components/mobile/MobileCard';
