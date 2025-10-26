@@ -5986,6 +5986,30 @@ async def delete_pnl_deal(
         logger.error(f"Error deleting P&L deal: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete deal")
 
+@api_router.get("/pnl/active-deals")
+async def get_active_deals(
+    current_user: User = Depends(require_auth)
+):
+    """Get all deals that haven't closed yet (closing_date >= today)"""
+    try:
+        # Get today's date in YYYY-MM-DD format
+        today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        
+        # Find all deals where closing_date >= today
+        deals_cursor = db.pnl_deals.find({
+            "user_id": current_user.id,
+            "closing_date": {"$gte": today}
+        }).sort("closing_date", 1)
+        
+        deals = []
+        async for deal_data in deals_cursor:
+            deals.append(PnLDeal(**deal_data))
+        
+        return deals
+    except Exception as e:
+        logger.error(f"Error fetching active deals: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch active deals")
+
 @api_router.get("/pnl/expenses")
 async def get_pnl_expenses(
     month: str = Query(default=None),
