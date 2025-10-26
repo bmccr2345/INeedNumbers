@@ -354,6 +354,18 @@ const MobileDashboard = () => {
 
       {/* Floating Action Button */}
       <QuickActionButton onClick={handleQuickAction} />
+
+      {/* Activity Modal */}
+      <MobileActivityModal 
+        isOpen={showActivityModal} 
+        onClose={() => setShowActivityModal(false)} 
+      />
+
+      {/* Reflection Modal */}
+      <MobileReflectionModal 
+        isOpen={showReflectionModal} 
+        onClose={() => setShowReflectionModal(false)} 
+      />
     </div>
   );
 };
