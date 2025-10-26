@@ -188,7 +188,7 @@ const MobileDashboard = () => {
             className="w-full mt-2"
             onClick={(e) => {
               e.stopPropagation();
-              navigate('/dashboard'); // Navigate to P&L panel
+              handleViewPnL();
             }}
           >
             View Full P&L
