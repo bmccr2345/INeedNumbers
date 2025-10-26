@@ -200,8 +200,8 @@ const MobileDashboard = () => {
       <MobileCard
         title="Commission Cap"
         icon={Target}
-        badge={`${dashboardData.capProgress}%`}
-        onClick={() => navigate('/dashboard')} // Open cap tracker
+        badge={`${Math.round(dashboardData.capProgress)}%`}
+        onClick={handleViewCapTracker}
       >
         <div className="space-y-3">
           <div className="w-full bg-gray-200 rounded-full h-3">
