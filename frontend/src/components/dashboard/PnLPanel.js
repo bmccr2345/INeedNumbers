@@ -83,6 +83,7 @@ const PnLPanel = () => {
 
   useEffect(() => {
     loadInitialData();
+    loadActiveDeals();
   }, []);
 
   useEffect(() => {
