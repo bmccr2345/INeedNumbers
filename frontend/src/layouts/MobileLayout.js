@@ -93,9 +93,12 @@ const MobileLayout = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto">
-        {/* Phase 2: Outlet renders DashboardPage content */}
-        {/* Phase 3: Will render MobileDashboard component */}
-        <Outlet />
+        {/* Phase 3: Render MobileDashboard for overview, pass through for other routes */}
+        {location.pathname === '/dashboard' && activeTab === 'overview' ? (
+          <MobileDashboard />
+        ) : (
+          <Outlet />
+        )}
       </main>
 
       {/* Bottom Tab Navigation */}
