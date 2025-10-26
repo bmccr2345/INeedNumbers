@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Plus, X, TrendingUp, MessageSquare, DollarSign, TrendingDown } from 'lucide-react';
+import { Plus, X, TrendingUp, MessageSquare, DollarSign, TrendingDown, Sparkles } from 'lucide-react';
 
 /**
  * Floating Action Button Component
  * Primary action button for adding new actions/goals on mobile
  * Fixed position above bottom tab navigation
- * Shows menu with Log Activity, Log Reflection, Add Deal, Add Expense options
+ * Shows menu with Log Activity, Log Reflection, Add Deal, Add Expense, and Onboarding options
  */
-const QuickActionButton = ({ onClick }) => {
+const QuickActionButton = ({ onClick, showOnboarding = false }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   const menuItems = [
@@ -46,7 +46,18 @@ const QuickActionButton = ({ onClick }) => {
         setShowMenu(false);
         onClick?.('expense');
       }
-    }
+    },
+    // Only show onboarding option if enabled
+    ...(showOnboarding ? [{
+      id: 'onboarding',
+      label: 'View Onboarding',
+      icon: Sparkles,
+      action: () => {
+        setShowMenu(false);
+        onClick?.('onboarding');
+      },
+      highlight: true
+    }] : [])
   ];
 
   if (showMenu) {
