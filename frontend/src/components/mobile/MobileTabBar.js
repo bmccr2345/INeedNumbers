@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { 
   Home, 
   Calculator, 
@@ -11,8 +12,11 @@ import {
  * Mobile Tab Bar Component
  * Bottom navigation with 5 primary tabs
  * Touch-optimized with 44x44px minimum tap targets
+ * Phase 4: Full implementation with route awareness
  */
 const MobileTabBar = ({ activeTab, onTabClick }) => {
+  const location = useLocation();
+  
   const tabs = [
     {
       id: 'overview',
@@ -24,27 +28,27 @@ const MobileTabBar = ({ activeTab, onTabClick }) => {
       id: 'calculators',
       label: 'Calculators',
       icon: Calculator,
-      route: '/tools'
+      route: null // Opens calculator menu
     },
     {
       id: 'coach',
       label: 'Coach',
       icon: Sparkles,
-      route: '/dashboard?tab=coach',
+      route: '/dashboard',
       proOnly: true
     },
     {
       id: 'actions',
       label: 'Actions',
       icon: CheckSquare,
-      route: '/dashboard?tab=actions',
+      route: '/dashboard',
       proOnly: true
     },
     {
       id: 'more',
       label: 'More',
       icon: Menu,
-      route: null // Opens menu modal
+      route: null // Opens more menu
     }
   ];
 
@@ -53,7 +57,8 @@ const MobileTabBar = ({ activeTab, onTabClick }) => {
       <div className="flex justify-around items-center h-16 px-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
-          const isActive = activeTab === tab.id;
+          const isActive = activeTab === tab.id || 
+                          (tab.route && location.pathname === tab.route);
           
           return (
             <button
@@ -76,7 +81,8 @@ const MobileTabBar = ({ activeTab, onTabClick }) => {
               <div className="mb-1 relative">
                 <Icon className="w-5 h-5" />
                 {tab.proOnly && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full" 
+                       title="PRO feature" />
                 )}
               </div>
               <span className={`text-xs font-medium ${isActive ? 'font-semibold' : ''}`}>
