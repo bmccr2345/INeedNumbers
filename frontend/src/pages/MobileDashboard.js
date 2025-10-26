@@ -59,18 +59,31 @@ const MobileDashboard = () => {
       // Fetch monthly financial summary (includes net, income, expenses, budget)
       try {
         const financialResponse = await axios.get(
-          `${backendUrl}/api/pnl/summary?month=${currentMonth}&ytd=true`,
+          `${backendUrl}/api/pnl/summary?month=${currentMonth}`,
           { withCredentials: true }
         );
         
-        const monthData = financialResponse.data?.month || financialResponse.data || {};
+        const data = financialResponse.data || {};
+        
+        // Calculate overall budget utilization percentage
+        let totalBudget = 0;
+        let totalSpent = 0;
+        
+        if (data.budget_utilization && typeof data.budget_utilization === 'object') {
+          Object.values(data.budget_utilization).forEach((category) => {
+            if (category.budget) totalBudget += category.budget;
+            if (category.spent) totalSpent += category.spent;
+          });
+        }
+        
+        const budgetUtilizationPercent = totalBudget > 0 ? (totalSpent / totalBudget * 100) : 0;
         
         setDashboardData(prev => ({
           ...prev,
-          monthlyNet: monthData.net_income || 0,
-          totalIncome: monthData.income || 0,
-          totalExpenses: monthData.expenses || 0,
-          budgetUtilization: monthData.budget_utilization || 0
+          monthlyNet: data.net_income || 0,
+          totalIncome: data.total_income || 0,
+          totalExpenses: data.total_expenses || 0,
+          budgetUtilization: budgetUtilizationPercent
         }));
       } catch (error) {
         console.error('[MobileDashboard] Financial data error:', error);
