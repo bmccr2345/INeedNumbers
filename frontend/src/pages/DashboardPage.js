@@ -696,7 +696,11 @@ const DashboardPage = () => {
       {showOnboardingWizard && (
         <ProOnboardingWizard 
           isOpen={showOnboardingWizard}
-          onClose={() => setShowOnboardingWizard(false)}
+          onClose={() => {
+            // Set session storage to prevent showing again this session
+            sessionStorage.setItem('pro_onboarding_dismissed_session', 'true');
+            setShowOnboardingWizard(false);
+          }}
           onComplete={() => {
             safeLocalStorage.setItem('pro_onboarding_completed', 'true');
             setShowOnboardingWizard(false);
