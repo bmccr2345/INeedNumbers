@@ -39,6 +39,8 @@ const MobileDashboard = () => {
   });
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [showReflectionModal, setShowReflectionModal] = useState(false);
+  const [showAddDealModal, setShowAddDealModal] = useState(false);
+  const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   // Fetch dashboard data on mount
