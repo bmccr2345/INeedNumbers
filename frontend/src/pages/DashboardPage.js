@@ -66,9 +66,9 @@ const DashboardPage = () => {
   useEffect(() => {
     if (user && user.plan === 'PRO') {
       const hasCompletedOnboarding = safeLocalStorage.getItem('pro_onboarding_completed');
-      const hasDismissed = safeLocalStorage.getItem('pro_onboarding_dismissed');
+      const hasDismissedThisSession = sessionStorage.getItem('pro_onboarding_dismissed_session');
       
-      if (!hasCompletedOnboarding && !hasDismissed) {
+      if (!hasCompletedOnboarding && !hasDismissedThisSession) {
         // Show wizard after a brief delay to let dashboard load
         setTimeout(() => {
           setShowOnboardingWizard(true);
