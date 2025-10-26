@@ -93,7 +93,7 @@ const MobileLayout = () => {
           <div className="flex items-center space-x-2">
             <User className="w-5 h-5" />
             <span className="text-sm font-medium">
-              {user?.name?.split(' ')[0] || 'User'}
+              {user?.name?.split(' ')[0] || user?.full_name?.split(' ')[0] || 'User'}
             </span>
           </div>
         </div>
