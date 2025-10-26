@@ -127,7 +127,7 @@ const Settings = () => {
 
       // TODO: Replace with actual API call when authentication is implemented
       // For now, save to localStorage as demo
-      localStorage.setItem('dealpack_agent_profile', JSON.stringify(formattedProfile));
+      safeLocalStorage.setItem('dealpack_agent_profile', JSON.stringify(formattedProfile));
       
       setAgentProfile(formattedProfile);
       setHasUnsavedChanges(false);
