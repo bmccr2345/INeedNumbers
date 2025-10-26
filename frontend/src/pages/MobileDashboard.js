@@ -33,6 +33,7 @@ const MobileDashboard = () => {
     openActions: 0,
     aiCoachMessage: null
   });
+  const [showFinancialOverview, setShowFinancialOverview] = useState(false);
   const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
   // Fetch dashboard data on mount
