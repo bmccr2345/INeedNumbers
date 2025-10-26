@@ -359,6 +359,16 @@ const HomepagePanel = () => {
 
             {/* AI Coach Banner for PRO users */}
             <AICoachBanner />
+
+            {/* Active Deals Card - PRO users only */}
+            {user?.plan === 'PRO' && (
+              <ActiveDealsCard 
+                onDealClick={(deal) => {
+                  // Navigate to P&L panel
+                  window.location.href = '/dashboard?panel=pnl';
+                }}
+              />
+            )}
           </>
         ) : (
           <>
