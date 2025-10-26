@@ -16,48 +16,50 @@ const MobileLayout = () => {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
-  const handleTabClick = (tabId, route) => {
-    setActiveTab(tabId);
-    if (route) {
-      navigate(route);
-    }
-  };
-
   const handleLogout = async () => {
     await logout();
     navigate('/auth/login');
+  };
+
+  const handleTabClick = (tabId, route) => {
+    setActiveTab(tabId);
+    
+    if (tabId === 'more') {
+      // TODO Phase 4: Open "More" menu modal
+      console.log('Open More menu');
+      return;
+    }
+    
+    if (route) {
+      navigate(route);
+    }
   };
 
   const tabs = [
     {
       id: 'overview',
       label: 'Overview',
-      icon: <Home className="w-5 h-5" />,
       route: '/dashboard'
     },
     {
       id: 'calculators',
       label: 'Calculators',
-      icon: <Calculator className="w-5 h-5" />,
-      route: null // Opens menu in Phase 3
+      route: '/tools'
     },
     {
       id: 'coach',
       label: 'Coach',
-      icon: <Sparkles className="w-5 h-5" />,
-      route: null // Links to AI Coach in Phase 3
+      route: '/dashboard'
     },
     {
       id: 'actions',
       label: 'Actions',
-      icon: <CheckSquare className="w-5 h-5" />,
-      route: null // Opens Action Tracker in Phase 3
+      route: '/dashboard'
     },
     {
       id: 'more',
       label: 'More',
-      icon: <Menu className="w-5 h-5" />,
-      route: null // Opens menu in Phase 3
+      route: null
     }
   ];
 
