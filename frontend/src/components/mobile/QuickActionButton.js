@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Plus, X, TrendingUp, MessageSquare } from 'lucide-react';
+import { Plus, X, TrendingUp, MessageSquare, DollarSign, TrendingDown } from 'lucide-react';
 
 /**
  * Floating Action Button Component
  * Primary action button for adding new actions/goals on mobile
  * Fixed position above bottom tab navigation
- * Shows menu with Log Activity and Log Reflection options
+ * Shows menu with Log Activity, Log Reflection, Add Deal, Add Expense options
  */
 const QuickActionButton = ({ onClick }) => {
   const [showMenu, setShowMenu] = useState(false);
@@ -27,6 +27,24 @@ const QuickActionButton = ({ onClick }) => {
       action: () => {
         setShowMenu(false);
         onClick?.('reflection');
+      }
+    },
+    {
+      id: 'deal',
+      label: 'Add Deal',
+      icon: DollarSign,
+      action: () => {
+        setShowMenu(false);
+        onClick?.('deal');
+      }
+    },
+    {
+      id: 'expense',
+      label: 'Add Expense',
+      icon: TrendingDown,
+      action: () => {
+        setShowMenu(false);
+        onClick?.('expense');
       }
     }
   ];
