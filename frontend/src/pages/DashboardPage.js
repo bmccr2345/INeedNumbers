@@ -268,10 +268,25 @@ const DashboardPage = () => {
   // Load last selected tab from localStorage or URL params
   useEffect(() => {
     const tabFromUrl = searchParams.get('tab');
+    const panelFromUrl = searchParams.get('panel'); // Support panel parameter for mobile
     const savedTab = safeLocalStorage.getItem('INN:lastTab');
+    
+    // Map panel names to tab IDs
+    const panelToTabMap = {
+      'pnl': 'pnl',
+      'captracker': 'captracker',
+      'actiontracker': 'actiontracker',
+      'coach': 'coach'
+    };
     
     if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
       setActiveTab(tabFromUrl);
+    } else if (panelFromUrl && panelToTabMap[panelFromUrl]) {
+      // Mobile panel navigation
+      const mappedTab = panelToTabMap[panelFromUrl];
+      if (availableTabs.find(tab => tab.id === mappedTab)) {
+        setActiveTab(mappedTab);
+      }
     } else if (savedTab && availableTabs.find(tab => tab.id === savedTab)) {
       setActiveTab(savedTab);
     } else if (availableTabs.length > 0) {
