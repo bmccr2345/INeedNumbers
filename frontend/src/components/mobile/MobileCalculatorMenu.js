@@ -61,8 +61,7 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
       description: 'Analyze investment property deals',
       icon: TrendingUp,
       route: '/calculator',
-      color: 'bg-indigo-100 text-indigo-700',
-      badge: 'Popular'
+      color: 'bg-indigo-100 text-indigo-700'
     }
   ];
 
