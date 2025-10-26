@@ -48,21 +48,25 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
   // Save progress to localStorage
   useEffect(() => {
     if (isOpen) {
-      localStorage.setItem('pro_onboarding_checklist', JSON.stringify(checklist));
-      localStorage.setItem('pro_onboarding_day', currentDay.toString());
+      safeLocalStorage.setItem('pro_onboarding_checklist', JSON.stringify(checklist));
+      safeLocalStorage.setItem('pro_onboarding_day', currentDay.toString());
     }
   }, [checklist, currentDay, isOpen]);
 
   // Load progress from localStorage
   useEffect(() => {
-    const savedChecklist = localStorage.getItem('pro_onboarding_checklist');
-    const savedDay = localStorage.getItem('pro_onboarding_day');
+    const savedChecklist = safeLocalStorage.getItem('pro_onboarding_checklist');
+    const savedDay = safeLocalStorage.getItem('pro_onboarding_day');
     
     if (savedChecklist) {
-      setChecklist(JSON.parse(savedChecklist));
+      try {
+        setChecklist(JSON.parse(savedChecklist));
+      } catch (e) {
+        console.warn('[ProOnboarding] Failed to parse saved checklist:', e);
+      }
     }
     if (savedDay) {
-      setCurrentDay(parseInt(savedDay));
+      setCurrentDay(parseInt(savedDay) || 1);
     }
   }, []);
 
