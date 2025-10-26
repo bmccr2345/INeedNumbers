@@ -5,6 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Eye, EyeOff, Shield, Key, CheckCircle2, XCircle } from 'lucide-react';
+import { safeLocalStorage } from '../../utils/safeStorage';
 
 const PasswordResetModal = ({ isOpen, onClose, isRequired = false }) => {
   const [currentPassword, setCurrentPassword] = useState('');
