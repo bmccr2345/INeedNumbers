@@ -626,54 +626,56 @@ const DashboardPage = () => {
           </div>
         </nav>
 
-        {/* Mobile Tabs - Simplified horizontal scroll */}
-        <div className="lg:hidden bg-white border-b border-gray-200 sticky top-16 z-30">
-          <div className="flex overflow-x-auto">
-            <div 
-              role="tablist" 
-              aria-orientation="horizontal"
-              className="flex space-x-1 p-4 min-w-max"
-            >
-              {/* Dashboard Overview */}
-              <button
-                role="tab"
-                onClick={() => handleTabClick('homepage')}
-                className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
-                  activeTab === 'homepage'
-                    ? 'bg-emerald-600 text-white'
-                    : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
-                }`}
+        {/* Mobile Tabs - Simplified horizontal scroll - Only show on Overview/Homepage */}
+        {isMobile && activeTab === 'homepage' && (
+          <div className="lg:hidden bg-white border-b border-gray-200 sticky top-16 z-30">
+            <div className="flex overflow-x-auto">
+              <div 
+                role="tablist" 
+                aria-orientation="horizontal"
+                className="flex space-x-1 p-4 min-w-max"
               >
-                <LayoutDashboard className="w-4 h-4 mr-2" />
-                Overview
-              </button>
-              
-              {/* Flatten all sub-tabs for mobile */}
-              {sidebarStructure.filter(item => item.type === 'category').map(category => 
-                category.subTabs
-                  .filter(subTab => subTab.available.includes(user?.plan || 'FREE'))
-                  .map(subTab => {
-                    const isActive = activeTab === subTab.id;
-                    return (
-                      <button
-                        key={subTab.id}
-                        role="tab"
-                        onClick={() => handleTabClick(subTab.id)}
-                        className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
-                          isActive
-                            ? 'bg-emerald-600 text-white'
-                            : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
-                        }`}
-                      >
-                        {subTab.icon}
-                        <span className="ml-2">{subTab.name}</span>
-                      </button>
-                    );
-                  })
-              )}
+                {/* Dashboard Overview */}
+                <button
+                  role="tab"
+                  onClick={() => handleTabClick('homepage')}
+                  className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+                    activeTab === 'homepage'
+                      ? 'bg-emerald-600 text-white'
+                      : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4 mr-2" />
+                  Overview
+                </button>
+                
+                {/* Flatten all sub-tabs for mobile */}
+                {sidebarStructure.filter(item => item.type === 'category').map(category => 
+                  category.subTabs
+                    .filter(subTab => subTab.available.includes(user?.plan || 'FREE'))
+                    .map(subTab => {
+                      const isActive = activeTab === subTab.id;
+                      return (
+                        <button
+                          key={subTab.id}
+                          role="tab"
+                          onClick={() => handleTabClick(subTab.id)}
+                          className={`flex items-center px-4 py-2 text-sm font-medium rounded-md whitespace-nowrap transition-colors ${
+                            isActive
+                              ? 'bg-emerald-600 text-white'
+                              : 'text-gray-700 hover:text-emerald-700 hover:bg-emerald-50'
+                          }`}
+                        >
+                          {subTab.icon}
+                          <span className="ml-2">{subTab.name}</span>
+                        </button>
+                      );
+                    })
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Tab Content - Mobile: full width with proper overflow, Desktop: with sidebar */}
         <main className="flex-1 overflow-auto w-full bg-gray-50">
