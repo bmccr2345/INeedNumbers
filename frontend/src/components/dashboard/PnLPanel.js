@@ -237,6 +237,7 @@ const PnLPanel = () => {
     try {
       await axios.delete(`${backendUrl}/api/pnl/deals/${dealId}`);
       await loadPnLData();
+      await loadActiveDeals(); // Refresh active deals
     } catch (error) {
       console.error('Failed to delete deal:', error);
       if (error.response?.status === 401) {
