@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { 
   Home, 
   Calculator, 
+  Wallet,
   CheckSquare, 
   Menu
 } from 'lucide-react';
