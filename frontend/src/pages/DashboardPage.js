@@ -668,14 +668,6 @@ const DashboardPage = () => {
             <MobileBackButton title="Back to Overview" />
           )}
           
-          {/* Debug info for mobile */}
-          {isMobile && (
-            <div className="md:hidden bg-yellow-100 border-2 border-yellow-600 p-2 text-xs">
-              <strong>DEBUG:</strong> activeTab={activeTab}, isMobile={isMobile ? 'true' : 'false'}, 
-              showBackButton={activeTab !== 'homepage' ? 'YES' : 'NO'}
-            </div>
-          )}
-          
           <div 
             id={`panel-${activeTab}`}
             role="tabpanel"
