@@ -65,14 +65,6 @@ const MobileLayout = ({ children }) => {
     !panelParam && 
     activeTab === 'overview';
 
-  // Debug logging
-  console.log('[MobileLayout] Render decision:', {
-    pathname: location.pathname,
-    panelParam,
-    activeTab,
-    shouldShowMobileDashboard
-  });
-
   return (
     <div className="mobile-layout h-screen flex flex-col bg-gray-50">
       {/* Mobile Header */}
