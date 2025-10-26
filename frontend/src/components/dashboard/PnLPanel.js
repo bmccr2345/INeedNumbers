@@ -700,6 +700,7 @@ const PnLPanel = () => {
                           <th className="pb-2">DD Status</th>
                           <th className="pb-2">Closing Date</th>
                           <th className="pb-2">Final Income</th>
+                          <th className="pb-2">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
