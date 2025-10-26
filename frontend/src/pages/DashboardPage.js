@@ -285,11 +285,10 @@ const DashboardPage = () => {
     if (tabFromUrl && availableTabs.find(tab => tab.id === tabFromUrl)) {
       setActiveTab(tabFromUrl);
     } else if (panelFromUrl && panelToTabMap[panelFromUrl]) {
-      // Mobile panel navigation
+      // Mobile panel navigation - allow direct access bypassing plan check
+      // This enables mobile users to view panels even if they're PRO-only on desktop
       const mappedTab = panelToTabMap[panelFromUrl];
-      if (availableTabs.find(tab => tab.id === mappedTab)) {
-        setActiveTab(mappedTab);
-      }
+      setActiveTab(mappedTab);
     } else if (savedTab && availableTabs.find(tab => tab.id === savedTab)) {
       setActiveTab(savedTab);
     } else if (availableTabs.length > 0) {
