@@ -391,8 +391,13 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
      Object.values(checklist.day3).filter(Boolean).length) / 12 * 100
   );
 
-  // Minimized widget (floating on right side)
+  // Minimized widget (floating on right side) - Hide on mobile
   if (isMinimized) {
+    // On mobile, minimizing should close the wizard completely
+    if (isMobile) {
+      return null;
+    }
+    
     return (
       <div className="fixed right-4 bottom-4 z-50">
         <button
