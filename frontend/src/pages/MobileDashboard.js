@@ -12,8 +12,6 @@ import { useAuth } from '../contexts/AuthContext';
 import MobileCard from '../components/mobile/MobileCard';
 import QuickActionButton from '../components/mobile/QuickActionButton';
 import { Button } from '../components/ui/button';
-import AICoachBanner from '../components/dashboard/AICoachBanner';
-import { Card } from '../components/ui/card';
 import MobileActivityModal from '../components/mobile/MobileActivityModal';
 import MobileReflectionModal from '../components/mobile/MobileReflectionModal';
 
