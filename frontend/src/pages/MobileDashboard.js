@@ -28,7 +28,10 @@ const MobileDashboard = () => {
     monthlyNet: null,
     capProgress: null,
     openActions: 0,
-    aiCoachMessage: null
+    aiCoachMessage: null,
+    totalIncome: null,
+    totalExpenses: null,
+    budgetUtilization: null
   });
   const [showActivityModal, setShowActivityModal] = useState(false);
   const [showReflectionModal, setShowReflectionModal] = useState(false);
