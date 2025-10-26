@@ -518,11 +518,12 @@ const FreeCalculator = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button
                 variant="ghost"
+                size="sm"
                 onClick={() => {
                   // Navigate to Dashboard Overview if user is logged in as STARTER or PRO
                   if (user && (user.plan === 'STARTER' || user.plan === 'PRO')) {
@@ -531,38 +532,39 @@ const FreeCalculator = () => {
                     navigate('/');
                   }
                 }}
-                className="flex items-center space-x-2"
+                className="flex items-center space-x-1 sm:space-x-2"
               >
                 <ArrowLeft className="w-4 h-4" />
-                <span>Back to Home</span>
+                <span className="hidden sm:inline">Back to Home</span>
               </Button>
-              <Separator orientation="vertical" className="h-6" />
-              <div className="flex items-center space-x-3">
+              <Separator orientation="vertical" className="h-6 hidden sm:block" />
+              <div className="flex items-center space-x-2 sm:space-x-3">
                 <img 
                   src="https://customer-assets.emergentagent.com/job_agent-financials/artifacts/u7i6c8zh_Fairy_Holding_Wand.png" 
                   alt="Fairy AI" 
-                  className="h-8 w-auto"
+                  className="h-6 sm:h-8 w-auto"
                 />
-                <h1 className="text-xl sm:text-2xl font-bold">Investor Deal Generator</h1>
+                <h1 className="text-base sm:text-xl md:text-2xl font-bold">Investor Deal Generator</h1>
               </div>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button
                 variant="ghost"
+                size="sm"
                 onClick={() => navigate('/glossary')}
-                className="text-blue-600"
+                className="text-blue-600 hidden sm:flex"
               >
                 View Glossary
               </Button>
-              <Badge className="bg-blue-100 text-blue-800">
-                Free Version
+              <Badge className="bg-blue-100 text-blue-800 text-xs">
+                Free
               </Badge>
             </div>
           </div>
         </div>
       </header>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Input Form */}
           <div className="lg:col-span-2 space-y-6">
