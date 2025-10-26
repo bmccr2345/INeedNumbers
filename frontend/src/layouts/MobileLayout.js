@@ -10,13 +10,15 @@ import MobileCalculatorMenu from '../components/mobile/MobileCalculatorMenu';
 /**
  * Mobile Layout Component
  * Provides bottom tab navigation and mobile-optimized layout for dashboard
- * Phase 3: Full implementation with MobileDashboard
+ * Phase 4: Full implementation with tab switching and modals
  */
 const MobileLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showCalculatorMenu, setShowCalculatorMenu] = useState(false);
 
   const handleLogout = async () => {
     await logout();
@@ -26,44 +28,22 @@ const MobileLayout = () => {
   const handleTabClick = (tabId, route) => {
     setActiveTab(tabId);
     
+    // Handle special tabs
     if (tabId === 'more') {
-      // TODO Phase 4: Open "More" menu modal
-      console.log('Open More menu');
+      setShowMoreMenu(true);
       return;
     }
     
+    if (tabId === 'calculators') {
+      setShowCalculatorMenu(true);
+      return;
+    }
+    
+    // Navigate to route
     if (route) {
       navigate(route);
     }
   };
-
-  const tabs = [
-    {
-      id: 'overview',
-      label: 'Overview',
-      route: '/dashboard'
-    },
-    {
-      id: 'calculators',
-      label: 'Calculators',
-      route: '/tools'
-    },
-    {
-      id: 'coach',
-      label: 'Coach',
-      route: '/dashboard'
-    },
-    {
-      id: 'actions',
-      label: 'Actions',
-      route: '/dashboard'
-    },
-    {
-      id: 'more',
-      label: 'More',
-      route: null
-    }
-  ];
 
   return (
     <div className="mobile-layout h-screen flex flex-col bg-gray-50">
