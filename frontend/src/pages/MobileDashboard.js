@@ -489,6 +489,18 @@ const MobileDashboard = () => {
         onClose={() => setShowAddExpenseModal(false)}
         onSuccess={() => fetchDashboardData()} 
       />
+
+      {/* Pro Onboarding Wizard */}
+      {showOnboardingWizard && (
+        <ProOnboardingWizard 
+          isOpen={showOnboardingWizard}
+          onClose={() => setShowOnboardingWizard(false)}
+          onComplete={() => {
+            safeLocalStorage.setItem('pro_onboarding_completed', 'true');
+            setShowOnboardingWizard(false);
+          }}
+        />
+      )}
     </div>
   );
 };
