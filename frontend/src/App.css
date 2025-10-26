@@ -45,6 +45,27 @@ body {
   overflow-x: hidden;
 }
 
+/* Mobile viewport height support - iOS Safari */
+@supports (-webkit-touch-callout: none) {
+  .mobile-layout {
+    height: -webkit-fill-available;
+    height: 100dvh;
+  }
+}
+
+/* Fallback for older browsers */
+.mobile-layout {
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Safe area insets for iOS devices */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 .App {
   min-height: 100vh;
 }
