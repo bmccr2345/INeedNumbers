@@ -33,6 +33,7 @@ import PnLAICoach from '../PnLAICoach';
 const PnLPanel = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   const [isLoading, setIsLoading] = useState(true);
   const [pnlSummary, setPnlSummary] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(() => {
