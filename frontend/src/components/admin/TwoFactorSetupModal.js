@@ -109,7 +109,7 @@ const TwoFactorSetupModal = ({ isOpen, onClose, isRequired = false }) => {
 
   const handleComplete = () => {
     // Mark that admin 2FA has been setup
-    localStorage.setItem('admin_2fa_setup', 'true');
+    safeLocalStorage.setItem('admin_2fa_setup', 'true');
     
     if (isRequired) {
       // If 2FA was required, refresh the page to update auth context
