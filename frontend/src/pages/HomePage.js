@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
@@ -14,7 +14,9 @@ import {
   Star,
   Sparkles,
   Calendar,
-  Target
+  Target,
+  Menu,
+  X
 } from 'lucide-react';
 import Footer from '../components/Footer';
 import { useAuth } from '../contexts/AuthContext';
@@ -26,6 +28,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const performanceMetrics = usePerformanceMonitor();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Preload critical images
   React.useEffect(() => {
