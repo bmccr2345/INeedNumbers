@@ -7,12 +7,16 @@ import {
   CheckSquare, 
   Sparkles,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileCard from '../components/mobile/MobileCard';
 import QuickActionButton from '../components/mobile/QuickActionButton';
 import { Button } from '../components/ui/button';
+import AICoachBanner from '../components/dashboard/AICoachBanner';
+import { Card } from '../components/ui/card';
 
 /**
  * Mobile Dashboard Component
