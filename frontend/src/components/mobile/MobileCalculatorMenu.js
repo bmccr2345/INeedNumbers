@@ -72,7 +72,7 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-white">
+    <div className="fixed inset-0 z-40 bg-white flex flex-col" style={{ paddingBottom: '64px' }}>
       {/* Header */}
       <div className="bg-primary text-white p-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
@@ -96,7 +96,7 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
       </div>
 
       {/* Calculator Grid */}
-      <div className="flex-1 overflow-y-auto p-4 pb-20">
+      <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-3">
           {calculators.map((calc) => {
             const Icon = calc.icon;
@@ -133,7 +133,7 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
         </div>
 
         {/* Quick Tip */}
-        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg mb-6">
           <p className="text-sm font-medium text-blue-900 mb-1">
             💡 Quick Tip
           </p>
