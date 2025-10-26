@@ -495,7 +495,10 @@ const HomePage = () => {
                   
                   <div className="space-y-3">
                     <Button 
-                      onClick={() => navigate('/tools')}
+                      onClick={() => {
+                        navigate('/tools');
+                        window.scrollTo(0, 0);
+                      }}
                       className="w-full bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800 text-white"
                     >
                       Learn More
