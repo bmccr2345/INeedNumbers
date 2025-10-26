@@ -5,6 +5,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Shield, Smartphone, Key, Copy, CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
+import { safeLocalStorage } from '../../utils/safeStorage';
 
 const TwoFactorSetupModal = ({ isOpen, onClose, isRequired = false }) => {
   const [step, setStep] = useState(1); // 1: Setup, 2: Verify, 3: Success
