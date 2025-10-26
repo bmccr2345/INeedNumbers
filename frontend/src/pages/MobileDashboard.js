@@ -127,9 +127,17 @@ const MobileDashboard = () => {
     }
   };
 
-  const handleQuickAction = () => {
-    // Navigate to dashboard and trigger action add
-    navigate('/dashboard?openAction=true');
+  const handleQuickAction = (actionType) => {
+    if (actionType === 'activity') {
+      // Navigate to dashboard action tracker with activity modal
+      navigate('/dashboard?panel=actiontracker&action=activity');
+    } else if (actionType === 'reflection') {
+      // Navigate to dashboard action tracker with reflection modal
+      navigate('/dashboard?panel=actiontracker&action=reflection');
+    } else {
+      // Default: just open action tracker
+      navigate('/dashboard?openAction=true');
+    }
   };
 
   const handleViewPnL = () => {
