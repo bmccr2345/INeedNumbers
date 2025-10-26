@@ -212,9 +212,9 @@ const MobileDashboard = () => {
           </div>
           
           <p className="text-sm text-gray-600">
-            {dashboardData.capProgress >= 100 
+            {Math.round(dashboardData.capProgress) >= 100 
               ? '🎉 Cap reached! Great work!' 
-              : `${100 - dashboardData.capProgress}% to cap`}
+              : `${100 - Math.round(dashboardData.capProgress)}% to cap`}
           </p>
           
           <Button 
@@ -223,7 +223,7 @@ const MobileDashboard = () => {
             className="w-full mt-2"
             onClick={(e) => {
               e.stopPropagation();
-              navigate('/dashboard'); // Navigate to cap tracker panel
+              handleViewCapTracker();
             }}
           >
             Update Cap Progress
