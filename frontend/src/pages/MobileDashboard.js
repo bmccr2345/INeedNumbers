@@ -64,12 +64,22 @@ const MobileDashboard = () => {
           `${backendUrl}/api/cap-tracker/progress`,
           { withCredentials: true }
         );
+        
+        console.log('[MobileDashboard] Cap response:', capResponse.data);
+        
+        // Try different field names
+        const capValue = capResponse.data?.progress_percentage || 
+                        capResponse.data?.progress || 
+                        capResponse.data?.percentage ||
+                        0;
+        
         setDashboardData(prev => ({
           ...prev,
-          capProgress: capResponse.data?.progress_percentage || capResponse.data?.progress || 0
+          capProgress: capValue
         }));
       } catch (error) {
         console.error('[MobileDashboard] Cap tracker error:', error);
+        console.error('[MobileDashboard] Cap error response:', error.response?.data);
         // Cap might not be configured, that's okay
       }
       
