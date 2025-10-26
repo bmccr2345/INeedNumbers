@@ -454,6 +454,20 @@ const MobileDashboard = () => {
         isOpen={showReflectionModal} 
         onClose={() => setShowReflectionModal(false)} 
       />
+
+      {/* Add Deal Modal */}
+      <MobileAddDealModal 
+        isOpen={showAddDealModal} 
+        onClose={() => setShowAddDealModal(false)}
+        onSuccess={() => fetchDashboardData()} 
+      />
+
+      {/* Add Expense Modal */}
+      <MobileAddExpenseModal 
+        isOpen={showAddExpenseModal} 
+        onClose={() => setShowAddExpenseModal(false)}
+        onSuccess={() => fetchDashboardData()} 
+      />
     </div>
   );
 };
