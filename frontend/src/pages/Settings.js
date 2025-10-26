@@ -40,7 +40,7 @@ const Settings = () => {
     try {
       // TODO: Replace with actual API call when authentication is implemented
       // For now, load from localStorage as demo
-      const savedProfile = localStorage.getItem('dealpack_agent_profile');
+      const savedProfile = safeLocalStorage.getItem('dealpack_agent_profile');
       if (savedProfile) {
         setAgentProfile(JSON.parse(savedProfile));
       }
