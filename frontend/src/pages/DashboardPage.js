@@ -651,13 +651,13 @@ const DashboardPage = () => {
           </div>
         </div>
 
-        {/* Tab Content - Mobile: full width, Desktop: with sidebar */}
-        <main className="flex-1 overflow-hidden w-full">
+        {/* Tab Content - Mobile: full width with proper overflow, Desktop: with sidebar */}
+        <main className="flex-1 overflow-auto w-full">
           <div 
             id={`panel-${activeTab}`}
             role="tabpanel"
             aria-labelledby={`tab-${activeTab}`}
-            className="h-full"
+            className="h-full w-full"
           >
             {renderActivePanel()}
           </div>
