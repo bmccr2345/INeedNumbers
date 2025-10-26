@@ -628,6 +628,9 @@ class PnLDeal(BaseModel):
     split_percent: float
     team_brokerage_split_percent: float
     lead_source: str
+    contract_signed: str  # YYYY-MM-DD format
+    due_diligence_start: str  # YYYY-MM-DD format
+    due_diligence_over: str  # YYYY-MM-DD format
     closing_date: str  # YYYY-MM-DD format
     month: str  # YYYY-MM format for filtering
     cap_amount: float = 0  # Amount that went to cap
@@ -643,6 +646,9 @@ class PnLDealCreate(BaseModel):
     split_percent: float
     team_brokerage_split_percent: float
     lead_source: str
+    contract_signed: str
+    due_diligence_start: str
+    due_diligence_over: str
     closing_date: str
 
 class PnLExpense(BaseModel):
