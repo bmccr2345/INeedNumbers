@@ -123,6 +123,9 @@ const MobileLayout = () => {
         onClose={() => setShowCalculatorMenu(false)} 
       />
 
+      {/* Debug Panel - Only visible on mobile */}
+      <MobileDebugPanel />
+
       {/* Safe area for iOS home indicator */}
       <style jsx>{`
         .safe-area-inset-bottom {
