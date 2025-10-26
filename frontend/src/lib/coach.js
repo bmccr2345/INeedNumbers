@@ -1,5 +1,7 @@
 // AI Coach API client utilities
 
+import { safeLocalStorage } from '../utils/safeStorage';
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 /**
