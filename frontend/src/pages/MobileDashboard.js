@@ -318,7 +318,7 @@ const MobileDashboard = () => {
                   className="w-full mt-2 bg-primary hover:bg-primary/90"
                   onClick={(e) => {
                     e.stopPropagation();
-                    navigate('/dashboard'); // Navigate to AI Coach
+                    handleViewCoach();
                   }}
                 >
                   Talk to Coach
