@@ -166,6 +166,7 @@ const HomePage = () => {
               <span className="text-xl font-bold text-primary tracking-wide font-poppins">I NEED NUMBERS</span>
             </div>
             
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-8">
               <button 
                 onClick={() => navigate('/')}
@@ -212,8 +213,90 @@ const HomePage = () => {
                 )}
               </div>
             </nav>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 text-deep-forest hover:text-primary transition-colors"
+              aria-label="Toggle menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
           </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-100">
+            <nav className="container mx-auto px-6 py-4 flex flex-col space-y-4">
+              <button 
+                onClick={() => {
+                  navigate('/');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-deep-forest hover:text-primary transition-colors font-medium text-left py-2"
+              >
+                Home
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/tools');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-deep-forest hover:text-primary transition-colors font-medium text-left py-2"
+              >
+                Tools
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/pricing');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-deep-forest hover:text-primary transition-colors font-medium text-left py-2"
+              >
+                Pricing
+              </button>
+              <button 
+                onClick={() => {
+                  navigate('/support');
+                  setMobileMenuOpen(false);
+                }}
+                className="text-deep-forest hover:text-primary transition-colors font-medium text-left py-2"
+              >
+                Support
+              </button>
+              
+              <div className="pt-4 border-t border-gray-100">
+                {user ? (
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      navigate('/dashboard');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full text-deep-forest hover:text-primary justify-start"
+                  >
+                    My Account
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      navigate('/auth/login');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full bg-primary hover:bg-secondary text-white"
+                  >
+                    Login
+                  </Button>
+                )}
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
