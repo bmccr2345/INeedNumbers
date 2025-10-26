@@ -58,15 +58,21 @@ const MobileDashboard = () => {
       
       const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
       
-      // Fetch monthly financial summary
+      // Fetch monthly financial summary (includes net, income, expenses, budget)
       try {
         const financialResponse = await axios.get(
           `${backendUrl}/api/pnl/summary?month=${currentMonth}&ytd=true`,
           { withCredentials: true }
         );
+        
+        const monthData = financialResponse.data?.month || financialResponse.data || {};
+        
         setDashboardData(prev => ({
           ...prev,
-          monthlyNet: financialResponse.data?.month?.net_income || financialResponse.data?.net_income || 0
+          monthlyNet: monthData.net_income || 0,
+          totalIncome: monthData.income || 0,
+          totalExpenses: monthData.expenses || 0,
+          budgetUtilization: monthData.budget_utilization || 0
         }));
       } catch (error) {
         console.error('[MobileDashboard] Financial data error:', error);
