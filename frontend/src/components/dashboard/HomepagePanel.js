@@ -26,6 +26,7 @@ import { Badge } from '../ui/badge';
 import { useAuth } from '../../contexts/AuthContext';
 import { mockDashboardAPI } from '../../services/mockDashboardAPI';
 import AICoachBanner from './AICoachBanner';
+import ActiveDealsCard from './ActiveDealsCard';
 import ReflectionModal from './ReflectionModal';
 import ActivityModal from './ActivityModal';
 import FinancialOverviewModal from './FinancialOverviewModal';
