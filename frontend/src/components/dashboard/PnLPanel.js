@@ -1204,6 +1204,42 @@ const PnLPanel = () => {
                       </select>
                     </div>
                     
+                    <div>
+                      <Label htmlFor="contract_signed">Contract Signed *</Label>
+                      <Input
+                        id="contract_signed"
+                        type="date"
+                        value={newDeal.contract_signed}
+                        onChange={(e) => setNewDeal(prev => ({ ...prev, contract_signed: e.target.value }))}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="due_diligence_start">Due Diligence Start *</Label>
+                      <Input
+                        id="due_diligence_start"
+                        type="date"
+                        value={newDeal.due_diligence_start}
+                        onChange={(e) => setNewDeal(prev => ({ ...prev, due_diligence_start: e.target.value }))}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="due_diligence_over">Due Diligence Over *</Label>
+                      <Input
+                        id="due_diligence_over"
+                        type="date"
+                        value={newDeal.due_diligence_over}
+                        onChange={(e) => setNewDeal(prev => ({ ...prev, due_diligence_over: e.target.value }))}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    
                     <div className="md:col-span-2">
                       <Label htmlFor="closing_date">Closing Date *</Label>
                       <Input
