@@ -1427,6 +1427,171 @@ const PnLPanel = () => {
           </div>
         )}
 
+        {/* Edit Deal Modal */}
+        {showEditDeal && editingDeal && (
+          <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white shadow-2xl">
+              <CardHeader>
+                <CardTitle>Edit Deal</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleUpdateDeal} className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="edit_house_address">Property Address *</Label>
+                      <Input
+                        id="edit_house_address"
+                        value={editingDeal.house_address}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, house_address: e.target.value }))}
+                        placeholder="123 Main St, City, State"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_amount_sold_for">Amount Sold For *</Label>
+                      <Input
+                        id="edit_amount_sold_for"
+                        type="number"
+                        value={editingDeal.amount_sold_for}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, amount_sold_for: e.target.value }))}
+                        placeholder="500000"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_commission_percent">Commission % *</Label>
+                      <Input
+                        id="edit_commission_percent"
+                        type="number"
+                        step="0.1"
+                        value={editingDeal.commission_percent}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, commission_percent: e.target.value }))}
+                        placeholder="6.0"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_split_percent">Agent's Share % (Default: 100%)</Label>
+                      <Input
+                        id="edit_split_percent"
+                        type="number"
+                        step="0.1"
+                        value={editingDeal.split_percent}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, split_percent: e.target.value }))}
+                        placeholder="100.0"
+                        className="mt-1"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        What % of total commission you receive (leave blank for 100%)
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_team_brokerage_split_percent">Team/Brokerage Split % *</Label>
+                      <Input
+                        id="edit_team_brokerage_split_percent"
+                        type="number"
+                        step="0.1"
+                        value={editingDeal.team_brokerage_split_percent}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, team_brokerage_split_percent: e.target.value }))}
+                        placeholder="20.0"
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_lead_source">Lead Source *</Label>
+                      <select
+                        id="edit_lead_source"
+                        value={editingDeal.lead_source}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, lead_source: e.target.value }))}
+                        className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        required
+                      >
+                        <option value="">Select lead source</option>
+                        {leadSources.map(source => (
+                          <option key={source} value={source}>{source}</option>
+                        ))}
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <Label htmlFor="edit_contract_signed">Contract Signed</Label>
+                      <Input
+                        id="edit_contract_signed"
+                        type="date"
+                        value={editingDeal.contract_signed}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, contract_signed: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit_due_diligence_start">Due Diligence Start</Label>
+                      <Input
+                        id="edit_due_diligence_start"
+                        type="date"
+                        value={editingDeal.due_diligence_start}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, due_diligence_start: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="edit_due_diligence_over">Due Diligence Over</Label>
+                      <Input
+                        id="edit_due_diligence_over"
+                        type="date"
+                        value={editingDeal.due_diligence_over}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, due_diligence_over: e.target.value }))}
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div className="md:col-span-2">
+                      <Label htmlFor="edit_closing_date">Closing Date *</Label>
+                      <Input
+                        id="edit_closing_date"
+                        type="date"
+                        value={editingDeal.closing_date}
+                        onChange={(e) => setEditingDeal(prev => ({ ...prev, closing_date: e.target.value }))}
+                        className="mt-1"
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex space-x-2 pt-4">
+                    <Button
+                      type="submit"
+                      className="flex-1 bg-blue-600 hover:bg-blue-700"
+                    >
+                      Update Deal
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setShowEditDeal(false);
+                        setEditingDeal(null);
+                      }}
+                      className="flex-1"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        )}
         {/* Add Expense Modal */}
         {showAddExpense && (
           <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
