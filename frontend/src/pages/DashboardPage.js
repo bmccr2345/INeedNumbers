@@ -342,8 +342,6 @@ const DashboardPage = () => {
   };
 
   const renderActivePanel = () => {
-    console.log('[Dashboard] Rendering panel for activeTab:', activeTab);
-    
     switch (activeTab) {
       case 'homepage':
         return <HomepagePanel />;
