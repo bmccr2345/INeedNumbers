@@ -420,6 +420,16 @@ const MobileDashboard = () => {
         </div>
       </MobileCard>
 
+      {/* Active Deals Card - PRO users only */}
+      {user?.plan === 'PRO' && (
+        <ActiveDealsCard 
+          onDealClick={(deal) => {
+            // Navigate to P&L panel on mobile
+            navigate('/dashboard?panel=pnl');
+          }}
+        />
+      )}
+
       {/* Quick Calculator Access - FREE/STARTER users */}
       {user?.plan !== 'PRO' && (
         <MobileCard
