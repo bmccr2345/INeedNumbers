@@ -90,8 +90,8 @@ const MobileLayout = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-auto">
-        {/* Phase 3: Render MobileDashboard for overview, pass through for other routes */}
-        {location.pathname === '/dashboard' && activeTab === 'overview' ? (
+        {/* Show MobileDashboard for overview tab, otherwise pass through to DashboardPage */}
+        {shouldShowMobileDashboard ? (
           <MobileDashboard />
         ) : (
           <Outlet />
