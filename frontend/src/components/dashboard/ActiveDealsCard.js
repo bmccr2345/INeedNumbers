@@ -164,12 +164,15 @@ const ActiveDealsCard = ({ onDealClick }) => {
                     </h4>
                     <div className="flex items-center space-x-2 mt-1 text-xs text-gray-600">
                       <Calendar className="w-3 h-3" />
-                      <span>Closes: {formatDate(deal.closing_date)}</span>
+                      <span>Closing Date: {formatDate(deal.closing_date)}</span>
                     </div>
                   </div>
                   
-                  <div className={`px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap ${getDDStatusColor(ddInfo.status, ddInfo.days)}`}>
-                    {ddInfo.text}
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-medium text-gray-600">Due Diligence:</span>
+                    <div className={`px-2 py-1 rounded-md text-xs font-medium whitespace-nowrap ${getDDStatusColor(ddInfo.status, ddInfo.days)}`}>
+                      {ddInfo.text}
+                    </div>
                   </div>
                 </div>
 
