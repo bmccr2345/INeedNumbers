@@ -17,6 +17,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { usePlanPreview } from '../hooks/usePlanPreview';
 import Footer from '../components/Footer';
 import { formatNumberWithCommas, parseNumberFromFormatted } from '../utils/calculatorUtils';
+import { safeLocalStorage } from '../utils/safeStorage';
 
 const FreeCalculator = () => {
   const navigate = useNavigate();
