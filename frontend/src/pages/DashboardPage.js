@@ -664,7 +664,7 @@ const DashboardPage = () => {
           isOpen={showOnboardingWizard}
           onClose={() => setShowOnboardingWizard(false)}
           onComplete={() => {
-            localStorage.setItem('pro_onboarding_completed', 'true');
+            safeLocalStorage.setItem('pro_onboarding_completed', 'true');
             setShowOnboardingWizard(false);
           }}
         />
