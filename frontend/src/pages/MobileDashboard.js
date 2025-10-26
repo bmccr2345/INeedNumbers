@@ -6,7 +6,9 @@ import {
   Target, 
   CheckSquare,
   TrendingUp,
-  AlertCircle
+  TrendingDown,
+  AlertCircle,
+  PieChart
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import MobileCard from '../components/mobile/MobileCard';
