@@ -55,7 +55,8 @@ const MobileAddDealModal = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSave = async () => {
     // Validation
-    if (!formData.house_address || !formData.amount_sold_for || !formData.lead_source) {
+    if (!formData.house_address || !formData.amount_sold_for || !formData.lead_source || 
+        !formData.contract_signed || !formData.due_diligence_start || !formData.due_diligence_over) {
       alert('Please fill in all required fields');
       return;
     }
