@@ -154,7 +154,7 @@ const MobileDashboard = () => {
       {/* Welcome Header */}
       <div className="mb-2">
         <h1 className="text-2xl font-bold text-gray-900">
-          Welcome back, {user?.name?.split(' ')[0] || 'there'}!
+          Welcome back, {user?.name?.split(' ')[0] || user?.email?.split('@')[0] || 'there'}!
         </h1>
         <p className="text-sm text-gray-600 mt-1">
           Here's your business at a glance
