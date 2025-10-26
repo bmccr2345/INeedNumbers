@@ -628,9 +628,9 @@ class PnLDeal(BaseModel):
     split_percent: float
     team_brokerage_split_percent: float
     lead_source: str
-    contract_signed: Optional[str] = None  # YYYY-MM-DD format - optional for existing deals
-    due_diligence_start: Optional[str] = None  # YYYY-MM-DD format - optional for existing deals
-    due_diligence_over: Optional[str] = None  # YYYY-MM-DD format - optional for existing deals
+    contract_signed: str = Field(default="")  # YYYY-MM-DD format - optional for existing deals
+    due_diligence_start: str = Field(default="")  # YYYY-MM-DD format - optional for existing deals
+    due_diligence_over: str = Field(default="")  # YYYY-MM-DD format - optional for existing deals
     closing_date: str  # YYYY-MM-DD format
     month: str  # YYYY-MM format for filtering
     cap_amount: float = 0  # Amount that went to cap
