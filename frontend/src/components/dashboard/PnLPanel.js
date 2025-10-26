@@ -262,6 +262,32 @@ const PnLPanel = () => {
     }
   };
 
+  // Calculate DD days remaining
+  const calculateDDDaysRemaining = (ddStart, ddOver) => {
+    if (!ddStart || !ddOver) return { status: 'no-dates', text: 'No DD dates' };
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const startDate = new Date(ddStart);
+    startDate.setHours(0, 0, 0, 0);
+    
+    const overDate = new Date(ddOver);
+    overDate.setHours(0, 0, 0, 0);
+
+    if (today < startDate) {
+      const days = Math.ceil((startDate - today) / (1000 * 60 * 60 * 24));
+      return { status: 'upcoming', text: `Starts in ${days} ${days === 1 ? 'day' : 'days'}` };
+    }
+
+    if (today > overDate) {
+      return { status: 'ended', text: '0 days' };
+    }
+
+    const days = Math.ceil((overDate - today) / (1000 * 60 * 60 * 24)) + 1;
+    return { status: 'active', text: `${days} ${days === 1 ? 'day' : 'days'} left`, days };
+  };
+
   // Generate month options
   const generateMonthOptions = () => {
     const options = [];
