@@ -358,7 +358,6 @@ const DashboardPage = () => {
       case 'closingdate':
         return <ClosingDatePanel />;
       case 'pnl':
-        console.log('[Dashboard] Rendering PnLPanel');
         return <PnLPanel />;
       case 'captracker':
         return <CapTrackerPanel />;
