@@ -165,7 +165,7 @@ const MobileDashboard = () => {
       <MobileCard
         title="This Month's Net"
         icon={DollarSign}
-        onClick={() => navigate('/dashboard')} // Open full P&L
+        onClick={handleViewPnL}
       >
         <div className="space-y-3">
           <div className="flex items-baseline space-x-2">
