@@ -495,9 +495,8 @@ const HomePage = () => {
                   
                   <div className="space-y-3">
                     <Button 
-                      variant="outline"
                       onClick={() => navigate(`/tools#tool-${tool.id}`)}
-                      className="w-full border-primary text-primary hover:bg-primary hover:text-white"
+                      className="w-full bg-gradient-to-r from-primary to-secondary hover:from-emerald-700 hover:to-emerald-800 text-white"
                     >
                       Learn More
                     </Button>
