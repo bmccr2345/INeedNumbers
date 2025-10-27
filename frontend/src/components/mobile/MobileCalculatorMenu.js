@@ -151,6 +151,7 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
