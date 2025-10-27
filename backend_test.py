@@ -10,7 +10,7 @@ import re
 import pyotp
 
 class DealPackAPITester:
-    def __init__(self, base_url="https://mobile-dash-fix-1.preview.emergentagent.com"):
+    def __init__(self, base_url="https://ineednumbers.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
