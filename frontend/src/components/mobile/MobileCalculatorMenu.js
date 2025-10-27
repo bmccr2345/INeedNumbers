@@ -71,7 +71,16 @@ const MobileCalculatorMenu = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-40 bg-white flex flex-col" style={{ paddingBottom: '64px' }}>
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 z-30 bg-black bg-opacity-50"
+        onClick={onClose}
+        aria-hidden="true"
+      />
+      
+      {/* Menu Content */}
+      <div className="fixed inset-0 z-40 bg-white flex flex-col" style={{ paddingBottom: '64px' }}>
       {/* Header */}
       <div className="bg-primary text-white p-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
