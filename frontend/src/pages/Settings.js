@@ -364,6 +364,7 @@ const Settings = () => {
                       </div>
                     </div>
                   </div>
+                  )}
 
                   {/* Save Button */}
                   <div className="flex justify-end pt-6">
