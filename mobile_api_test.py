@@ -100,7 +100,7 @@ class MobileAPITester:
         
         # Use test user account credentials
         login_data = {
-            "email": "bmccr23@gmail.com",
+            "email": "demo@demo.com",
             "password": "Goosey23!!23",
             "remember_me": False
         }
