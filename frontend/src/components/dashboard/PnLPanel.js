@@ -689,56 +689,146 @@ const PnLPanel = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full">
-                      <thead>
-                        <tr className="text-left text-sm text-gray-500 border-b">
-                          <th className="pb-2">Property Address</th>
-                          <th className="pb-2">Contract Signed</th>
-                          <th className="pb-2">DD Start</th>
-                          <th className="pb-2">DD Over</th>
-                          <th className="pb-2">DD Status</th>
-                          <th className="pb-2">Closing Date</th>
-                          <th className="pb-2">Final Income</th>
-                          <th className="pb-2">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {activeDeals.map((deal) => {
-                          const ddInfo = calculateDDDaysRemaining(deal.due_diligence_start, deal.due_diligence_over);
-                          return (
-                            <tr 
-                              key={deal.id} 
-                              className="border-b hover:bg-blue-50 transition-colors"
+                  {/* Desktop: Table View */}
+                  {!isMobile && (
+                    <div className="overflow-x-auto">
+                      <table className="min-w-full">
+                        <thead>
+                          <tr className="text-left text-sm text-gray-500 border-b">
+                            <th className="pb-2">Property Address</th>
+                            <th className="pb-2">Contract Signed</th>
+                            <th className="pb-2">DD Start</th>
+                            <th className="pb-2">DD Over</th>
+                            <th className="pb-2">DD Status</th>
+                            <th className="pb-2">Closing Date</th>
+                            <th className="pb-2">Final Income</th>
+                            <th className="pb-2">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {activeDeals.map((deal) => {
+                            const ddInfo = calculateDDDaysRemaining(deal.due_diligence_start, deal.due_diligence_over);
+                            return (
+                              <tr 
+                                key={deal.id} 
+                                className="border-b hover:bg-blue-50 transition-colors"
+                              >
+                                <td 
+                                  className="py-3 text-sm font-medium cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {deal.house_address}
+                                </td>
+                                <td 
+                                  className="py-3 text-sm cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {deal.contract_signed ? new Date(deal.contract_signed).toLocaleDateString() : '—'}
+                                </td>
+                                <td 
+                                  className="py-3 text-sm cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {deal.due_diligence_start ? new Date(deal.due_diligence_start).toLocaleDateString() : '—'}
+                                </td>
+                                <td 
+                                  className="py-3 text-sm cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {deal.due_diligence_over ? new Date(deal.due_diligence_over).toLocaleDateString() : '—'}
+                                </td>
+                                <td 
+                                  className="py-3 cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  <span className={`px-2 py-1 text-xs font-medium rounded-md ${
+                                    ddInfo.status === 'no-dates' ? 'bg-gray-100 text-gray-600' :
+                                    ddInfo.status === 'ended' ? 'bg-red-50 text-red-600' :
+                                    ddInfo.status === 'upcoming' ? 'bg-blue-50 text-blue-600' :
+                                    ddInfo.days <= 3 ? 'bg-orange-50 text-orange-600' :
+                                    'bg-green-50 text-green-600'
+                                  }`}>
+                                    {ddInfo.text}
+                                  </span>
+                                </td>
+                                <td 
+                                  className="py-3 text-sm cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {new Date(deal.closing_date).toLocaleDateString()}
+                                </td>
+                                <td 
+                                  className="py-3 text-sm font-bold text-green-600 cursor-pointer"
+                                  onClick={() => handleEditDeal(deal)}
+                                >
+                                  {formatCurrency(deal.final_income)}
+                                </td>
+                                <td className="py-3">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (window.confirm(`Are you sure you want to delete the deal for ${deal.house_address}?`)) {
+                                        deleteDeal(deal.id);
+                                      }
+                                    }}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Mobile: Card View */}
+                  {isMobile && (
+                    <div className="space-y-3">
+                      {activeDeals.map((deal) => {
+                        const ddInfo = calculateDDDaysRemaining(deal.due_diligence_start, deal.due_diligence_over);
+                        return (
+                          <div
+                            key={deal.id}
+                            className="border rounded-lg p-3 bg-gray-50"
+                          >
+                            <div className="flex items-start justify-between mb-2">
+                              <div 
+                                className="flex-1 cursor-pointer"
+                                onClick={() => handleEditDeal(deal)}
+                              >
+                                <h4 className="font-semibold text-sm text-gray-900">
+                                  {deal.house_address}
+                                </h4>
+                                <p className="text-xs text-gray-600 mt-1">
+                                  Closing: {new Date(deal.closing_date).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm(`Delete deal for ${deal.house_address}?`)) {
+                                    deleteDeal(deal.id);
+                                  }
+                                }}
+                                className="text-red-600 hover:text-red-700 hover:bg-red-50 ml-2"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                            
+                            <div 
+                              className="flex items-center justify-between cursor-pointer"
+                              onClick={() => handleEditDeal(deal)}
                             >
-                              <td 
-                                className="py-3 text-sm font-medium cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
-                                {deal.house_address}
-                              </td>
-                              <td 
-                                className="py-3 text-sm cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
-                                {deal.contract_signed ? new Date(deal.contract_signed).toLocaleDateString() : '—'}
-                              </td>
-                              <td 
-                                className="py-3 text-sm cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
-                                {deal.due_diligence_start ? new Date(deal.due_diligence_start).toLocaleDateString() : '—'}
-                              </td>
-                              <td 
-                                className="py-3 text-sm cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
-                                {deal.due_diligence_over ? new Date(deal.due_diligence_over).toLocaleDateString() : '—'}
-                              </td>
-                              <td 
-                                className="py-3 cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
+                              <div className="flex items-center space-x-2">
+                                <span className="text-xs text-gray-600">DD:</span>
                                 <span className={`px-2 py-1 text-xs font-medium rounded-md ${
                                   ddInfo.status === 'no-dates' ? 'bg-gray-100 text-gray-600' :
                                   ddInfo.status === 'ended' ? 'bg-red-50 text-red-600' :
@@ -748,40 +838,16 @@ const PnLPanel = () => {
                                 }`}>
                                   {ddInfo.text}
                                 </span>
-                              </td>
-                              <td 
-                                className="py-3 text-sm cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
-                                {new Date(deal.closing_date).toLocaleDateString()}
-                              </td>
-                              <td 
-                                className="py-3 text-sm font-bold text-green-600 cursor-pointer"
-                                onClick={() => handleEditDeal(deal)}
-                              >
+                              </div>
+                              <span className="text-sm font-bold text-green-600">
                                 {formatCurrency(deal.final_income)}
-                              </td>
-                              <td className="py-3">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    if (window.confirm(`Are you sure you want to delete the deal for ${deal.house_address}?`)) {
-                                      deleteDeal(deal.id);
-                                    }
-                                  }}
-                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </Button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
-                  </div>
+                              </span>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             )}
