@@ -55,13 +55,13 @@ const MobileReflectionModal = ({ isOpen, onClose }) => {
     <>
       {/* Backdrop */}
       <div 
-        className="fixed inset-0 bg-black/50 z-50"
+        className="fixed inset-0 bg-black/50 z-[60]"
         onClick={onClose}
       />
       
       {/* Modal */}
-      <div className="fixed inset-x-0 bottom-0 z-50 bg-white rounded-t-2xl shadow-xl animate-slide-up">
-        <div className="p-6 max-h-[80vh] overflow-y-auto">
+      <div className="fixed inset-x-0 bottom-0 z-[70] bg-white rounded-t-2xl shadow-xl animate-slide-up" style={{ marginBottom: '64px' }}>
+        <div className="p-6 max-h-[70vh] overflow-y-auto">
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-2">
