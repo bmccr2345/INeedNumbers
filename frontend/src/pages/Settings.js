@@ -10,9 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { ArrowLeft, User, Settings as SettingsIcon, Upload, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { safeLocalStorage } from '../utils/safeStorage';
+import { useIsMobile } from '../hooks/useMediaQuery';
 
 const Settings = () => {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   
   // Agent profile state
   const [agentProfile, setAgentProfile] = useState({
