@@ -294,9 +294,10 @@ const Settings = () => {
 
                   <Separator />
 
-                  {/* Branding */}
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-semibold text-gray-900">Branding</h3>
+                  {/* Branding - Hide on mobile */}
+                  {!isMobile && (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-semibold text-gray-900">Branding</h3>
                     
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
