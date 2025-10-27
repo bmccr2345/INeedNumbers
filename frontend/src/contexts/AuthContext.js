@@ -218,9 +218,23 @@ export const AuthProvider = ({ children }) => {
       return { success: true };
     } catch (error) {
       console.error('Account deletion failed:', error);
+      
+      // Handle Pydantic validation errors
+      let errorMessage = 'Account deletion failed. Please try again.';
+      if (error.response?.data?.detail) {
+        const detail = error.response.data.detail;
+        if (Array.isArray(detail)) {
+          errorMessage = detail.map(err => err.msg || JSON.stringify(err)).join(', ');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else if (typeof detail === 'object') {
+          errorMessage = JSON.stringify(detail);
+        }
+      }
+      
       return { 
         success: false, 
-        error: error.response?.data?.detail || 'Account deletion failed. Please try again.' 
+        error: errorMessage
       };
     }
   };
