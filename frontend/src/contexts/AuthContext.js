@@ -141,9 +141,24 @@ export const AuthProvider = ({ children }) => {
       }
     } catch (error) {
       console.error('Login error:', error);
+      
+      // Handle Pydantic validation errors (array of error objects)
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.response?.data?.detail) {
+        const detail = error.response.data.detail;
+        if (Array.isArray(detail)) {
+          // Pydantic validation errors
+          errorMessage = detail.map(err => err.msg || JSON.stringify(err)).join(', ');
+        } else if (typeof detail === 'string') {
+          errorMessage = detail;
+        } else if (typeof detail === 'object') {
+          errorMessage = JSON.stringify(detail);
+        }
+      }
+      
       return { 
         success: false, 
-        error: error.response?.data?.detail || 'Login failed. Please try again.' 
+        error: errorMessage
       };
     }
   };
