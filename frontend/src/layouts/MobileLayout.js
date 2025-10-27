@@ -28,6 +28,11 @@ const MobileLayout = ({ children }) => {
   const handleTabClick = (tabId, route) => {
     setActiveTab(tabId);
     
+    // Close calculator menu when switching to other tabs
+    if (tabId !== 'calculators' && showCalculatorMenu) {
+      setShowCalculatorMenu(false);
+    }
+    
     // Handle special tabs
     if (tabId === 'more') {
       setShowMoreMenu(true);
