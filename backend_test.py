@@ -24975,6 +24975,41 @@ def main_admin_crud_tests():
     
     return success
 
+def main_mobile_api_tests():
+    """Main function for mobile backend API tests"""
+    tester = DealPackAPITester()
+    
+    print("🚀 Starting Mobile Backend API Testing Suite...")
+    print(f"   Base URL: {tester.base_url}")
+    print("=" * 80)
+    
+    # Run Mobile Backend API Tests
+    mobile_success, mobile_results = tester.test_mobile_backend_apis()
+    
+    print("\n" + "=" * 80)
+    print("🎯 MOBILE BACKEND API TESTING SUMMARY")
+    print("=" * 80)
+    
+    if mobile_success:
+        print("🎉 MOBILE BACKEND API TESTING COMPLETED SUCCESSFULLY")
+        print("✅ All critical mobile APIs are working correctly")
+        print("✅ Authentication is working properly")
+        print("✅ No 401 authentication errors detected")
+        print("✅ No 500 server errors detected")
+        print("✅ Production database connectivity confirmed")
+    else:
+        print("❌ MOBILE BACKEND API TESTING FOUND CRITICAL ISSUES")
+        print("⚠️  Some mobile APIs are not working correctly")
+        print("⚠️  Review the detailed results above")
+    
+    print("\n📋 DETAILED RESULTS:")
+    for test_name, result in mobile_results.items():
+        status = "✅ PASSED" if result['success'] else "❌ FAILED"
+        print(f"   {status} - {test_name.replace('_', ' ').title()}")
+    
+    print("=" * 80)
+    return mobile_success
+
 if __name__ == "__main__":
     # Check if specific test is requested
     if len(sys.argv) > 1:
@@ -24994,9 +25029,11 @@ if __name__ == "__main__":
             main_admin_crud_tests()
         elif test_type == "audit_logs":
             main_audit_logs_tests()
+        elif test_type == "mobile":
+            main_mobile_api_tests()
         else:
-            print("Available tests: pdf, affordability, ai-coach, starter, 2fa, admin_crud, audit_logs")
+            print("Available tests: pdf, affordability, ai-coach, starter, 2fa, admin_crud, audit_logs, mobile")
             sys.exit(1)
     else:
-        # Default: run audit logs tests as requested in review
-        main_audit_logs_tests()
+        # Default: run mobile API tests as requested in review
+        main_mobile_api_tests()
