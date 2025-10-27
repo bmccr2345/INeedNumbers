@@ -491,7 +491,14 @@ const ProOnboardingWizard = ({ isOpen, onClose, onComplete }) => {
         <div className="px-6 pt-4">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm font-medium text-gray-700">Day {currentDay} Progress</span>
-            <span className="text-sm font-bold text-emerald-600">{progress}%</span>
+            <div className="flex items-center space-x-2">
+              {currentDay === 1 && (
+                <span className="text-sm font-medium text-purple-600">
+                  *We HIGHLY recommend onboarding via desktop*
+                </span>
+              )}
+              <span className="text-sm font-bold text-emerald-600">{progress}%</span>
+            </div>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div 
