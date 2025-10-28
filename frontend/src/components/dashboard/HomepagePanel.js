@@ -557,7 +557,6 @@ const HomepagePanel = () => {
         onClose={() => setIsActivityModalOpen(false)}
         onActivitySaved={() => {
           // Optionally refresh any data that depends on activities
-          console.log('Activity saved successfully');
         }}
       />
 
@@ -567,7 +566,6 @@ const HomepagePanel = () => {
         onClose={() => setIsReflectionModalOpen(false)}
         onReflectionSaved={() => {
           // Optionally refresh any data that depends on reflections
-          console.log('Reflection saved successfully');
         }}
       />
 
