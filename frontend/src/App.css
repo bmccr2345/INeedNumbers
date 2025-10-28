@@ -29,6 +29,12 @@
   padding: 0;
 }
 
+/* Disable pull-to-refresh on mobile to prevent logout */
+body {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Improved base styles */
 html {
   -webkit-font-smoothing: antialiased;
