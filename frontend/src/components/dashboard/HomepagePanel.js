@@ -219,7 +219,6 @@ const HomepagePanel = () => {
       setCapProgress({ data: response.data, loading: false });
     } catch (error) {
       // Cap progress is optional, don't show error if not configured
-      console.log('Cap progress not available:', error);
       setCapProgress({ data: null, loading: false });
     }
   };
