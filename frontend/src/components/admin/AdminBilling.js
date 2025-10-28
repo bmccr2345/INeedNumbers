@@ -177,7 +177,6 @@ const AdminBilling = () => {
   };
 
   const handleSubscriptionAction = (action, subscriptionId) => {
-    console.log(`Action: ${action} for subscription: ${subscriptionId}`);
     // Handle subscription actions (pause, cancel, refund, etc.)
   };
 
