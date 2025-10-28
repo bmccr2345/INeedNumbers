@@ -152,7 +152,6 @@ const AffordabilityAICoach = ({ isOpen, onClose, inputs, results }) => {
   // Auto-generate analysis when modal opens if there's sufficient data
   React.useEffect(() => {
     if (isOpen && inputs.homePrice && inputs.grossMonthlyIncome && !analysis && !isAnalyzing) {
-      console.log('Auto-generating affordability analysis for:', inputs.homePrice, inputs.grossMonthlyIncome);
       generateAnalysis();
     }
   }, [isOpen, inputs.homePrice, inputs.grossMonthlyIncome, analysis, isAnalyzing]);
