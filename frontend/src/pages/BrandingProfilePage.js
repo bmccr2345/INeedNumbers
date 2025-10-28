@@ -195,7 +195,6 @@ const BrandingProfilePage = () => {
       if (response.ok) {
         const updatedProfile = await response.json();
         setBrandProfile(updatedProfile);
-        console.log('Brand profile saved successfully');
       } else {
         console.error('Failed to save brand profile:', response.status, response.statusText);
         alert('Failed to save your branding profile. Please try again.');
