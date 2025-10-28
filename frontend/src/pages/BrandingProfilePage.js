@@ -334,8 +334,6 @@ const BrandingProfilePage = () => {
         // Cleanup
         window.URL.revokeObjectURL(url);
         document.body.removeChild(link);
-        
-        console.log('Test PDF generated successfully');
       } else {
         const errorData = await response.json();
         console.error('PDF generation failed:', errorData);
