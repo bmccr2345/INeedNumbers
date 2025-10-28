@@ -2387,26 +2387,7 @@ async def generate_pdf(tool: str, request: Request, current_user: Optional[User]
             # Get branding data for closing date PDF
             branding_data = {}  # Branding disabled
             
-            print(f"🔍 DEBUG: Closing Date PDF - Data received: calculation_data keys: {list(calculation_data.keys()) if calculation_data else 'None'}")
-            print(f"🔍 DEBUG: Closing Date PDF - Timeline length: {len(calculation_data.get('timeline', [])) if calculation_data else 0}")
-            logger.info(f"Closing Date PDF - Data received: calculation_data keys: {list(calculation_data.keys()) if calculation_data else 'None'}")
-            logger.info(f"Closing Date PDF - Timeline length: {len(calculation_data.get('timeline', [])) if calculation_data else 0}")
-            if calculation_data and calculation_data.get('timeline'):
-                print(f"🔍 DEBUG: Closing Date PDF - First timeline item: {calculation_data['timeline'][0] if calculation_data['timeline'] else 'Empty'}")
-                logger.info(f"Closing Date PDF - First timeline item: {calculation_data['timeline'][0] if calculation_data['timeline'] else 'Empty'}")
-            
             report_data = prepare_closing_date_report_data(calculation_data, property_data, current_user)
-            
-            print(f"🔍 DEBUG: Closing Date PDF - Timeline HTML length: {len(report_data.get('timelineTableRows', ''))}")
-            print(f"🔍 DEBUG: Closing Date PDF - Visual timeline HTML length: {len(report_data.get('visualTimelineSection', ''))}")
-            print(f"🔍 DEBUG: Closing Date PDF - Report data keys: {list(report_data.keys())}")
-            print(f"🔍 DEBUG: Closing Date PDF - Timeline table rows sample: {report_data.get('timelineTableRows', '')[:200]}...")
-            print(f"🔍 DEBUG: Closing Date PDF - Visual timeline section sample: {report_data.get('visualTimelineSection', '')[:200]}...")
-            logger.info(f"Closing Date PDF - Timeline HTML length: {len(report_data.get('timelineTableRows', ''))}")
-            logger.info(f"Closing Date PDF - Visual timeline HTML length: {len(report_data.get('visualTimelineSection', ''))}")
-            logger.info(f"Closing Date PDF - Report data keys: {list(report_data.keys())}")
-            logger.info(f"Closing Date PDF - Timeline table rows sample: {report_data.get('timelineTableRows', '')[:200]}...")
-            logger.info(f"Closing Date PDF - Visual timeline section sample: {report_data.get('visualTimelineSection', '')[:200]}...")
         else:
             raise HTTPException(status_code=404, detail="Tool not supported")
         
