@@ -99,7 +99,7 @@ const MobileLayout = ({ children }) => {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-auto" style={{ paddingBottom: '80px' }}>
         {/* Show MobileDashboard for overview tab, otherwise show passed children (DashboardPage) */}
         {shouldShowMobileDashboard ? (
           <MobileDashboard />
