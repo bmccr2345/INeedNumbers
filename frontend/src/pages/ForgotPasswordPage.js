@@ -33,12 +33,6 @@ const ForgotPasswordPage = () => {
       
       if (response.ok && data.success) {
         setSuccess(true);
-        
-        // In development, log the reset token
-        if (data.dev_reset_token) {
-          console.log('🔐 DEV MODE: Password reset token:', data.dev_reset_token);
-          console.log('🔗 Reset link:', `${window.location.origin}/auth/reset-password?token=${data.dev_reset_token}`);
-        }
       } else {
         setError(data.detail || data.message || 'Failed to send password reset email');
       }
