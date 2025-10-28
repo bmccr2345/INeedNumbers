@@ -8,7 +8,7 @@ import json
 from datetime import datetime
 
 def debug_ai_coach():
-    base_url = "https://mobile-dash-fix-1.preview.emergentagent.com"
+    base_url = "https://mobile-finances.preview.emergentagent.com"
     
     # Authenticate
     login_data = {

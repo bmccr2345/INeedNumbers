@@ -1,66 +1,125 @@
 <analysis>
-The trajectory outlines an AI engineer's comprehensive efforts to stabilize and enhance the I Need Numbers application. The work was highly iterative, frequently addressing recurring infrastructure issues like WeasyPrint dependencies, which impacted login and PDF generation. Initial phases focused on production readiness, including Admin Console data integrity, 2FA implementation, and UI/UX refinements. Key challenges revolved around establishing a stable PDF generation pipeline (transitioning from WeasyPrint to Playwright due to environment constraints), resolving complex templating issues (Jinja2 vs. Mustache), and ensuring persistent login functionality amidst code changes and environment restarts. Each feature, from dashboard navigation redesign to AI coach output formatting and branding integration into PDFs, involved multiple debugging cycles. The trajectory concludes with the immediate task of resolving a saved error message on the Action Tracker, highlighting the continuous nature of development in a complex codebase.
+The AI engineer's work primarily focused on iteratively enhancing and debugging a mobile-first experience for a financial application. Initially, it involved fixing a critical Safari blank screen issue, which led to a comprehensive mobile dashboard redesign with specific UI/UX requirements. Key efforts included refactoring  usage, implementing mobile-specific components (e.g., , , various modals), and addressing numerous user-reported mobile UI and data display bugs. A significant part of the trajectory involved adding Active Deals functionality, including new fields, a card on the dashboard, and a table on the P&L tracker, alongside related backend and frontend fixes. Persistent issues with backend URL configuration, especially concerning production deployment and mobile authentication, were identified and addressed through multiple iterations, often requiring temporary debug panels and environment variable checks. The conversation concludes with the removal of debugging tools after a successful fix of the backend URL for the mobile finances tab.
 </analysis>
 
 <product_requirements>
-The I Need Numbers application provides real estate agents with financial tools, including an Agent P&L Tracker, Recurring Expenses & Inline Editing, and a Commission Cap Tracker. A key feature is the Fairy AI Coach, exclusive to PRO users, which offers personalized insights, action plans, risk assessments, and P&L trend analysis, with outputs converted from raw JSON to human-readable format. Action Tracker functionality was enhanced with improved inputs and a Goals tab. The application prioritizes Backend Security Hardening (Argon2id, HttpOnly/Secure cookies, CSRF, MongoDB rate limits, upload validation) and Production Readiness (secure defaults, PDF branding, structured logging, comprehensive tests).
+The I Need Numbers application is designed to provide real estate agents with financial management tools like P&L tracking, expense management, and a Commission Cap Tracker. It includes an AI Coach for PRO users and an Action Tracker. The application features a secure backend (JWT, Argon2id, HttpOnly cookies, CSRF, MongoDB rate limits) and production-ready functionalities like PDF generation.
 
-Work completed so far includes fixing admin login, implementing 2FA for admins, making Admin Console user management and billing production-ready by integrating real data, humanizing AI Coach JSON output, correctly gating features for Free Calculator users, integrating the Action Tracker's Completed column, and developing a Pro Onboarding Wizard. A major dashboard UI and navigation redesign was implemented, and persistent issues with PDF branding and login stability have been addressed, primarily by migrating PDF generation to Playwright and ensuring correct templating with pre-computed data.
+The previous work involved addressing critical Safari blank screen issues, which expanded into a full mobile dashboard and navigation redesign. This required:
+1.  **Mobile Dashboard Redesign**: Implementing mobile-specific layouts with bottom tab navigation (Overview, Calculators, Actions, More, and later Finances).
+2.  **Conditional Layout Switching**: Differentiating between mobile and desktop views.
+3.  **UI Adjustments**: Refining Action Tracker tabs (only Action Tracker visible on mobile), repositioning the AI Coach banner and Financial Overview, enhancing quick action buttons (+ button for Log Activity and Log Reflection, later Add Expense, Add Deal), and removing the Coach tab from mobile navigation.
+4.  **P&L Integration**: Adding Total Income, Total Expense, and Budget Utilization cards to the mobile overview, and a Finances tab linking to the P&L Tracker.
+5.  **Active Deals Feature**: Implementing Contract Signed, Due Diligence Start, and Due Diligence Over date fields for deals. A new Active Deals card (desktop dashboard, mobile overview) and table (P&L Tracker) displaying deals that haven't closed, with days remaining in due diligence. Deals should be editable and deletable.
+6.  **Onboarding Wizard Behavior**: The onboarding wizard should only show on initial login and disappear when minimized (mobile) or stay minimized (desktop), with an option to reopen it via the '+' button.
+7.  **Bug Fixes**: Addressing authentication failures, data not loading in production (due to environment variable mismatches), UI crowding on mobile, calculator menu navigation issues, pull-to-refresh logout, and nav bar drifting. Removing various debugging tools.
 </product_requirements>
 
 <key_technical_concepts>
--   **Full-Stack**: React.js (frontend), FastAPI (Python backend).
--   **Database**: MongoDB (with caching).
--   **Authentication**: JWT, Argon2id, HttpOnly cookies, 2FA (, ).
+-   **Full-Stack Development**: React.js (frontend), FastAPI (Python backend).
+-   **Data Management**: MongoDB (for data storage and caching), UUIDs for IDs, ISO strings for DateTime.
+-   **Authentication/Security**: JWT, Argon2id, HttpOnly/Secure cookies, 2FA, CSRF.
 -   **AI Integration**: OpenAI GPT via .
--   **UI/Styling**: Tailwind CSS, Shadcn UI components.
--   **PDF Generation**: Playwright (current), previously WeasyPrint, ReportLab, html2pdf.
--   **Templating**: Mustache-style (for PDFs).
--   **Deployment**: Kubernetes container, Supervisor.
+-   **UI/UX**: Tailwind CSS, Shadcn UI,  hook for responsive design.
+-   **Deployment**: Kubernetes, Supervisor, environment variables,  for testing protocols.
 </key_technical_concepts>
 
 <code_architecture>
 **High-Level Architecture:**
-The application uses a React.js frontend and a FastAPI Python backend, with MongoDB for data and caching. Authentication is handled by JWTs and HttpOnly cookies, secured with Argon2id. AI features integrate with OpenAI via .
+The application consists of a React.js frontend, a FastAPI Python backend, and MongoDB for data persistence. Authentication is handled using JWTs and HttpOnly cookies. AI functionalities are integrated via .
 
 **Directory Structure:**
 
 
-**File Summaries & Changes:**
--   ****: Central FastAPI application.
-    -   **Importance**: Defines all API routes, handles authentication, user data, PDF generation, and core business logic.
-    -   **Changes**: Implemented password reset and change endpoints, including admin-initiated resets. Added  check for health endpoint. Significantly refactored PDF generation to use Playwright for maintaining HTML/CSS design, explicitly setting browser path. Reverted  to use a Mustache-style parser for PDF templates and pre-compute branding colors. Removed redundant  statements.
--   ****: AI Coach API logic.
-    -   **Importance**: Manages the generation and formatting of AI coaching insights.
-    -   **Changes**: Added specific context handling for  to ensure AI outputs are formatted into human-readable text instead of raw JSON.
--   ****: Security middleware and utilities.
-    -   **Importance**: Enforces security policies, including CSRF protection.
-    -   **Changes**: Modified  to include password reset and all PDF generation routes () using a  check for flexible exemption.
--   ****: Seller Net Sheet PDF template.
-    -   **Importance**: Defines the visual layout and content for the Seller Net Sheet PDF, including agent branding.
-    -   **Changes**: Updated to incorporate dynamic branding elements (primary color, logo) passed as simple Mustache-style variables (e.g., ) after moving complex Jinja2 conditional logic for branding and color calculation to the Python backend to resolve template parsing errors.
--   ****: Main dashboard component.
-    -   **Importance**: Orchestrates the dashboard UI and navigation.
-    -   **Changes**: Underwent a major refactor to implement a new collapsible, categorized sidebar navigation structure for both desktop and mobile, replacing the previous flat tab system.
--   ****: PRO user onboarding wizard component.
-    -   **Importance**: Guides new PRO users through initial setup and feature discovery.
-    -   **Changes**: Updated all internal links and references to align with the newly redesigned dashboard navigation structure.
--   ****: AI Coach display banner on the dashboard.
-    -   **Importance**: Presents AI insights to the user.
-    -   **Changes**: Modified to be minimized by default on initial render by changing its  initial value for  to .
--   ****: Branding and Profile settings page.
-    -   **Importance**: Allows users to manage their branding assets.
-    -   **Changes**: Ensured proper display by fixing a backend Storage Error related to  not being defined when S3 isn't configured, thus correctly falling back to local storage.
--   ****: Frontend for initiating password reset.
-    -   **Importance**: Provides the interface for users to request password reset emails.
-    -   **Changes**: Updated to interact with the new backend  endpoint.
--   ****: **New file**.
-    -   **Importance**: Frontend component allowing users to set a new password using a reset token received via email.
--   ****: Main React application file.
-    -   **Importance**: Defines the main routing structure of the application.
-    -   **Changes**: Added a new route for the  page to integrate the password reset functionality.
--   ****: **New file**.
-    -   **Importance**: Documentation detailing the password security, reset, and management procedures for the application.
+**File Summaries & Changes (Detailed for recent work):**
+-   ****:
+    -   **Importance**: Defines backend API routes and logic.
+    -   **Changes**: Added , ,  fields to  model as optional fields (initially required, then fixed to optional). Added  endpoint to fetch deals not yet closed, filtered by  and sorted. Corrected database name usage.
+-   ****:
+    -   **Importance**: Manages application configuration, including database name.
+    -   **Changes**: Clarified that  should be correctly set via environment variables.
+-   ****:
+    -   **Importance**: Main React routing.
+    -   **Changes**: Integrated  for conditional rendering of  vs. . Added .
+-   ****:
+    -   **Importance**: Global CSS styles.
+    -   **Changes**: Added  and  classes for modal animations. Added  to  to prevent pull-to-refresh logout.
+-   ****:
+    -   **Importance**: Main desktop dashboard component.
+    -   **Changes**: Refactored  to . Added . Hidden mobile horizontal tabs when a specific panel (not homepage) is active. Modified ProOnboardingWizard to show only on first login using session storage.
+-   ****:
+    -   **Importance**: Core mobile dashboard overview page.
+    -   **Changes**: Created to display mobile-specific cards. Imports and renders  and . Handles quick action button clicks by opening , , , . Removed redundant AI Coach and Financial Overview card. Fetches , , and  from backend P&L summary. Added  for mobile. Integrated  for PRO users on first login, with session-based hiding. Removed debug console logs.
+-   ****:
+    -   **Importance**: User login UI.
+    -   **Changes**: Error handling adjusted to ensure Pydantic validation errors are always shown as strings, preventing React rendering crashes on iPhone.
+-   ****:
+    -   **Importance**: User profile and settings.
+    -   **Changes**: Wrapped the Branding section with  hook to hide it on mobile.
+-   ****:
+    -   **Importance**: UI for Investor Calculator.
+    -   **Changes**: Fixed header styling issues on mobile and removed Popular badge from calculator menu.
+-   ****:
+    -   **Importance**: Displays P&L tracking and related features.
+    -   **Changes**: Integrated  to hide Export month and Export year buttons on mobile. Added state and functions (, ) to fetch and display active deals in a dedicated table. Implemented editable rows for active deals, opening a modal () with pre-populated data. Added delete functionality for deals. Fixed missing  import, which caused a runtime error. Made , ,  optional for existing deals.
+-   ****:
+    -   **Importance**: Desktop dashboard homepage content.
+    -   **Changes**: Added .
+-   ** (NEW)**:
+    -   **Importance**: Displays a summary of active deals.
+    -   **Changes**: Created to show property address, closing date, and days remaining in due diligence. On mobile, it's simplified to a card-based layout, showing Due Diligence label explicitly. Handles cases where due diligence dates might be missing or empty.
+-   ****:
+    -   **Importance**: Onboarding wizard for PRO users.
+    -   **Changes**: Refactored  to . Modified to completely disappear when minimized on mobile (using session storage for persistence), and stay minimized on desktop. Added *We HIGHLY recommend onboarding via desktop* message to Day 1 Progress on mobile.
+-   ****:
+    -   **Importance**: Reusable card for mobile dashboard.
+    -   **Changes**: Created.
+-   ****:
+    -   **Importance**: Floating action button for quick actions.
+    -   **Changes**: Modified to display a menu for Log Activity, Log a Reflection, Add Expense, Add Deal, and Show Onboarding Wizard.
+-   ****:
+    -   **Importance**: Bottom tab navigation for mobile.
+    -   **Changes**: Removed Coach tab. Added Finances tab that navigates to P&L Tracker. Added  to ensure it's always on top.
+-   ****:
+    -   **Importance**: Menu for More tab.
+    -   **Changes**: Adjusted layout to not cover the bottom tab bar.
+-   ****:
+    -   **Importance**: Modal for selecting calculators.
+    -   **Changes**: Adjusted layout to not cover the bottom tab bar (using  and ). Added a clickable backdrop to close the menu. Removed Popular badge from Investor Deal Calculator.
+-   ****:
+    -   **Importance**: Back button for mobile panels.
+    -   **Changes**: Created.
+-   ** (NEW)**:
+    -   **Importance**: Visual debug panel for mobile UI.
+    -   **Changes**: Created to display runtime debugging information (backend URL, user details, auth status, API call statuses, cookies/tokens). Added, utilized, and then removed based on user request.
+-   ** (NEW)**:
+    -   **Importance**: Modal for quickly logging activities on mobile.
+    -   **Changes**: Created. Adjusted z-index and padding to prevent nav bar overlap.
+-   ** (NEW)**:
+    -   **Importance**: Modal for quickly logging reflections on mobile.
+    -   **Changes**: Created. Adjusted z-index and padding to prevent nav bar overlap.
+-   ** (NEW)**:
+    -   **Importance**: Modal for quickly adding new deals on mobile.
+    -   **Changes**: Created, includes new fields: , , .
+-   ** (NEW)**:
+    -   **Importance**: Modal for quickly adding new expenses on mobile.
+    -   **Changes**: Created.
+-   ****:
+    -   **Importance**: Manages global authentication state.
+    -   **Changes**: Modified to use . Error handling adjusted to ensure Pydantic validation errors are always shown as strings, preventing React rendering crashes on iPhone.
+-   ****:
+    -   **Importance**: Custom React hook for detecting media queries.
+    -   **Changes**: Created.
+-   ****:
+    -   **Importance**: Layout component for mobile views.
+    -   **Changes**: Created. Uses  and . Removed debug components/logs. Added  and  to the main content area and  to ensure space for the fixed nav bar. Handles closing calculator/more menus when tabs are clicked.
+-   ****:
+    -   **Importance**: Safer wrapper for .
+    -   **Changes**: Created.
+-   ****:
+    -   **Importance**: Frontend environment variables.
+    -   **Changes**: Frequently modified  to toggle between local/preview/production URLs for testing/deployment, causing issues. The final instruction was to set it to .
+
 </code_architecture>
 
 <pending_tasks>
@@ -69,18 +128,22 @@ The application uses a React.js frontend and a FastAPI Python backend, with Mong
 -   **Frontend Security Updates**: Validate build-time environment variables, and confirm no secrets in production build.
 -   **Documentation Updates**: Update  and create .
 -   **Action Tracker Error**: Investigate and fix the saved error message on the Action Tracker.
+-   **Action Tracker Completed Column**: Implement the input mechanism for the Completed column.
+-   **Recent History Accuracy/Download**: Verify accuracy and add download functions for Recent Splits, Recent Estimates, Recent Timelines, and Recent Calculations sections.
+-   **Activity Progress Calculation**: Further investigate and fix the Activity Progress calculation in the backend ().
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was tasked with resolving a user-reported issue on the **Action Tracker** page. The user explicitly stated, For the ACtion tracker I get a saved error message here, and provided screenshots detailing the error.
+Immediately before this summary, the AI engineer was addressing a critical production issue where mobile authentication was failing, and cards on the Overview page were showing zero data, particularly on the Finances tab. This was diagnosed as a  mismatch in the  file.
 
-Prior to this specific issue, the engineer successfully completed two tasks:
-1.  **AI Fairy Coach Minimization**: The Fairy AI coach banner on the Dashboard Overview page was configured to be minimized by default. This was achieved by modifying , specifically changing the initial state of the  variable from  to .
-2.  **AI Coach Functionality Verification**: The functionality of the AI Coach was double-checked and confirmed to be working correctly. The frontend component  was verified to be using the appropriate backend endpoint () via . Login was also verified to be working correctly.
+The engineer implemented the following:
+1.  **Backend URL Correction**: The  file was updated to set , ensuring the frontend correctly points to the production backend. This was a direct fix based on troubleshooting agent's diagnosis and user's explicit instruction (lets do option 2 after being presented with fixing .env).
+2.  **Debug Panel Removal**: As per user request (remove the debug), the  component was removed, and its associated imports/renderings from  and  were cleaned up.
 
-Therefore, the current active task is to investigate the saved error message occurring on the Action Tracker and implement a fix to ensure its proper functionality.
+The last confirmation from the user was that worked! regarding the backend URL fix and the debug panel removal. The system then restarted the frontend.
 </current_work>
 
 <optional_next_step>
-Investigate the saved error message on the Action Tracker by examining .
+Await user's next explicit instructions as the last requested task (removing the debug panel) has been completed.
 </optional_next_step>
+
