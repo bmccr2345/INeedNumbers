@@ -448,7 +448,6 @@ const PnLPanel = () => {
         setCapProgress(response.data);
       } catch (error) {
         // Cap progress is optional, don't show error if not configured
-        console.log('Cap progress not available:', error);
       } finally {
         setCapLoading(false);
       }
