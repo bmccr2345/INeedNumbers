@@ -6,6 +6,7 @@ import MobileDashboard from '../pages/MobileDashboard';
 import MobileTabBar from '../components/mobile/MobileTabBar';
 import MobileMoreMenu from '../components/mobile/MobileMoreMenu';
 import MobileCalculatorMenu from '../components/mobile/MobileCalculatorMenu';
+import MobileDebugPanel from '../components/mobile/MobileDebugPanel';
 
 /**
  * Mobile Layout Component
