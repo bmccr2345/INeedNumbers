@@ -5,8 +5,7 @@ const PerformanceMonitor = () => {
   useEffect(() => {
     // Send metrics to analytics service
     const sendToAnalytics = (metric) => {
-      // In production, you would send this to your analytics service
-      console.log('Performance Metric:', metric);
+      // In production, send this to your analytics service
       
       // Example: Send to Google Analytics
       if (typeof window !== 'undefined' && window.gtag) {
@@ -41,10 +40,6 @@ const PerformanceMonitor = () => {
         const largeResources = resources.filter(resource => 
           (resource.transferSize || 0) > 100000 // > 100KB
         );
-        
-        if (largeResources.length > 0) {
-          console.log('Large resources detected:', largeResources);
-        }
 
         // Track navigation timing
         const navigation = performance.getEntriesByType('navigation')[0];
@@ -57,8 +52,6 @@ const PerformanceMonitor = () => {
             dom: navigation.domContentLoadedEventEnd - navigation.responseEnd,
             load: navigation.loadEventEnd - navigation.loadEventStart
           };
-          
-          console.log('Navigation timing:', metrics);
         }
       }
     };
