@@ -362,7 +362,6 @@ const PnLPanel = () => {
       });
       
       // This would handle the actual Excel download
-      console.log('Export response:', response.data);
       alert('Export functionality will be available soon!');
     } catch (error) {
       console.error('Failed to export:', error);
