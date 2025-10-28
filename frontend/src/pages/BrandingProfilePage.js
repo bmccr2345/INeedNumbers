@@ -240,7 +240,6 @@ const BrandingProfilePage = () => {
 
       if (response.ok) {
         const result = await response.json();
-        console.log('Upload successful:', result);
         
         // Reload profile to get updated assets and check storage again
         await loadBrandProfile();
